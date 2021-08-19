@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/img/caffee32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/img/caffee16x16.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":false,"style":"default"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"valine","storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="二分查找由于后面会有一些使用二分思想的比较灵活的题目，所以我先来写一下二分查找。 首先，二分查找是一个非常基础的算法，也是而二分思想的基础，所以，全面与透彻的了解是非常有必要的。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Binary Search（二分查找）">
+<meta property="og:url" content="http://example.com/2018/08/04/Binary-Search%EF%BC%88%E4%BA%8C%E5%88%86%E6%9F%A5%E6%89%BE%EF%BC%89/index.html">
+<meta property="og:site_name" content="In The End">
+<meta property="og:description" content="二分查找由于后面会有一些使用二分思想的比较灵活的题目，所以我先来写一下二分查找。 首先，二分查找是一个非常基础的算法，也是而二分思想的基础，所以，全面与透彻的了解是非常有必要的。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://example.com/img/二分查找1.png">
+<meta property="og:image" content="http://example.com/img/二分查找2.png">
+<meta property="og:image" content="http://example.com/img/二分查找3.png">
+<meta property="og:image" content="http://example.com/img/二分查找4.png">
+<meta property="og:image" content="http://example.com/img/二分查找5.png">
+<meta property="article:published_time" content="2018-08-03T17:26:34.000Z">
+<meta property="article:modified_time" content="2021-08-05T01:51:46.387Z">
+<meta property="article:author" content="Lavender">
+<meta property="article:tag" content="排序">
+<meta property="article:tag" content="二分">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/img/二分查找1.png">
+
+<link rel="canonical" href="http://example.com/2018/08/04/Binary-Search%EF%BC%88%E4%BA%8C%E5%88%86%E6%9F%A5%E6%89%BE%EF%BC%89/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>Binary Search（二分查找） | In The End</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">In The End</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">个人博客</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2018/08/04/Binary-Search%EF%BC%88%E4%BA%8C%E5%88%86%E6%9F%A5%E6%89%BE%EF%BC%89/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/img/Lavender.jpg">
+      <meta itemprop="name" content="Lavender">
+      <meta itemprop="description" content="再次出发">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="In The End">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Binary Search（二分查找）
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2018-08-03 17:26:34" itemprop="dateCreated datePublished" datetime="2018-08-03T17:26:34Z">2018-08-03</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2021-08-05 01:51:46" itemprop="dateModified" datetime="2021-08-05T01:51:46Z">2021-08-05</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/ACM/" itemprop="url" rel="index"><span itemprop="name">ACM</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="二分查找"><a href="#二分查找" class="headerlink" title="二分查找"></a>二分查找</h1><p>由于后面会有一些使用二分思想的比较灵活的题目，所以我先来写一下二分查找。</p>
+<p>首先，二分查找是一个非常基础的算法，也是而二分思想的基础，所以，全面与透彻的了解是非常有必要的。</p>
+<span id="more"></span>
+<p>我们首先假设我们有长度为1000的一个数组，这个数组已经是排好序的了，那么问题来了，我们假设要从这排好序的1000个数字里找一个大小为“100”的数字，我们该怎么找速度最快呢。</p>
+<p>首先，最傻的方法莫过于一个一个从头到尾找下去，但是1000个还算撑得住，如果1亿呢？10亿呢？100亿呢？恐怕这个不经推敲的原始算法就扛不住了，这时候我们就要找到一个高效的算法来解决大量数据的问题。</p>
+<p>我们可以分析出一个信息，就是刚才那个从头上找下去的算法，完全没有使用数组已经有序这个重要的条件啊！那么，接下来的二分查找就是在数组有序这里找文章（文章：“纳尼？！”）。假设我们在1000个里访问到了第500个，发现第500个数字的大小是20，那么我们可以推断出前500个数字绝对没有大于20的，那么，既然我们的目标是100，傻子都知道前面我们就可以直接忽略了，所以，这种非常高效的排除一大段范围的算法就是二分查找的核心。换点官方的话说就是二分查找的基本思想是将n个元素分成大致相等的两部分，取a[n/2]与x做比较，如果x=a[n/2],则找到x,算法中止；如果x小于a[n/2],则只要在数组a的左半部分继续搜索x,如果x大于a[n/2],则只要在数组a的右半部搜索x。<br><img src="/img/二分查找1.png" alt=""><br><img src="/img/二分查找2.png" alt=""><br><img src="/img/二分查找3.png" alt=""><br><img src="/img/二分查找4.png" alt=""><br><img src="/img/二分查找5.png" alt=""></p>
+<h1 id="二分查找代码"><a href="#二分查找代码" class="headerlink" title="二分查找代码"></a>二分查找代码</h1><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> std;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">binary</span><span class="params">(<span class="keyword">int</span> *a,<span class="keyword">int</span> left,<span class="keyword">int</span> right,<span class="keyword">int</span> target)</span></span>&#123;</span><br><span class="line">    <span class="keyword">int</span> mid;</span><br><span class="line">    <span class="keyword">while</span>(left&lt;right)&#123;</span><br><span class="line">        <span class="comment">//mid=(left+right)/2;(溢出漏洞)</span></span><br><span class="line">        mid=left+(right-left)/<span class="number">2</span>;</span><br><span class="line">        <span class="keyword">if</span>(a[mid]==target)<span class="comment">//查到了</span></span><br><span class="line">            <span class="keyword">return</span> mid;<span class="comment">//返回位置</span></span><br><span class="line">        <span class="keyword">else</span> <span class="keyword">if</span>(a[mid]&lt;target)<span class="comment">//发现答案在更大的地方</span></span><br><span class="line">            left=mid+<span class="number">1</span>;<span class="comment">//把下界往上拉</span></span><br><span class="line">        <span class="keyword">else</span></span><br><span class="line">            right=mid;<span class="comment">//反之则把上界向下拉</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">-1</span>;<span class="comment">//查不到返回-1</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span>&#123;</span><br><span class="line">    <span class="keyword">int</span> n,target;</span><br><span class="line">    cout &lt;&lt; <span class="string">&quot;请输入数组长度:&quot;</span>;</span><br><span class="line">    cin&gt;&gt;n;</span><br><span class="line">    <span class="keyword">int</span> *a=<span class="keyword">new</span> <span class="keyword">int</span>[n+<span class="number">10</span>];</span><br><span class="line">    cout &lt;&lt; <span class="string">&quot;请输入数组:&quot;</span>;</span><br><span class="line">    <span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;n;i++)</span><br><span class="line">        cin&gt;&gt;a[i];</span><br><span class="line">    cout &lt;&lt; <span class="string">&quot;请输入要查找的数：&quot;</span>;</span><br><span class="line">    cin&gt;&gt;target;</span><br><span class="line">    <span class="keyword">int</span> ans=<span class="built_in">binary</span>(a,<span class="number">0</span>,n,target);<span class="comment">//采用开区间</span></span><br><span class="line">    <span class="keyword">if</span>(ans==<span class="number">-1</span>)</span><br><span class="line">        cout &lt;&lt; <span class="string">&quot;你查询的数不存在&quot;</span> &lt;&lt; endl;</span><br><span class="line">    <span class="keyword">else</span></span><br><span class="line">        cout &lt;&lt; <span class="string">&quot;你查询的数在数组中下标为&quot;</span> &lt;&lt; ans &lt;&lt; <span class="string">&quot;的位置&quot;</span> &lt;&lt; endl; </span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h1 id="查不到就返回下界"><a href="#查不到就返回下界" class="headerlink" title="查不到就返回下界"></a>查不到就返回下界</h1><p>当然了，如果应用的时候要使这个查找即使查不到也要返回一个合理的位置。一般都是返回小于你查询值的最后一个位置（因为这样方便添加，你也可以理解为添加的位置），所以我们可以修改上述代码。</p>
+<h1 id="二分查找求下界"><a href="#二分查找求下界" class="headerlink" title="二分查找求下界"></a>二分查找求下界</h1><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">binary</span><span class="params">(<span class="keyword">int</span> *a,<span class="keyword">int</span> left,<span class="keyword">int</span> right,<span class="keyword">int</span> target)</span></span>&#123;</span><br><span class="line">    <span class="keyword">int</span> mid;</span><br><span class="line">    <span class="keyword">while</span>(left&lt;right)&#123;</span><br><span class="line">        <span class="comment">//mid=(left+right)/2;(溢出漏洞)</span></span><br><span class="line">        mid=left+(right-left)/<span class="number">2</span>;</span><br><span class="line">        <span class="keyword">if</span>(a[mid]==target)<span class="comment">//查到了</span></span><br><span class="line">            <span class="keyword">return</span> mid;<span class="comment">//返回位置</span></span><br><span class="line">        <span class="keyword">else</span> <span class="keyword">if</span>(a[mid]&lt;target)<span class="comment">//发现答案在更大的地方</span></span><br><span class="line">            left=mid+<span class="number">1</span>;<span class="comment">//把下界往上拉</span></span><br><span class="line">        <span class="keyword">else</span></span><br><span class="line">            right=mid;<span class="comment">//反之则把上界向下拉</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> left;<span class="comment">//查不到返回-1</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h1 id="复杂度分析"><a href="#复杂度分析" class="headerlink" title="复杂度分析"></a>复杂度分析</h1><p>这个算法的复杂度已经非常清晰了，我们每次都除以2，那么复杂度自然就是O(logn)了</p>
+<h1 id="归并与二分的溢出漏洞"><a href="#归并与二分的溢出漏洞" class="headerlink" title="归并与二分的溢出漏洞"></a>归并与二分的溢出漏洞</h1><p>这是一个很有趣的事情，以前我也不知道，但是溢出的位置在我今天代码中已经标记了“溢出漏洞”了，大家可以看看，查阅一下资料（顺便提一句，百度百科里的二分查找居然用的是有漏洞的。。。）</p>
+<p>关于这个溢出漏洞我可能会写一篇博客，当然也有可能偷懒不写了。</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E6%8E%92%E5%BA%8F/" rel="tag"># 排序</a>
+              <a href="/tags/%E4%BA%8C%E5%88%86/" rel="tag"># 二分</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2018/08/03/%E5%8C%BA%E5%9D%97%E9%93%BE%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B04%EF%BC%9A%E6%AF%94%E7%89%B9%E5%B8%81%E6%8C%96%E7%9F%BF/" rel="prev" title="区块链学习笔记4：比特币挖矿">
+      <i class="fa fa-chevron-left"></i> 区块链学习笔记4：比特币挖矿
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2018/08/04/%E5%BD%92%E5%B9%B6%E6%8E%92%E5%BA%8F%E5%92%8C%E4%BA%8C%E5%88%86%E6%9F%A5%E6%89%BE%E7%9A%84%E6%BA%A2%E5%87%BA%E6%BC%8F%E6%B4%9E/" rel="next" title="归并排序和二分查找的溢出漏洞">
+      归并排序和二分查找的溢出漏洞 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%BA%8C%E5%88%86%E6%9F%A5%E6%89%BE"><span class="nav-number">1.</span> <span class="nav-text">二分查找</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%BA%8C%E5%88%86%E6%9F%A5%E6%89%BE%E4%BB%A3%E7%A0%81"><span class="nav-number">2.</span> <span class="nav-text">二分查找代码</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%9F%A5%E4%B8%8D%E5%88%B0%E5%B0%B1%E8%BF%94%E5%9B%9E%E4%B8%8B%E7%95%8C"><span class="nav-number">3.</span> <span class="nav-text">查不到就返回下界</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%BA%8C%E5%88%86%E6%9F%A5%E6%89%BE%E6%B1%82%E4%B8%8B%E7%95%8C"><span class="nav-number">4.</span> <span class="nav-text">二分查找求下界</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%A4%8D%E6%9D%82%E5%BA%A6%E5%88%86%E6%9E%90"><span class="nav-number">5.</span> <span class="nav-text">复杂度分析</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%BD%92%E5%B9%B6%E4%B8%8E%E4%BA%8C%E5%88%86%E7%9A%84%E6%BA%A2%E5%87%BA%E6%BC%8F%E6%B4%9E"><span class="nav-number">6.</span> <span class="nav-text">归并与二分的溢出漏洞</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Lavender"
+      src="/img/Lavender.jpg">
+  <p class="site-author-name" itemprop="name">Lavender</p>
+  <div class="site-description" itemprop="description">再次出发</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">110</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+        <span class="site-state-item-count">18</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+        <span class="site-state-item-count">49</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/Lavender-QAQ" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;Lavender-QAQ" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title">
+      <i class="fa fa-fw fa-link"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="http://ltitan.github.io/" title="http:&#x2F;&#x2F;ltitan.github.io&#x2F;" rel="noopener" target="_blank">飞哥的技术园区</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://heshang.ink/" title="https:&#x2F;&#x2F;heshang.ink&#x2F;" rel="noopener" target="_blank">奎哥的Java课堂</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://kawaii-jump.github.io/" title="https:&#x2F;&#x2F;kawaii-jump.github.io&#x2F;" rel="noopener" target="_blank">涛哥的就业实录</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://49.232.1.238/" title="http:&#x2F;&#x2F;49.232.1.238&#x2F;" rel="noopener" target="_blank">薛老板的攻防战场</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://dumengblog.club/" title="https:&#x2F;&#x2F;dumengblog.club&#x2F;" rel="noopener" target="_blank">Dumeng的知识讲解</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://stephencuhui.github.io/" title="https:&#x2F;&#x2F;stephencuhui.github.io&#x2F;" rel="noopener" target="_blank">徽哥的步步攀升</a>
+        </li>
+    </ul>
+  </div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2017 – 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Lavender</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+</body>
+</html>

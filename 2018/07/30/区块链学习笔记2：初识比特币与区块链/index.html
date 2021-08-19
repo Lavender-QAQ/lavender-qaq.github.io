@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/img/caffee32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/img/caffee16x16.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":false,"style":"default"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"valine","storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="比特币发展 创世区块使用了一条新闻作为信息记录 每一个区块都会有一个固定的编号，创世区块的编号为0，这个编号叫做区块的高度，该区块后续区块的个数为区块的深度 初始挖到一个区块奖励50个比特币，每次当比特币挖出来21万的时候奖励就会减半 大概每四年就减半">
+<meta property="og:type" content="article">
+<meta property="og:title" content="区块链学习笔记2：初识比特币与区块链">
+<meta property="og:url" content="http://example.com/2018/07/30/%E5%8C%BA%E5%9D%97%E9%93%BE%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B02%EF%BC%9A%E5%88%9D%E8%AF%86%E6%AF%94%E7%89%B9%E5%B8%81%E4%B8%8E%E5%8C%BA%E5%9D%97%E9%93%BE/index.html">
+<meta property="og:site_name" content="In The End">
+<meta property="og:description" content="比特币发展 创世区块使用了一条新闻作为信息记录 每一个区块都会有一个固定的编号，创世区块的编号为0，这个编号叫做区块的高度，该区块后续区块的个数为区块的深度 初始挖到一个区块奖励50个比特币，每次当比特币挖出来21万的时候奖励就会减半 大概每四年就减半">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2018-07-30T08:51:27.000Z">
+<meta property="article:modified_time" content="2021-08-05T01:48:47.358Z">
+<meta property="article:author" content="Lavender">
+<meta property="article:tag" content="区块链">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://example.com/2018/07/30/%E5%8C%BA%E5%9D%97%E9%93%BE%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B02%EF%BC%9A%E5%88%9D%E8%AF%86%E6%AF%94%E7%89%B9%E5%B8%81%E4%B8%8E%E5%8C%BA%E5%9D%97%E9%93%BE/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>区块链学习笔记2：初识比特币与区块链 | In The End</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">In The End</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">个人博客</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2018/07/30/%E5%8C%BA%E5%9D%97%E9%93%BE%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B02%EF%BC%9A%E5%88%9D%E8%AF%86%E6%AF%94%E7%89%B9%E5%B8%81%E4%B8%8E%E5%8C%BA%E5%9D%97%E9%93%BE/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/img/Lavender.jpg">
+      <meta itemprop="name" content="Lavender">
+      <meta itemprop="description" content="再次出发">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="In The End">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          区块链学习笔记2：初识比特币与区块链
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2018-07-30 08:51:27" itemprop="dateCreated datePublished" datetime="2018-07-30T08:51:27Z">2018-07-30</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2021-08-05 01:48:47" itemprop="dateModified" datetime="2021-08-05T01:48:47Z">2021-08-05</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E5%8C%BA%E5%9D%97%E9%93%BE/" itemprop="url" rel="index"><span itemprop="name">区块链</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h2 id="比特币发展"><a href="#比特币发展" class="headerlink" title="比特币发展"></a>比特币发展</h2><ul>
+<li>创世区块使用了一条新闻作为信息记录</li>
+<li>每一个区块都会有一个固定的编号，创世区块的编号为0，这个编号叫做区块的高度，该区块后续区块的个数为区块的深度</li>
+<li>初始挖到一个区块奖励50个比特币，每次当比特币挖出来21万的时候奖励就会减半</li>
+<li>大概每四年就减半</li>
+</ul>
+<span id="more"></span>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://blockexplorer.com/">https://blockexplorer.com/</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.blockchain.com/explorer">https://www.blockchain.com/explorer</a></li>
+<li><a target="_blank" rel="noopener" href="https://btc.com/">https://btc.com/</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.etherchain.org/">https://www.etherchain.org/</a></li>
+<li>时间戳是指格林威治时间1970年1月1日0时0分0秒起至现在的总秒数</li>
+<li>加密数字货币投资网站：<a target="_blank" rel="noopener" href="https://cn.investing.com/crypto/">https://cn.investing.com/crypto/</a></li>
+<li>比特币是加密数字货币，没有现钞，没有实体，没有银行网点</li>
+<li>所有账户公开透明，可查询：<a target="_blank" rel="noopener" href="https://blockexplorer.com/">https://blockexplorer.com/</a></li>
+<li>比特币是一种基于P2P网络的一种分布式系统</li>
+<li>比特币基于非对称加密技术（公开密钥算法）—— 核心加密算法</li>
+<li>通过挖矿产生</li>
+<li>比特币交易需要手续费，手续费越高被大众确认越快</li>
+<li>手续费会被记录这一条交易信息的矿工所拥有</li>
+<li>比特币：硬通货、易携带、隐秘性、无货币超发、比特币的最小单位是：聪。一聪等于一亿分之一比特币</li>
+<li>创世块的50个币是不能交易的</li>
+<li>比特币的生产就是靠挖矿，挖矿就是在争取记账权<h2 id="比特币钱包"><a href="#比特币钱包" class="headerlink" title="比特币钱包"></a>比特币钱包</h2></li>
+<li>钱包控制用户访问权限，管理比特币地址及其密钥，跟踪余额，创建交易和签名交易</li>
+<li>钱包是存储和管理用户密钥的数据结构</li>
+<li>钱包是私钥的容器，一般通过结构化文件或简单数据库来实现</li>
+<li>私钥可以推导出公钥和比特币地址，非常重要</li>
+<li>钱包里并没有比特币，在某种意义上来讲，比特币钱包是密钥链<h2 id="比特币节点"><a href="#比特币节点" class="headerlink" title="比特币节点"></a>比特币节点</h2></li>
+<li>运行比特币软件的计算机就是一个节点</li>
+<li>拥有完整区块链账本的节点叫做全节点，负责比特币交易的广播与验证</li>
+<li>轻节点不保存所有区块，依赖全节点做交易验证</li>
+<li>挖矿节点：带有挖矿功能的全节点</li>
+<li>因为不需要全节点也可以进行比特币转账，所以全节点只占小部分<h2 id="挖矿三部曲：记录、打包、挂链"><a href="#挖矿三部曲：记录、打包、挂链" class="headerlink" title="挖矿三部曲：记录、打包、挂链"></a>挖矿三部曲：记录、打包、挂链</h2></li>
+<li>后一个区块以前一个区块作为参数，所以挖矿前必须先记录（非常巧妙）</li>
+<li>比特币系统就是一个开源系统<h2 id="比特币与区块链的关系"><a href="#比特币与区块链的关系" class="headerlink" title="比特币与区块链的关系"></a>比特币与区块链的关系</h2></li>
+<li>区块链是比特币的底层技术，比特币是区块链的第一个应用</li>
+<li>2015年确认了区块链技术的概念，2015是区块链的元年</li>
+<li>区块链并不是新技术，是一系列技术的集成：非对称加密技术、时间戳、共识机制等</li>
+<li>比特币是世界第一条区块链，以太坊是第二代区块链，主要方向是智能合约和DApp(分布式应用程序)</li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E5%8C%BA%E5%9D%97%E9%93%BE/" rel="tag"># 区块链</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2018/07/29/%E5%8C%BA%E5%9D%97%E9%93%BE%E7%AC%94%E8%AE%B0%EF%BC%9A%E5%8C%BA%E5%9D%97%E9%93%BE%E5%AE%B6%E6%97%8F/" rel="prev" title="区块链学习笔记1：区块链家族">
+      <i class="fa fa-chevron-left"></i> 区块链学习笔记1：区块链家族
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2018/07/31/UVA690%E9%A2%98%EF%BC%9A%E6%B5%81%E6%B0%B4%E7%BA%BF%E8%B0%83%E5%BA%A6%EF%BC%88%E4%BD%8D%E8%BF%90%E7%AE%97-DFS%E5%89%AA%E6%9E%9D%EF%BC%89/" rel="next" title="UVA690题：流水线调度（位运算+DFS剪枝）">
+      UVA690题：流水线调度（位运算+DFS剪枝） <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%AF%94%E7%89%B9%E5%B8%81%E5%8F%91%E5%B1%95"><span class="nav-number">1.</span> <span class="nav-text">比特币发展</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%AF%94%E7%89%B9%E5%B8%81%E9%92%B1%E5%8C%85"><span class="nav-number">2.</span> <span class="nav-text">比特币钱包</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%AF%94%E7%89%B9%E5%B8%81%E8%8A%82%E7%82%B9"><span class="nav-number">3.</span> <span class="nav-text">比特币节点</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%8C%96%E7%9F%BF%E4%B8%89%E9%83%A8%E6%9B%B2%EF%BC%9A%E8%AE%B0%E5%BD%95%E3%80%81%E6%89%93%E5%8C%85%E3%80%81%E6%8C%82%E9%93%BE"><span class="nav-number">4.</span> <span class="nav-text">挖矿三部曲：记录、打包、挂链</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%AF%94%E7%89%B9%E5%B8%81%E4%B8%8E%E5%8C%BA%E5%9D%97%E9%93%BE%E7%9A%84%E5%85%B3%E7%B3%BB"><span class="nav-number">5.</span> <span class="nav-text">比特币与区块链的关系</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Lavender"
+      src="/img/Lavender.jpg">
+  <p class="site-author-name" itemprop="name">Lavender</p>
+  <div class="site-description" itemprop="description">再次出发</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">110</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+        <span class="site-state-item-count">18</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+        <span class="site-state-item-count">49</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/Lavender-QAQ" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;Lavender-QAQ" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title">
+      <i class="fa fa-fw fa-link"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="http://ltitan.github.io/" title="http:&#x2F;&#x2F;ltitan.github.io&#x2F;" rel="noopener" target="_blank">飞哥的技术园区</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://heshang.ink/" title="https:&#x2F;&#x2F;heshang.ink&#x2F;" rel="noopener" target="_blank">奎哥的Java课堂</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://kawaii-jump.github.io/" title="https:&#x2F;&#x2F;kawaii-jump.github.io&#x2F;" rel="noopener" target="_blank">涛哥的就业实录</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://49.232.1.238/" title="http:&#x2F;&#x2F;49.232.1.238&#x2F;" rel="noopener" target="_blank">薛老板的攻防战场</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://dumengblog.club/" title="https:&#x2F;&#x2F;dumengblog.club&#x2F;" rel="noopener" target="_blank">Dumeng的知识讲解</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://stephencuhui.github.io/" title="https:&#x2F;&#x2F;stephencuhui.github.io&#x2F;" rel="noopener" target="_blank">徽哥的步步攀升</a>
+        </li>
+    </ul>
+  </div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2017 – 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Lavender</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+</body>
+</html>

@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/img/caffee32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/img/caffee16x16.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":false,"style":"default"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"valine","storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="好不容易建完了博客，当然要发一篇助助兴了，今天就是我拖了两天的倒水问题，对于这道题我也是给上了隐式图的标签，因为这个BFS藏得还是有点深的。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="UVA10603题：倒水问题（隐式图+优先队列BFS）">
+<meta property="og:url" content="http://example.com/2018/07/20/UVA10603%E9%A2%98%EF%BC%9A%E5%80%92%E6%B0%B4%E9%97%AE%E9%A2%98%EF%BC%88%E9%9A%90%E5%BC%8F%E5%9B%BE%EF%BC%89/index.html">
+<meta property="og:site_name" content="In The End">
+<meta property="og:description" content="好不容易建完了博客，当然要发一篇助助兴了，今天就是我拖了两天的倒水问题，对于这道题我也是给上了隐式图的标签，因为这个BFS藏得还是有点深的。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://example.com/img/倒水问题1.jpeg">
+<meta property="og:image" content="http://example.com/img/倒水问题2.jpg">
+<meta property="og:image" content="http://example.com/img/倒水问题3.png">
+<meta property="article:published_time" content="2018-07-19T23:11:50.000Z">
+<meta property="article:modified_time" content="2021-08-05T01:54:35.979Z">
+<meta property="article:author" content="Lavender">
+<meta property="article:tag" content="BFS">
+<meta property="article:tag" content="隐式图">
+<meta property="article:tag" content="优先队列">
+<meta property="article:tag" content="搜索">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/img/倒水问题1.jpeg">
+
+<link rel="canonical" href="http://example.com/2018/07/20/UVA10603%E9%A2%98%EF%BC%9A%E5%80%92%E6%B0%B4%E9%97%AE%E9%A2%98%EF%BC%88%E9%9A%90%E5%BC%8F%E5%9B%BE%EF%BC%89/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>UVA10603题：倒水问题（隐式图+优先队列BFS） | In The End</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">In The End</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">个人博客</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2018/07/20/UVA10603%E9%A2%98%EF%BC%9A%E5%80%92%E6%B0%B4%E9%97%AE%E9%A2%98%EF%BC%88%E9%9A%90%E5%BC%8F%E5%9B%BE%EF%BC%89/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/img/Lavender.jpg">
+      <meta itemprop="name" content="Lavender">
+      <meta itemprop="description" content="再次出发">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="In The End">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          UVA10603题：倒水问题（隐式图+优先队列BFS）
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2018-07-19 23:11:50" itemprop="dateCreated datePublished" datetime="2018-07-19T23:11:50Z">2018-07-19</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2021-08-05 01:54:35" itemprop="dateModified" datetime="2021-08-05T01:54:35Z">2021-08-05</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/ACM/" itemprop="url" rel="index"><span itemprop="name">ACM</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/ACM/UVA/" itemprop="url" rel="index"><span itemprop="name">UVA</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>好不容易建完了博客，当然要发一篇助助兴了，今天就是我拖了两天的倒水问题，对于这道题我也是给上了隐式图的标签，因为这个BFS藏得还是有点深的。</p>
+<span id="more"></span>
+<p><img src="/img/倒水问题1.jpeg" alt=""></p>
+<p>我相信很多人小时候都玩过智力测试题吧，有这么一道题，讲的是有三个杯子a,b,c,通过来回倒水使得我们可以得到一个杯子里正好有d毫升的水。所以呢，今天这道题就是这个问题的拓展，这个问题是这样的：</p>
+<p>输入a，b，c，d四个数字，同样的也是三个杯子a，b，c。一开始，a杯子和b杯子都是空的，而c杯子则是满的，我们一次只能选择两个杯子（例如c杯子往a杯子中倒水），倒水的规则是，要么出水的那个杯子空了则停止，要么接水的杯子满了停止，其他情况都不在规则内。不停地在这三个杯子中作操作，使得最终有一个杯子到达了d的水量。同时，题目给出了难点：当任何情况都满足不了d水量时，我们去找离d最近的小于d的水量，将其作为答案。而且，题目要求输出的最优解不是倒水的步数最少，而是倒水的水量最少（这个大家可以自己思考一下，参考刘汝佳老师给的例子：1 12 15 7，步数最少并不等于移动水量最少）</p>
+<p>所以这道题我们需要枚举状态，我们可以将a杯子的水变成一个维度，再讲b杯子的水变成一个维度，将状态转化为二维数组（当然这是为了剪枝，记录是否访问过，在具体枚举的时候得存储结构体），由于总水量已经确定不变（他又不能把水倒掉），所以我们无需再添加第三个维度。</p>
+<p>剪枝的问题已经解决了，接下来我们来解决一下如何计算最小水量的问题，众所周知BFS是一个靠步数（就是距离）所决定先后访问次序的算法，那么这道题我们既然不要求步数，而是要求了水量，我们如何建立一种先后机制来使程序先访问移动水量少的节点来完成找到答案呢？</p>
+<p><img src="/img/倒水问题2.jpg" alt=""></p>
+<p>没错，就是上图中的优先队列（priority_queue），不过，这次优先队列不再是大的先出队，反而是小的先出队，所以我们需要在结构体中重载它使得它以移动的水量water来排序。这样我们就可以轻松地为BFS建立革命性的“规矩”使得BFS改头换面般地完美运用于这道题中。</p>
+<p>那么我们来解决最后一个问题，如何当答案不存在时能找到最近的小于d的答案来代替呢？我们这里可以用一种很容易想到的又很巧妙的方法来解决，我们新建一个从0到最大水量的所有情况的一维数组，只要出现了一种水位我们就把它对应的数组值改为该水位状态下的移动水量，所以当我们找不到正确答案时，我们只需要从d不断减1，知道我们找到被访问过的位置，那就是近似的答案。</p>
+<p><img src="/img/倒水问题3.png" alt=""></p>
+<p>以下为AC代码（紧跟刘老师的步伐）：<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;algorithm&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;cstring&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;queue&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> std;</span><br><span class="line"><span class="keyword">const</span> <span class="keyword">int</span> maxn=<span class="number">210</span>;</span><br><span class="line"><span class="keyword">int</span> ans[maxn],vis[maxn][maxn],cap[<span class="number">3</span>];<span class="comment">//我们只需二维的vis数组即可确定状态，因为水的总量已经确定了</span></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">Node</span>&#123;</span></span><br><span class="line">    <span class="keyword">int</span> v[<span class="number">3</span>],water;<span class="comment">//每一个状态节点记录每一个杯中水的数量以及到现在所倒的水量</span></span><br><span class="line">    <span class="keyword">bool</span> <span class="keyword">operator</span> &lt; (<span class="keyword">const</span> Node&amp; A) <span class="keyword">const</span>&#123;<span class="comment">//由于优先队列从大到小，所以我们重载成从小到大，更直观</span></span><br><span class="line">        <span class="keyword">return</span> water&gt;A.water;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="built_in">Node</span>(<span class="keyword">int</span> c)&#123;</span><br><span class="line">        <span class="keyword">this</span>-&gt;v[<span class="number">2</span>]=c;</span><br><span class="line">        <span class="keyword">this</span>-&gt;v[<span class="number">0</span>]=<span class="number">0</span>;</span><br><span class="line">        <span class="keyword">this</span>-&gt;v[<span class="number">1</span>]=<span class="number">0</span>;</span><br><span class="line">        <span class="keyword">this</span>-&gt;water=<span class="number">0</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="built_in">Node</span>()&#123;&#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">update</span><span class="params">(<span class="keyword">const</span> Node&amp; node)</span></span>&#123;<span class="comment">//更新ans数组，为求近似值用</span></span><br><span class="line">    <span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;<span class="number">3</span>;i++)&#123;</span><br><span class="line">        <span class="keyword">int</span> d=node.v[i];<span class="comment">//这时候不需要再分A，B，C杯子了，只要记录杯中水的数量即可</span></span><br><span class="line">        <span class="keyword">if</span>(ans[d]&lt;<span class="number">0</span>||ans[d]&gt;node.water)<span class="comment">//因为题目中并没有指定必须哪个杯子输出答案</span></span><br><span class="line">            ans[d]=node.water;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">bfs</span><span class="params">(<span class="keyword">int</span> a,<span class="keyword">int</span> b,<span class="keyword">int</span> c,<span class="keyword">int</span> d)</span></span>&#123;</span><br><span class="line">    <span class="built_in">memset</span>(vis,<span class="number">0</span>, <span class="built_in"><span class="keyword">sizeof</span></span>(vis));</span><br><span class="line">    <span class="built_in">memset</span>(ans,<span class="number">-1</span>,<span class="built_in"><span class="keyword">sizeof</span></span>(ans));<span class="comment">//ans 不能初始化为0，因为可能有不用倒水的情况（题目中明确说明）</span></span><br><span class="line">    priority_queue&lt;Node&gt; que;<span class="comment">//使用优先队列</span></span><br><span class="line">    cap[<span class="number">0</span>]=a,cap[<span class="number">1</span>]=b,cap[<span class="number">2</span>]=c;<span class="comment">//为什么使用数组呢，因为后面的i和j</span></span><br><span class="line">    <span class="function">Node <span class="title">start</span><span class="params">(c)</span></span>;</span><br><span class="line">    que.<span class="built_in">push</span>(start);</span><br><span class="line">    vis[<span class="number">0</span>][<span class="number">0</span>]=<span class="number">1</span>;<span class="comment">//不要忘记起始状态</span></span><br><span class="line">    <span class="keyword">while</span>(!que.<span class="built_in">empty</span>())&#123;</span><br><span class="line">         Node u=que.<span class="built_in">top</span>();</span><br><span class="line">         que.<span class="built_in">pop</span>();</span><br><span class="line">         <span class="built_in">update</span>(u);</span><br><span class="line">         <span class="keyword">if</span>(ans[d]&gt;=<span class="number">0</span>)<span class="comment">//正统的出口（就是存在标准答案）</span></span><br><span class="line">             <span class="keyword">break</span>;</span><br><span class="line">         <span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;<span class="number">3</span>;i++)&#123;</span><br><span class="line">             <span class="keyword">for</span>(<span class="keyword">int</span> j=<span class="number">0</span>;j&lt;<span class="number">3</span>;j++)&#123;</span><br><span class="line">                 <span class="keyword">if</span>(i!=j)&#123;</span><br><span class="line">                     <span class="keyword">if</span>(u.v[i]==<span class="number">0</span>||u.v[j]==cap[j])<span class="comment">//每次枚举都是单向的，所以当v[i]为空时退出</span></span><br><span class="line">                         <span class="keyword">continue</span>;</span><br><span class="line">                     <span class="keyword">int</span> move=<span class="built_in">min</span>(cap[j],u.v[i]+u.v[j])-u.v[j];<span class="comment">//算出倒的水量</span></span><br><span class="line">                     Node u2;</span><br><span class="line">                     <span class="built_in">memcpy</span>(&amp;u2,&amp;u, <span class="built_in"><span class="keyword">sizeof</span></span>(u));<span class="comment">//直接内存拷贝效率更高</span></span><br><span class="line">                     u2.v[i]-=move,u2.v[j]+=move;<span class="comment">//改变杯中水量</span></span><br><span class="line">                     <span class="keyword">if</span>(!vis[u2.v[<span class="number">0</span>]][u2.v[<span class="number">1</span>]]) &#123;</span><br><span class="line">                         u2.water+=move;<span class="comment">//移动的水量增加</span></span><br><span class="line">                         vis[u2.v[<span class="number">0</span>]][u2.v[<span class="number">1</span>]]=<span class="number">1</span>;</span><br><span class="line">                         que.<span class="built_in">push</span>(u2);</span><br><span class="line">                     &#125;</span><br><span class="line">                 &#125;</span><br><span class="line">             &#125;</span><br><span class="line">         &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">while</span>(<span class="literal">true</span>)&#123;</span><br><span class="line">        <span class="keyword">if</span>(ans[d]&gt;=<span class="number">0</span>) &#123;</span><br><span class="line">            cout &lt;&lt; ans[d] &lt;&lt; <span class="string">&#x27; &#x27;</span> &lt;&lt; d &lt;&lt; endl;</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        d--;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span>&#123;</span><br><span class="line">    ios::<span class="built_in">sync_with_stdio</span>(<span class="literal">false</span>);</span><br><span class="line">    cin.<span class="built_in">tie</span>(<span class="number">0</span>);</span><br><span class="line">    <span class="keyword">int</span> T;</span><br><span class="line">    <span class="keyword">while</span>(cin&gt;&gt;T)&#123;</span><br><span class="line">        <span class="keyword">while</span>(T--)&#123;</span><br><span class="line">            <span class="keyword">int</span> a,b,c,d;</span><br><span class="line">            cin&gt;&gt;a&gt;&gt;b&gt;&gt;c&gt;&gt;d;</span><br><span class="line">            <span class="built_in">bfs</span>(a,b,c,d);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>日更啦日更啦，明天还有一道路径寻找题，然后攻占IDA*！！</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/BFS/" rel="tag"># BFS</a>
+              <a href="/tags/%E9%9A%90%E5%BC%8F%E5%9B%BE/" rel="tag"># 隐式图</a>
+              <a href="/tags/%E4%BC%98%E5%85%88%E9%98%9F%E5%88%97/" rel="tag"># 优先队列</a>
+              <a href="/tags/%E6%90%9C%E7%B4%A2/" rel="tag"># 搜索</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2018/07/18/%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A22-0%E4%B8%8A%E7%BA%BF%E4%BA%86/" rel="prev" title="个人博客2.0上线了">
+      <i class="fa fa-chevron-left"></i> 个人博客2.0上线了
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2018/07/21/UVA1601%E9%A2%98%EF%BC%9A%E5%90%8C%E6%AD%A5%E6%8E%A8%E7%AE%B1%E5%AD%90%E9%97%AE%E9%A2%98%EF%BC%88%E5%8F%8C%E5%90%91BFS%EF%BC%89/" rel="next" title="UVA1601题：同步推箱子问题（双向BFS）">
+      UVA1601题：同步推箱子问题（双向BFS） <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Lavender"
+      src="/img/Lavender.jpg">
+  <p class="site-author-name" itemprop="name">Lavender</p>
+  <div class="site-description" itemprop="description">再次出发</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">110</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+        <span class="site-state-item-count">18</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+        <span class="site-state-item-count">49</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/Lavender-QAQ" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;Lavender-QAQ" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title">
+      <i class="fa fa-fw fa-link"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="http://ltitan.github.io/" title="http:&#x2F;&#x2F;ltitan.github.io&#x2F;" rel="noopener" target="_blank">飞哥的技术园区</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://heshang.ink/" title="https:&#x2F;&#x2F;heshang.ink&#x2F;" rel="noopener" target="_blank">奎哥的Java课堂</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://kawaii-jump.github.io/" title="https:&#x2F;&#x2F;kawaii-jump.github.io&#x2F;" rel="noopener" target="_blank">涛哥的就业实录</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://49.232.1.238/" title="http:&#x2F;&#x2F;49.232.1.238&#x2F;" rel="noopener" target="_blank">薛老板的攻防战场</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://dumengblog.club/" title="https:&#x2F;&#x2F;dumengblog.club&#x2F;" rel="noopener" target="_blank">Dumeng的知识讲解</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://stephencuhui.github.io/" title="https:&#x2F;&#x2F;stephencuhui.github.io&#x2F;" rel="noopener" target="_blank">徽哥的步步攀升</a>
+        </li>
+    </ul>
+  </div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2017 – 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Lavender</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+</body>
+</html>

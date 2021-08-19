@@ -1,0 +1,580 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/img/caffee32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/img/caffee16x16.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":false,"style":"default"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"valine","storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="周赛传送门https:&#x2F;&#x2F;leetcode-cn.com&#x2F;contest&#x2F;weekly-contest-253&#x2F; 俗话说：好汉不复当年勇，upper_bound玩不懂……咳咳咳。停了一年半的算法竞赛训练，明显感觉到自己的思路和代码能力退化了很多（果然考研会下降编程能力2333）。今天是复出（bushi）的第一（二）把Leetcode周赛，上周的周赛由于实在是太拉被我从记忆中删除了。话说现在力扣的神">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Leetcode周赛第253场题解">
+<meta property="og:url" content="http://example.com/2021/08/09/Leetcode%E5%91%A8%E8%B5%9B%E7%AC%AC253%E5%9C%BA%E9%A2%98%E8%A7%A3/index.html">
+<meta property="og:site_name" content="In The End">
+<meta property="og:description" content="周赛传送门https:&#x2F;&#x2F;leetcode-cn.com&#x2F;contest&#x2F;weekly-contest-253&#x2F; 俗话说：好汉不复当年勇，upper_bound玩不懂……咳咳咳。停了一年半的算法竞赛训练，明显感觉到自己的思路和代码能力退化了很多（果然考研会下降编程能力2333）。今天是复出（bushi）的第一（二）把Leetcode周赛，上周的周赛由于实在是太拉被我从记忆中删除了。话说现在力扣的神">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://example.com/img/Leetcode周赛第253场题解1.png">
+<meta property="og:image" content="http://example.com/img/Leetcode周赛第253场题解2.png">
+<meta property="og:image" content="http://example.com/img/Leetcode周赛第253场题解3.png">
+<meta property="og:image" content="http://example.com/img/Leetcode周赛第253场题解4.png">
+<meta property="og:image" content="http://example.com/img/Leetcode周赛第253场题解5.png">
+<meta property="og:image" content="http://example.com/img/Leetcode周赛第253场题解6.png">
+<meta property="og:image" content="http://example.com/img/Leetcode周赛第253场题解7.png">
+<meta property="article:published_time" content="2021-08-08T17:05:49.000Z">
+<meta property="article:modified_time" content="2021-08-08T11:47:57.830Z">
+<meta property="article:author" content="Lavender">
+<meta property="article:tag" content="算法">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/img/Leetcode周赛第253场题解1.png">
+
+<link rel="canonical" href="http://example.com/2021/08/09/Leetcode%E5%91%A8%E8%B5%9B%E7%AC%AC253%E5%9C%BA%E9%A2%98%E8%A7%A3/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>Leetcode周赛第253场题解 | In The End</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">In The End</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">个人博客</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2021/08/09/Leetcode%E5%91%A8%E8%B5%9B%E7%AC%AC253%E5%9C%BA%E9%A2%98%E8%A7%A3/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/img/Lavender.jpg">
+      <meta itemprop="name" content="Lavender">
+      <meta itemprop="description" content="再次出发">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="In The End">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Leetcode周赛第253场题解
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2021-08-08 17:05:49 / 修改时间：11:47:57" itemprop="dateCreated datePublished" datetime="2021-08-08T17:05:49Z">2021-08-08</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/ACM/" itemprop="url" rel="index"><span itemprop="name">ACM</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/ACM/Leetcode/" itemprop="url" rel="index"><span itemprop="name">Leetcode</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="周赛传送门"><a href="#周赛传送门" class="headerlink" title="周赛传送门"></a>周赛传送门</h1><p><a target="_blank" rel="noopener" href="https://leetcode-cn.com/contest/weekly-contest-253/">https://leetcode-cn.com/contest/weekly-contest-253/</a></p>
+<p>俗话说：好汉不复当年勇，upper_bound玩不懂……咳咳咳。停了一年半的算法竞赛训练，明显感觉到自己的思路和代码能力退化了很多（果然考研会下降编程能力2333）。今天是复出（bushi）的第一（二）把Leetcode周赛，上周的周赛由于实在是太拉被我从记忆中删除了。话说现在力扣的神速哥真是越来越多了，他们AK的速度我怕是题目都读不完……</p>
+<p>总结来讲今天的前两题都比较签到，第三题有一定的思考量，第四题是比较模板的一道题（虽然我菜到玩不明白upper_bound）。废话少说，进入题解！</p>
+<span id="more"></span>
+<h1 id="5838-检查字符串是否为数组前缀"><a href="#5838-检查字符串是否为数组前缀" class="headerlink" title="5838. 检查字符串是否为数组前缀"></a>5838. 检查字符串是否为数组前缀</h1><h2 id="题目"><a href="#题目" class="headerlink" title="题目"></a>题目</h2><p>给你一个字符串 s 和一个字符串数组 words ，请你判断 s 是否为 words 的 前缀字符串 。</p>
+<p>字符串 s 要成为 words 的 前缀字符串 ，需要满足：s 可以由 words 中的前 k（k 为 正数 ）个字符串按顺序相连得到，且 k 不超过 words.length 。</p>
+<p>如果 s 是 words 的 前缀字符串 ，返回 true ；否则，返回 false 。</p>
+<p>示例 1：</p>
+<figure class="highlight nix"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">输入：<span class="attr">s</span> = <span class="string">&quot;iloveleetcode&quot;</span>, <span class="attr">words</span> = [<span class="string">&quot;i&quot;</span>,<span class="string">&quot;love&quot;</span>,<span class="string">&quot;leetcode&quot;</span>,<span class="string">&quot;apples&quot;</span>]</span><br><span class="line">输出：<span class="literal">true</span></span><br><span class="line">解释：</span><br><span class="line">s 可以由 <span class="string">&quot;i&quot;</span>、<span class="string">&quot;love&quot;</span> 和 <span class="string">&quot;leetcode&quot;</span> 相连得到。</span><br></pre></td></tr></table></figure>
+<p>示例 2：</p>
+<figure class="highlight nix"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">输入：<span class="attr">s</span> = <span class="string">&quot;iloveleetcode&quot;</span>, <span class="attr">words</span> = [<span class="string">&quot;apples&quot;</span>,<span class="string">&quot;i&quot;</span>,<span class="string">&quot;love&quot;</span>,<span class="string">&quot;leetcode&quot;</span>]</span><br><span class="line">输出：<span class="literal">false</span></span><br><span class="line">解释：</span><br><span class="line">数组的前缀相连无法得到 s 。</span><br></pre></td></tr></table></figure>
+<p>提示：</p>
+<p>1 &lt;= words.length &lt;= 100<br>1 &lt;= words[i].length &lt;= 20<br>1 &lt;= s.length &lt;= 1000<br>words[i] 和 s 仅由小写英文字母组成</p>
+<h2 id="题解"><a href="#题解" class="headerlink" title="题解"></a>题解</h2><p>这道题非常签到了，在字符串s数组上设置一个指针i，然后用words里每个word去匹配（用substr就很省事）。如果在遍历words过程中i能走到s的末尾就说明匹配上了，返回true；如果结束遍历了i还在字符串中间的位置，那么就匹配不上返回false。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span> &#123;</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="keyword">bool</span> <span class="title">isPrefixString</span><span class="params">(string s, vector&lt;string&gt;&amp; words)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">int</span> i=<span class="number">0</span>;</span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">auto</span>&amp; word:words)&#123;</span><br><span class="line">            <span class="keyword">if</span>(s.<span class="built_in">substr</span>(i,word.<span class="built_in">length</span>())==word) i+=word.<span class="built_in">length</span>();</span><br><span class="line">            <span class="keyword">else</span> <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">            <span class="keyword">if</span>(i&gt;=s.<span class="built_in">length</span>()) <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<h1 id="5839-移除石子使总数最小"><a href="#5839-移除石子使总数最小" class="headerlink" title="5839. 移除石子使总数最小"></a>5839. 移除石子使总数最小</h1><h2 id="题目-1"><a href="#题目-1" class="headerlink" title="题目"></a>题目</h2><p>给你一个整数数组 piles ，数组 下标从 0 开始 ，其中 piles[i] 表示第 i 堆石子中的石子数量。另给你一个整数 k ，请你执行下述操作 恰好 k 次：</p>
+<p>选出任一石子堆 piles[i] ，并从中 移除 floor(piles[i] / 2) 颗石子。<br>注意：你可以对 同一堆 石子多次执行此操作。</p>
+<p>返回执行 k 次操作后，剩下石子的 最小 总数。</p>
+<p>floor(x) 为 小于 或 等于 x 的 最大 整数。（即，对 x 向下取整）。</p>
+<p>示例 1：</p>
+<figure class="highlight inform7"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">输入：piles = <span class="comment">[5,4,9]</span>, k = 2</span><br><span class="line">输出：12</span><br><span class="line">解释：可能的执行情景如下：</span><br><span class="line"></span><br><span class="line">- 对第 2 堆石子执行移除操作，石子分布情况变成 <span class="comment">[5,4,5]</span> 。</span><br><span class="line">- 对第 0 堆石子执行移除操作，石子分布情况变成 <span class="comment">[3,4,5]</span> 。</span><br><span class="line">  剩下石子的总数为 12 。</span><br></pre></td></tr></table></figure>
+<p>示例 2：</p>
+<figure class="highlight dns"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">输入：piles = [<span class="number">4,3,6,7</span>], k = <span class="number">3</span></span><br><span class="line">输出：<span class="number">12</span></span><br><span class="line">解释：可能的执行情景如下：</span><br><span class="line"></span><br><span class="line">- 对第 <span class="number">2</span> 堆石子执行移除操作，石子分布情况变成 [<span class="number">4,3,3,7</span>] 。</span><br><span class="line">- 对第 <span class="number">3</span> 堆石子执行移除操作，石子分布情况变成 [<span class="number">4,3,3,4</span>] 。</span><br><span class="line">- 对第 <span class="number">0</span> 堆石子执行移除操作，石子分布情况变成 [<span class="number">2,3,3,4</span>] 。</span><br><span class="line">  剩下石子的总数为 <span class="number">12</span> 。</span><br></pre></td></tr></table></figure>
+<p>提示：</p>
+<p>1 &lt;= piles.length &lt;= 10^5<br>1 &lt;= piles[i] &lt;= 10^4<br>1 &lt;= k &lt;= 10^5</p>
+<h2 id="题解-1"><a href="#题解-1" class="headerlink" title="题解"></a>题解</h2><p>贪心即可，要想剩下的石子最少，那么就是拿走的石子最多。怎么拿走的石子最多呢，必然是每次拿最大堆的石头了，所以直接优先队列保证每次能拿最大就可以。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span> &#123;</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    priority_queue&lt;<span class="keyword">int</span>&gt; que;</span><br><span class="line">    <span class="function"><span class="keyword">int</span> <span class="title">minStoneSum</span><span class="params">(vector&lt;<span class="keyword">int</span>&gt;&amp; p, <span class="keyword">int</span> k)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">auto</span>&amp; x:p) que.<span class="built_in">push</span>(x);</span><br><span class="line">        <span class="keyword">while</span>(k--)&#123;</span><br><span class="line">            <span class="keyword">int</span> x=que.<span class="built_in">top</span>();que.<span class="built_in">pop</span>();</span><br><span class="line">            que.<span class="built_in">push</span>(x-<span class="built_in">floor</span>((<span class="keyword">float</span>)x/<span class="number">2</span>));</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">int</span> sum=<span class="number">0</span>;</span><br><span class="line">        <span class="keyword">while</span>(!que.<span class="built_in">empty</span>())&#123;</span><br><span class="line">            sum+=que.<span class="built_in">top</span>();</span><br><span class="line">            que.<span class="built_in">pop</span>();</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> sum;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<h1 id="5840-使字符串平衡的最小交换次数"><a href="#5840-使字符串平衡的最小交换次数" class="headerlink" title="5840. 使字符串平衡的最小交换次数"></a>5840. 使字符串平衡的最小交换次数</h1><h2 id="题目-2"><a href="#题目-2" class="headerlink" title="题目"></a>题目</h2><p>给你一个字符串 s ，下标从 0 开始 ，且长度为偶数 n 。字符串 恰好 由 n / 2 个开括号 ‘[‘ 和 n / 2 个闭括号 ‘]’ 组成。</p>
+<p>只有能满足下述所有条件的字符串才能称为 平衡字符串 ：</p>
+<p>字符串是一个空字符串，或者<br>字符串可以记作 AB ，其中 A 和 B 都是 平衡字符串 ，或者<br>字符串可以写成 [C] ，其中 C 是一个 平衡字符串 。<br>你可以交换 任意 两个下标所对应的括号 任意 次数。</p>
+<p>返回使 s 变成 平衡字符串 所需要的 最小 交换次数。</p>
+<p>示例 1：</p>
+<figure class="highlight nix"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">输入：<span class="attr">s</span> = <span class="string">&quot;][][&quot;</span></span><br><span class="line">输出：<span class="number">1</span></span><br><span class="line">解释：交换下标 <span class="number">0</span> 和下标 <span class="number">3</span> 对应的括号，可以使字符串变成平衡字符串。</span><br><span class="line">最终字符串变成 <span class="string">&quot;[[]]&quot;</span> 。</span><br></pre></td></tr></table></figure>
+<p>示例 2：</p>
+<figure class="highlight nix"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">输入：<span class="attr">s</span> = <span class="string">&quot;]]][[[&quot;</span></span><br><span class="line">输出：<span class="number">2</span></span><br><span class="line">解释：执行下述操作可以使字符串变成平衡字符串：</span><br><span class="line">- 交换下标 <span class="number">0</span> 和下标 <span class="number">4</span> 对应的括号，<span class="attr">s</span> = <span class="string">&quot;[]][[]&quot;</span> 。</span><br><span class="line">- 交换下标 <span class="number">1</span> 和下标 <span class="number">5</span> 对应的括号，<span class="attr">s</span> = <span class="string">&quot;[[][]]&quot;</span> 。</span><br><span class="line">最终字符串变成 <span class="string">&quot;[[][]]&quot;</span> 。</span><br></pre></td></tr></table></figure>
+<p>示例 3：</p>
+<figure class="highlight nix"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">输入：<span class="attr">s</span> = <span class="string">&quot;[]&quot;</span></span><br><span class="line">输出：<span class="number">0</span></span><br><span class="line">解释：这个字符串已经是平衡字符串。</span><br></pre></td></tr></table></figure>
+<p>提示：</p>
+<p>n == s.length<br>2 &lt;= n &lt;= 10^6<br>n 为偶数<br>s[i] 为’[‘ 或 ‘]’<br>开括号 ‘[‘ 的数目为 n / 2 ，闭括号 ‘]’ 的数目也是 n / 2</p>
+<h2 id="题解-2"><a href="#题解-2" class="headerlink" title="题解"></a>题解</h2><p>首先这道题非常不错，我回忆起了古早时期我学过的关于匹配问题的一些知识。</p>
+<p>对于括号匹配这种类似的问题，如果想成为合法的匹配序列，需要满足两个条件，在这之前我们先将[转换为数字-1，将]转换为数字1，这样我们就可以将括号转化为数组。</p>
+<p>那么为什么要转化成数组的？因为这样就可以方便求前缀和数组了，并且前缀和数组才是最终目的，因为我们可以很轻易地从前缀和数组中发现序列是否合法匹配了。</p>
+<p><img src="/img/Leetcode周赛第253场题解1.png" alt=""></p>
+<p>前缀和数组几乎是处理这种匹配问题的神器，因为可以立刻看出每个位置的匹配情况：</p>
+<p><img src="/img/Leetcode周赛第253场题解2.png" alt=""></p>
+<p><strong>重要概念</strong>：对于一个正确匹配的括号序列的前缀和数组，应该满足两个条件：</p>
+<ul>
+<li>不能出现大于0的元素（因为大于0说明当前位置有个右括号没匹配）</li>
+<li>最后一个元素的值必须是0（说明序列没有多出没被右括号匹配的左括号）</li>
+</ul>
+<p>这道题的话我们可以确保最后一个元素一定是0，因为题目说了字符串 恰好 由 n / 2 个开括号 ‘[‘ 和 n / 2 个闭括号 ‘]’ 组成。那我们只需要考虑怎么通过交换位置满足第一个条件即可。</p>
+<p>那么就将交换放到前缀和数组场景下进行思考：</p>
+<p><img src="/img/Leetcode周赛第253场题解3.png" alt=""></p>
+<p>注意看红蓝大法！</p>
+<p><img src="/img/Leetcode周赛第253场题解4.png" alt=""></p>
+<p>所以可以总结出如果交换a,b的位置，那么就是对前缀和数组[a,b)的元素进行-2操作，那么再结合前缀和中不能出现大于0的元素，我们就可以得出一个非常简单的结论：只需要找到前缀和数组中最大的那个数，看它能被几次-2操作减到小于等于0，这个次数就是答案了！再简单点，就是找到那个最大的元素除2向上取整！</p>
+<p>当然，如果前缀和中没有大于0的元素，直接返回0，不需要换，已经符合条件了。</p>
+<p>思维过程比较巧妙，代码非常简单：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span> &#123;</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="keyword">int</span> <span class="title">minSwaps</span><span class="params">(string s)</span> </span>&#123;</span><br><span class="line">        vector&lt;<span class="keyword">int</span>&gt; v;</span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">auto</span>&amp; c:s)&#123;</span><br><span class="line">            <span class="keyword">if</span>(c==<span class="string">&#x27;[&#x27;</span>) v.<span class="built_in">push_back</span>(<span class="number">-1</span>);</span><br><span class="line">            <span class="keyword">else</span> v.<span class="built_in">push_back</span>(<span class="number">1</span>);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">1</span>;i&lt;v.<span class="built_in">size</span>();i++) v[i]+=v[i<span class="number">-1</span>];</span><br><span class="line">        <span class="keyword">int</span> mx=<span class="number">-1</span>;</span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">auto</span>&amp; x:v) mx=<span class="built_in">max</span>(mx,x);</span><br><span class="line">        <span class="keyword">if</span>(mx&lt;=<span class="number">0</span>) <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">else</span>&#123;</span><br><span class="line">            mx=<span class="built_in">ceil</span>((<span class="keyword">float</span>)mx/<span class="number">2.0</span>);</span><br><span class="line">            <span class="keyword">return</span> mx;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<h1 id="5841-找出到每个位置为止最长的有效障碍赛跑路线"><a href="#5841-找出到每个位置为止最长的有效障碍赛跑路线" class="headerlink" title="5841. 找出到每个位置为止最长的有效障碍赛跑路线"></a>5841. 找出到每个位置为止最长的有效障碍赛跑路线</h1><h2 id="题目-3"><a href="#题目-3" class="headerlink" title="题目"></a>题目</h2><p>你打算构建一些障碍赛跑路线。给你一个 下标从 0 开始 的整数数组 obstacles ，数组长度为 n ，其中 obstacles[i] 表示第 i 个障碍的高度。</p>
+<p>对于每个介于 0 和 n - 1 之间（包含 0 和 n - 1）的下标  i ，在满足下述条件的前提下，请你找出 obstacles 能构成的最长障碍路线的长度：</p>
+<p>你可以选择下标介于 0 到 i 之间（包含 0 和 i）的任意个障碍。<br>在这条路线中，必须包含第 i 个障碍。<br>你必须按障碍在 obstacles 中的 出现顺序 布置这些障碍。<br>除第一个障碍外，路线中每个障碍的高度都必须和前一个障碍 相同 或者 更高 。<br>返回长度为 n 的答案数组 ans ，其中 ans[i] 是上面所述的下标 i 对应的最长障碍赛跑路线的长度。</p>
+<p>示例 1：</p>
+<figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">输入：obstacles = <span class="selector-attr">[1,2,3,2]</span></span><br><span class="line">输出：<span class="selector-attr">[1,2,3,3]</span></span><br><span class="line">解释：每个位置的最长有效障碍路线是：</span><br><span class="line"></span><br><span class="line">- <span class="selector-tag">i</span> = <span class="number">0</span>: <span class="selector-attr">[1]</span>, <span class="selector-attr">[1]</span> 长度为 <span class="number">1</span></span><br><span class="line">- <span class="selector-tag">i</span> = <span class="number">1</span>: <span class="selector-attr">[1,2]</span>, <span class="selector-attr">[1,2]</span> 长度为 <span class="number">2</span></span><br><span class="line">- <span class="selector-tag">i</span> = <span class="number">2</span>: <span class="selector-attr">[1,2,3]</span>, <span class="selector-attr">[1,2,3]</span> 长度为 <span class="number">3</span></span><br><span class="line">- <span class="selector-tag">i</span> = <span class="number">3</span>: <span class="selector-attr">[1,2,3,2]</span>, <span class="selector-attr">[1,2,2]</span> 长度为 <span class="number">3</span></span><br></pre></td></tr></table></figure>
+<p>示例 2：</p>
+<figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">输入：obstacles = <span class="selector-attr">[2,2,1]</span></span><br><span class="line">输出：<span class="selector-attr">[1,2,1]</span></span><br><span class="line">解释：每个位置的最长有效障碍路线是：</span><br><span class="line"></span><br><span class="line">- <span class="selector-tag">i</span> = <span class="number">0</span>: <span class="selector-attr">[2]</span>, <span class="selector-attr">[2]</span> 长度为 <span class="number">1</span></span><br><span class="line">- <span class="selector-tag">i</span> = <span class="number">1</span>: <span class="selector-attr">[2,2]</span>, <span class="selector-attr">[2,2]</span> 长度为 <span class="number">2</span></span><br><span class="line">- <span class="selector-tag">i</span> = <span class="number">2</span>: <span class="selector-attr">[2,2,1]</span>, <span class="selector-attr">[1]</span> 长度为 <span class="number">1</span></span><br></pre></td></tr></table></figure>
+<p>示例 3：</p>
+<figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">输入：obstacles = <span class="selector-attr">[3,1,5,6,4,2]</span></span><br><span class="line">输出：<span class="selector-attr">[1,1,2,3,2,2]</span></span><br><span class="line">解释：每个位置的最长有效障碍路线是：</span><br><span class="line"></span><br><span class="line">- <span class="selector-tag">i</span> = <span class="number">0</span>: <span class="selector-attr">[3]</span>, <span class="selector-attr">[3]</span> 长度为 <span class="number">1</span></span><br><span class="line">- <span class="selector-tag">i</span> = <span class="number">1</span>: <span class="selector-attr">[3,1]</span>, <span class="selector-attr">[1]</span> 长度为 <span class="number">1</span></span><br><span class="line">- <span class="selector-tag">i</span> = <span class="number">2</span>: <span class="selector-attr">[3,1,5]</span>, <span class="selector-attr">[3,5]</span> 长度为 <span class="number">2</span>, <span class="selector-attr">[1,5]</span> 也是有效的障碍赛跑路线</span><br><span class="line">- <span class="selector-tag">i</span> = <span class="number">3</span>: <span class="selector-attr">[3,1,5,6]</span>, <span class="selector-attr">[3,5,6]</span> 长度为 <span class="number">3</span>, <span class="selector-attr">[1,5,6]</span> 也是有效的障碍赛跑路线</span><br><span class="line">- <span class="selector-tag">i</span> = <span class="number">4</span>: <span class="selector-attr">[3,1,5,6,4]</span>, <span class="selector-attr">[3,4]</span> 长度为 <span class="number">2</span>, <span class="selector-attr">[1,4]</span> 也是有效的障碍赛跑路线</span><br><span class="line">- <span class="selector-tag">i</span> = <span class="number">5</span>: <span class="selector-attr">[3,1,5,6,4,2]</span>, <span class="selector-attr">[1,2]</span> 长度为 <span class="number">2</span></span><br></pre></td></tr></table></figure>
+<p>提示：</p>
+<p>n == obstacles.length<br>1 &lt;= n &lt;= 10^5<br>1 &lt;= obstacles[i] &lt;= 10^7</p>
+<h2 id="题解-3"><a href="#题解-3" class="headerlink" title="题解"></a>题解</h2><p>首先这是一道模板题，考察点就是最长上升子序列，一开始写了纯动态规划的算法超时了，先贴一下这个超时的$O(n^2)$的算法：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span> &#123;</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function">vector&lt;<span class="keyword">int</span>&gt; <span class="title">longestObstacleCourseAtEachPosition</span><span class="params">(vector&lt;<span class="keyword">int</span>&gt;&amp; a)</span> </span>&#123;</span><br><span class="line">        <span class="function">vector&lt;<span class="keyword">int</span>&gt; <span class="title">dp</span><span class="params">(a.size(),<span class="number">0</span>)</span></span>;</span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;a.<span class="built_in">size</span>();i++)&#123;</span><br><span class="line">            dp[i]=<span class="number">1</span>;</span><br><span class="line">            <span class="keyword">for</span>(<span class="keyword">int</span> j=<span class="number">0</span>;j&lt;i;j++)</span><br><span class="line">                <span class="keyword">if</span>(a[j]&lt;=a[i])</span><br><span class="line">                    dp[i]=<span class="built_in">max</span>(dp[i],dp[j]+<span class="number">1</span>);</span><br><span class="line">        &#125;  </span><br><span class="line">        <span class="keyword">return</span> dp;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>当然这个其实比较暴力的，所以超时了……</p>
+<p>那么其实这道题是得优化到$O(nlogn)$的复杂度的，考虑下面的问题</p>
+<p><img src="/img/Leetcode周赛第253场题解5.png" alt=""></p>
+<p>然后进一步抽象这个问题：</p>
+<p><img src="/img/Leetcode周赛第253场题解6.png" alt=""></p>
+<p>我们维护一个单调不减的序列作为，当有新元素加入时就将第一个比它的元素取而代之，可以简单拿一个例子证明一下为什么：</p>
+<p><img src="/img/Leetcode周赛第253场题解7.png" alt=""></p>
+<p>那么这样就可以证明新元素加入时第一个比它大的元素就可以下岗了。</p>
+<p>这样，通过维护一个单调不减序列，就可以找到每个位置的单调不减序列长度了。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span> &#123;</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function">vector&lt;<span class="keyword">int</span>&gt; <span class="title">longestObstacleCourseAtEachPosition</span><span class="params">(vector&lt;<span class="keyword">int</span>&gt;&amp; a)</span> </span>&#123;</span><br><span class="line">        <span class="function">vector&lt;<span class="keyword">int</span>&gt; <span class="title">dp</span><span class="params">(a.size(),<span class="number">0</span>)</span></span>;</span><br><span class="line">        vector&lt;<span class="keyword">int</span>&gt; v;</span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;a.<span class="built_in">size</span>();i++)&#123;</span><br><span class="line">            <span class="keyword">if</span>(v.<span class="built_in">size</span>()==<span class="number">0</span>||v.<span class="built_in">back</span>()&lt;=a[i]) v.<span class="built_in">push_back</span>(a[i]),dp[i]=v.<span class="built_in">size</span>();</span><br><span class="line">            <span class="keyword">else</span>&#123;</span><br><span class="line">                <span class="keyword">auto</span> it=<span class="built_in">upper_bound</span>(v.<span class="built_in">begin</span>(),v.<span class="built_in">end</span>(),a[i]);</span><br><span class="line">                dp[i]=(<span class="keyword">int</span>)(it-v.<span class="built_in">begin</span>()+<span class="number">1</span>);</span><br><span class="line">                v[dp[i]<span class="number">-1</span>]=a[i];</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;  </span><br><span class="line">        <span class="keyword">return</span> dp;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2021/08/06/%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A23-0%EF%BC%9A%E9%87%8D%E6%96%B0%E5%87%BA%E5%8F%91%EF%BC%81/" rel="prev" title="个人博客3.0：重新出发！">
+      <i class="fa fa-chevron-left"></i> 个人博客3.0：重新出发！
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2021/08/19/Leetcode%E5%91%A8%E8%B5%9B%E7%AC%AC254%E5%9C%BA%E9%A2%98%E8%A7%A3/" rel="next" title="Leetcode周赛第254场题解">
+      Leetcode周赛第254场题解 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%91%A8%E8%B5%9B%E4%BC%A0%E9%80%81%E9%97%A8"><span class="nav-number">1.</span> <span class="nav-text">周赛传送门</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#5838-%E6%A3%80%E6%9F%A5%E5%AD%97%E7%AC%A6%E4%B8%B2%E6%98%AF%E5%90%A6%E4%B8%BA%E6%95%B0%E7%BB%84%E5%89%8D%E7%BC%80"><span class="nav-number">2.</span> <span class="nav-text">5838. 检查字符串是否为数组前缀</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%A2%98%E7%9B%AE"><span class="nav-number">2.1.</span> <span class="nav-text">题目</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%A2%98%E8%A7%A3"><span class="nav-number">2.2.</span> <span class="nav-text">题解</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#5839-%E7%A7%BB%E9%99%A4%E7%9F%B3%E5%AD%90%E4%BD%BF%E6%80%BB%E6%95%B0%E6%9C%80%E5%B0%8F"><span class="nav-number">3.</span> <span class="nav-text">5839. 移除石子使总数最小</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%A2%98%E7%9B%AE-1"><span class="nav-number">3.1.</span> <span class="nav-text">题目</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%A2%98%E8%A7%A3-1"><span class="nav-number">3.2.</span> <span class="nav-text">题解</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#5840-%E4%BD%BF%E5%AD%97%E7%AC%A6%E4%B8%B2%E5%B9%B3%E8%A1%A1%E7%9A%84%E6%9C%80%E5%B0%8F%E4%BA%A4%E6%8D%A2%E6%AC%A1%E6%95%B0"><span class="nav-number">4.</span> <span class="nav-text">5840. 使字符串平衡的最小交换次数</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%A2%98%E7%9B%AE-2"><span class="nav-number">4.1.</span> <span class="nav-text">题目</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%A2%98%E8%A7%A3-2"><span class="nav-number">4.2.</span> <span class="nav-text">题解</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#5841-%E6%89%BE%E5%87%BA%E5%88%B0%E6%AF%8F%E4%B8%AA%E4%BD%8D%E7%BD%AE%E4%B8%BA%E6%AD%A2%E6%9C%80%E9%95%BF%E7%9A%84%E6%9C%89%E6%95%88%E9%9A%9C%E7%A2%8D%E8%B5%9B%E8%B7%91%E8%B7%AF%E7%BA%BF"><span class="nav-number">5.</span> <span class="nav-text">5841. 找出到每个位置为止最长的有效障碍赛跑路线</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%A2%98%E7%9B%AE-3"><span class="nav-number">5.1.</span> <span class="nav-text">题目</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%A2%98%E8%A7%A3-3"><span class="nav-number">5.2.</span> <span class="nav-text">题解</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Lavender"
+      src="/img/Lavender.jpg">
+  <p class="site-author-name" itemprop="name">Lavender</p>
+  <div class="site-description" itemprop="description">再次出发</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">110</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+        <span class="site-state-item-count">18</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+        <span class="site-state-item-count">49</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/Lavender-QAQ" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;Lavender-QAQ" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title">
+      <i class="fa fa-fw fa-link"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="http://ltitan.github.io/" title="http:&#x2F;&#x2F;ltitan.github.io&#x2F;" rel="noopener" target="_blank">飞哥的技术园区</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://heshang.ink/" title="https:&#x2F;&#x2F;heshang.ink&#x2F;" rel="noopener" target="_blank">奎哥的Java课堂</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://kawaii-jump.github.io/" title="https:&#x2F;&#x2F;kawaii-jump.github.io&#x2F;" rel="noopener" target="_blank">涛哥的就业实录</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://49.232.1.238/" title="http:&#x2F;&#x2F;49.232.1.238&#x2F;" rel="noopener" target="_blank">薛老板的攻防战场</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://dumengblog.club/" title="https:&#x2F;&#x2F;dumengblog.club&#x2F;" rel="noopener" target="_blank">Dumeng的知识讲解</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://stephencuhui.github.io/" title="https:&#x2F;&#x2F;stephencuhui.github.io&#x2F;" rel="noopener" target="_blank">徽哥的步步攀升</a>
+        </li>
+    </ul>
+  </div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2017 – 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Lavender</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+      
+
+<script>
+  if (typeof MathJax === 'undefined') {
+    window.MathJax = {
+      loader: {
+        source: {
+          '[tex]/amsCd': '[tex]/amscd',
+          '[tex]/AMScd': '[tex]/amscd'
+        }
+      },
+      tex: {
+        inlineMath: {'[+]': [['$', '$']]},
+        tags: 'ams'
+      },
+      options: {
+        renderActions: {
+          findScript: [10, doc => {
+            document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+              const display = !!node.type.match(/; *mode=display/);
+              const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+              const text = document.createTextNode('');
+              node.parentNode.replaceChild(text, node);
+              math.start = {node: text, delim: '', n: 0};
+              math.end = {node: text, delim: '', n: 0};
+              doc.math.push(math);
+            });
+          }, '', false],
+          insertedScript: [200, () => {
+            document.querySelectorAll('mjx-container').forEach(node => {
+              let target = node.parentNode;
+              if (target.nodeName.toLowerCase() === 'li') {
+                target.parentNode.classList.add('has-jax');
+              }
+            });
+          }, '', false]
+        }
+      }
+    };
+    (function () {
+      var script = document.createElement('script');
+      script.src = '//cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js';
+      script.defer = true;
+      document.head.appendChild(script);
+    })();
+  } else {
+    MathJax.startup.document.state(0);
+    MathJax.texReset();
+    MathJax.typeset();
+  }
+</script>
+
+    
+
+  
+
+</body>
+</html>

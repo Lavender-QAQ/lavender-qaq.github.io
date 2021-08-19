@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/img/caffee32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/img/caffee16x16.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":false,"style":"default"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"valine","storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="今天要描述的问题叫做棋盘覆盖问题，这个问题可以很好的利用分治思想解决。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="分治法：棋盘覆盖问题">
+<meta property="og:url" content="http://example.com/2018/08/05/%E5%88%86%E6%B2%BB%E6%B3%95%EF%BC%9A%E6%A3%8B%E7%9B%98%E8%A6%86%E7%9B%96%E9%97%AE%E9%A2%98/index.html">
+<meta property="og:site_name" content="In The End">
+<meta property="og:description" content="今天要描述的问题叫做棋盘覆盖问题，这个问题可以很好的利用分治思想解决。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://example.com/img/棋盘覆盖问题1.png">
+<meta property="og:image" content="http://example.com/img/棋盘覆盖问题2.png">
+<meta property="og:image" content="http://example.com/img/棋盘覆盖问题3.png">
+<meta property="article:published_time" content="2018-08-05T10:19:43.000Z">
+<meta property="article:modified_time" content="2021-08-05T01:46:46.869Z">
+<meta property="article:author" content="Lavender">
+<meta property="article:tag" content="分治">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/img/棋盘覆盖问题1.png">
+
+<link rel="canonical" href="http://example.com/2018/08/05/%E5%88%86%E6%B2%BB%E6%B3%95%EF%BC%9A%E6%A3%8B%E7%9B%98%E8%A6%86%E7%9B%96%E9%97%AE%E9%A2%98/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>分治法：棋盘覆盖问题 | In The End</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">In The End</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">个人博客</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2018/08/05/%E5%88%86%E6%B2%BB%E6%B3%95%EF%BC%9A%E6%A3%8B%E7%9B%98%E8%A6%86%E7%9B%96%E9%97%AE%E9%A2%98/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/img/Lavender.jpg">
+      <meta itemprop="name" content="Lavender">
+      <meta itemprop="description" content="再次出发">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="In The End">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          分治法：棋盘覆盖问题
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2018-08-05 10:19:43" itemprop="dateCreated datePublished" datetime="2018-08-05T10:19:43Z">2018-08-05</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2021-08-05 01:46:46" itemprop="dateModified" datetime="2021-08-05T01:46:46Z">2021-08-05</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/ACM/" itemprop="url" rel="index"><span itemprop="name">ACM</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>今天要描述的问题叫做棋盘覆盖问题，这个问题可以很好的利用分治思想解决。</p>
+<span id="more"></span>
+<h1 id="棋盘覆盖"><a href="#棋盘覆盖" class="headerlink" title="棋盘覆盖"></a>棋盘覆盖</h1><p>在一个2^k×2^k 个方格组成的棋盘中，恰有一个方格与是黑色的，其他都是白色的，你的任务是使用三个方格组成的L型方格填满整个区域。黑色方格不能被覆盖，白色方格只能被覆盖一次。下图是L型方格的四种摆放方式<br><img src="/img/棋盘覆盖问题1.png" alt=""><br>下图是一个k为2的棋盘<br><img src="/img/棋盘覆盖问题2.png" alt=""><br>我们来分析一下这个问题，首先我们可以想到使用分治解决问题，可以将这一张图向四分图算法一样不停地切成四块，然后如果我们切分到了黑色块所在的位置，切分又正好是四个一组，我们就可以在黑块旁边的三个格子上涂上一种颜色了，这样我们就填充完了一个。</p>
+<p>那么，问题来了，那剩下这么多怎么办呢。我们可以这么想，我每次切分出来四个区域，只要黑色块在其中一个区域，我就可以将其他三个区域相互交界的位置都涂上一种颜色，也就是把它们等同于黑块继续递归，也就是下图这个样子。<br><img src="/img/棋盘覆盖问题3.png" alt=""><br>假设k是2，黑块在（1,1），这是我求出来的答案<br><figure class="highlight apache"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="attribute">2</span> <span class="number">1</span> <span class="number">1</span></span><br><span class="line"><span class="attribute">2</span>	<span class="number">2</span>	<span class="number">4</span>	<span class="number">4</span></span><br><span class="line"><span class="attribute">2</span>	<span class="number">0</span>	<span class="number">1</span>	<span class="number">4</span></span><br><span class="line"><span class="attribute">3</span>	<span class="number">1</span>	<span class="number">1</span>	<span class="number">5</span></span><br><span class="line"><span class="attribute">3</span>	<span class="number">3</span>	<span class="number">5</span>	<span class="number">5</span></span><br></pre></td></tr></table></figure></p>
+<h1 id="代码"><a href="#代码" class="headerlink" title="代码"></a>代码</h1><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;cstring&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> std;</span><br><span class="line"><span class="keyword">typedef</span> pair&lt;<span class="keyword">int</span>,<span class="keyword">int</span>&gt; P;</span><br><span class="line"></span><br><span class="line"><span class="keyword">int</span> a[<span class="number">1024</span>][<span class="number">1024</span>];</span><br><span class="line"><span class="keyword">int</span> s;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">divide</span><span class="params">(P u,P v,<span class="keyword">int</span> len)</span></span>&#123;</span><br><span class="line">    <span class="keyword">if</span>(len==<span class="number">1</span>)</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    <span class="keyword">int</span> mid=len/<span class="number">2</span>;</span><br><span class="line">    P np=<span class="built_in">make_pair</span>(u.first+mid<span class="number">-1</span>,u.second+mid<span class="number">-1</span>);</span><br><span class="line">    <span class="keyword">if</span>(v.first&lt;=np.first&amp;&amp;v.second&lt;=np.second)&#123;</span><br><span class="line">        a[np.first+<span class="number">1</span>][np.second]=a[np.first][np.second+<span class="number">1</span>]=a[np.first+<span class="number">1</span>][np.second+<span class="number">1</span>]=s++;</span><br><span class="line">        <span class="built_in">divide</span>(u,v,len/<span class="number">2</span>);</span><br><span class="line">        <span class="built_in">divide</span>(<span class="built_in">P</span>(u.first+mid,u.second),<span class="built_in">P</span>(np.first+<span class="number">1</span>,np.second),len/<span class="number">2</span>);</span><br><span class="line">        <span class="built_in">divide</span>(<span class="built_in">P</span>(u.first,u.second+mid),<span class="built_in">P</span>(np.first,np.second+<span class="number">1</span>),len/<span class="number">2</span>);</span><br><span class="line">        <span class="built_in">divide</span>(<span class="built_in">P</span>(u.first+mid,u.second+mid),<span class="built_in">P</span>(np.first+<span class="number">1</span>,np.second+<span class="number">1</span>),len/<span class="number">2</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span>(v.first&lt;=np.first&amp;&amp;v.second&gt;np.second)&#123;</span><br><span class="line">        a[np.first][np.second]=a[np.first+<span class="number">1</span>][np.second]=a[np.first+<span class="number">1</span>][np.second+<span class="number">1</span>]=s++;</span><br><span class="line">        <span class="built_in">divide</span>(u,np,len/<span class="number">2</span>);</span><br><span class="line">        <span class="built_in">divide</span>(<span class="built_in">P</span>(u.first+mid,u.second),<span class="built_in">P</span>(np.first+<span class="number">1</span>,np.second),len/<span class="number">2</span>);</span><br><span class="line">        <span class="built_in">divide</span>(<span class="built_in">P</span>(u.first,u.second+mid),v,len/<span class="number">2</span>);</span><br><span class="line">        <span class="built_in">divide</span>(<span class="built_in">P</span>(u.first+mid,u.second+mid),<span class="built_in">P</span>(np.first+<span class="number">1</span>,np.second+<span class="number">1</span>),len/<span class="number">2</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span>(v.first&gt;np.first&amp;&amp;v.second&lt;=np.second)&#123;</span><br><span class="line">        a[np.first][np.second]=a[np.first][np.second+<span class="number">1</span>]=a[np.first+<span class="number">1</span>][np.second+<span class="number">1</span>]=s++;</span><br><span class="line">        <span class="built_in">divide</span>(u,np,len/<span class="number">2</span>);</span><br><span class="line">        <span class="built_in">divide</span>(<span class="built_in">P</span>(u.first+mid,u.second),v,len/<span class="number">2</span>);</span><br><span class="line">        <span class="built_in">divide</span>(<span class="built_in">P</span>(u.first,u.second+mid),<span class="built_in">P</span>(np.first,np.second+<span class="number">1</span>),len/<span class="number">2</span>);</span><br><span class="line">        <span class="built_in">divide</span>(<span class="built_in">P</span>(u.first+mid,u.second+mid),<span class="built_in">P</span>(np.first+<span class="number">1</span>,np.second+<span class="number">1</span>),len/<span class="number">2</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span>(v.first&gt;np.first&amp;&amp;v.second&gt;np.second)&#123;</span><br><span class="line">        a[np.first][np.second]=a[np.first][np.second+<span class="number">1</span>]=a[np.first+<span class="number">1</span>][np.second]=s++;</span><br><span class="line">        <span class="built_in">divide</span>(u,np,len/<span class="number">2</span>);</span><br><span class="line">        <span class="built_in">divide</span>(<span class="built_in">P</span>(u.first+mid,u.second),<span class="built_in">P</span>(np.first+<span class="number">1</span>,np.second),len/<span class="number">2</span>);</span><br><span class="line">        <span class="built_in">divide</span>(<span class="built_in">P</span>(u.first,u.second+mid),<span class="built_in">P</span>(np.first,np.second+<span class="number">1</span>),len/<span class="number">2</span>);</span><br><span class="line">        <span class="built_in">divide</span>(<span class="built_in">P</span>(u.first+mid,u.second+mid),v,len/<span class="number">2</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span>&#123;</span><br><span class="line">    <span class="keyword">int</span> k;P start;</span><br><span class="line">    <span class="keyword">while</span>(cin&gt;&gt;k&gt;&gt;start.first&gt;&gt;start.second)&#123;</span><br><span class="line">        <span class="built_in">memset</span>(a,<span class="number">-1</span>,<span class="built_in"><span class="keyword">sizeof</span></span>(a));</span><br><span class="line">        a[start.first][start.second]=<span class="number">0</span>;</span><br><span class="line">        <span class="keyword">int</span> len=<span class="number">1</span>;</span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;k;i++)</span><br><span class="line">            len*=<span class="number">2</span>;</span><br><span class="line">        s=<span class="number">1</span>;</span><br><span class="line">        <span class="built_in">divide</span>(<span class="built_in">P</span>(<span class="number">0</span>,<span class="number">0</span>),start,len);</span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;len;i++)&#123;</span><br><span class="line">            <span class="keyword">for</span>(<span class="keyword">int</span> j=<span class="number">0</span>;j&lt;len;j++)&#123;</span><br><span class="line">                cout &lt;&lt; a[i][j] &lt;&lt; <span class="string">&#x27;\t&#x27;</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            cout &lt;&lt; endl;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E5%88%86%E6%B2%BB/" rel="tag"># 分治</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2018/08/04/%E5%BD%92%E5%B9%B6%E6%8E%92%E5%BA%8F%E5%92%8C%E4%BA%8C%E5%88%86%E6%9F%A5%E6%89%BE%E7%9A%84%E6%BA%A2%E5%87%BA%E6%BC%8F%E6%B4%9E/" rel="prev" title="归并排序和二分查找的溢出漏洞">
+      <i class="fa fa-chevron-left"></i> 归并排序和二分查找的溢出漏洞
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2018/08/06/%E5%88%86%E6%B2%BB%E6%B3%95%EF%BC%9A%E5%BE%AA%E7%8E%AF%E6%97%A5%E7%A8%8B%E8%A1%A8%E9%97%AE%E9%A2%98%EF%BC%88%E4%BB%8E%E9%80%92%E5%BD%92%E5%88%B0%E9%80%92%E6%8E%A8%EF%BC%89/" rel="next" title="分治法：循环日程表问题（从递归到递推）">
+      分治法：循环日程表问题（从递归到递推） <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%A3%8B%E7%9B%98%E8%A6%86%E7%9B%96"><span class="nav-number">1.</span> <span class="nav-text">棋盘覆盖</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%BB%A3%E7%A0%81"><span class="nav-number">2.</span> <span class="nav-text">代码</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Lavender"
+      src="/img/Lavender.jpg">
+  <p class="site-author-name" itemprop="name">Lavender</p>
+  <div class="site-description" itemprop="description">再次出发</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">110</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+        <span class="site-state-item-count">18</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+        <span class="site-state-item-count">49</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/Lavender-QAQ" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;Lavender-QAQ" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title">
+      <i class="fa fa-fw fa-link"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="http://ltitan.github.io/" title="http:&#x2F;&#x2F;ltitan.github.io&#x2F;" rel="noopener" target="_blank">飞哥的技术园区</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://heshang.ink/" title="https:&#x2F;&#x2F;heshang.ink&#x2F;" rel="noopener" target="_blank">奎哥的Java课堂</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://kawaii-jump.github.io/" title="https:&#x2F;&#x2F;kawaii-jump.github.io&#x2F;" rel="noopener" target="_blank">涛哥的就业实录</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://49.232.1.238/" title="http:&#x2F;&#x2F;49.232.1.238&#x2F;" rel="noopener" target="_blank">薛老板的攻防战场</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://dumengblog.club/" title="https:&#x2F;&#x2F;dumengblog.club&#x2F;" rel="noopener" target="_blank">Dumeng的知识讲解</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://stephencuhui.github.io/" title="https:&#x2F;&#x2F;stephencuhui.github.io&#x2F;" rel="noopener" target="_blank">徽哥的步步攀升</a>
+        </li>
+    </ul>
+  </div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2017 – 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Lavender</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+</body>
+</html>

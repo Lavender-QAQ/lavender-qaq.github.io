@@ -1,0 +1,586 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/img/caffee32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/img/caffee16x16.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":false,"style":"default"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"valine","storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="周赛传送门https:&#x2F;&#x2F;leetcode-cn.com&#x2F;contest&#x2F;weekly-contest-254&#x2F; 这场是后来补上的，打了一下虚拟赛，第一题比较简单，第二题大概猜了一下莽过去了，第三题完全没有思路，第四题做了一个多小时，历经一次推倒重写最后过了。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Leetcode周赛第254场题解">
+<meta property="og:url" content="http://example.com/2021/08/19/Leetcode%E5%91%A8%E8%B5%9B%E7%AC%AC254%E5%9C%BA%E9%A2%98%E8%A7%A3/index.html">
+<meta property="og:site_name" content="In The End">
+<meta property="og:description" content="周赛传送门https:&#x2F;&#x2F;leetcode-cn.com&#x2F;contest&#x2F;weekly-contest-254&#x2F; 这场是后来补上的，打了一下虚拟赛，第一题比较简单，第二题大概猜了一下莽过去了，第三题完全没有思路，第四题做了一个多小时，历经一次推倒重写最后过了。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://example.com/img/Leetcode周赛第254场题解1.png">
+<meta property="og:image" content="http://example.com/img/Leetcode周赛第254场题解2.png">
+<meta property="og:image" content="http://example.com/img/Leetcode周赛第254场题解3.png">
+<meta property="og:image" content="http://example.com/img/Leetcode周赛第254场题解4.png">
+<meta property="og:image" content="http://example.com/img/Leetcode周赛第254场题解5.png">
+<meta property="og:image" content="http://example.com/img/Leetcode周赛第254场题解6.png">
+<meta property="og:image" content="http://example.com/img/Leetcode周赛第254场题解7.png">
+<meta property="og:image" content="http://example.com/img/Leetcode周赛第254场题解8.png">
+<meta property="og:image" content="http://example.com/img/Leetcode周赛第254场题解9.png">
+<meta property="og:image" content="http://example.com/img/Leetcode周赛第254场题解10.png">
+<meta property="article:published_time" content="2021-08-18T16:29:05.000Z">
+<meta property="article:modified_time" content="2021-08-19T07:05:15.007Z">
+<meta property="article:author" content="Lavender">
+<meta property="article:tag" content="算法">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/img/Leetcode周赛第254场题解1.png">
+
+<link rel="canonical" href="http://example.com/2021/08/19/Leetcode%E5%91%A8%E8%B5%9B%E7%AC%AC254%E5%9C%BA%E9%A2%98%E8%A7%A3/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>Leetcode周赛第254场题解 | In The End</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">In The End</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">个人博客</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2021/08/19/Leetcode%E5%91%A8%E8%B5%9B%E7%AC%AC254%E5%9C%BA%E9%A2%98%E8%A7%A3/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/img/Lavender.jpg">
+      <meta itemprop="name" content="Lavender">
+      <meta itemprop="description" content="再次出发">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="In The End">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Leetcode周赛第254场题解
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2021-08-18 16:29:05" itemprop="dateCreated datePublished" datetime="2021-08-18T16:29:05Z">2021-08-18</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2021-08-19 07:05:15" itemprop="dateModified" datetime="2021-08-19T07:05:15Z">2021-08-19</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/ACM/" itemprop="url" rel="index"><span itemprop="name">ACM</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/ACM/Leetcode/" itemprop="url" rel="index"><span itemprop="name">Leetcode</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="周赛传送门"><a href="#周赛传送门" class="headerlink" title="周赛传送门"></a>周赛传送门</h1><p><a target="_blank" rel="noopener" href="https://leetcode-cn.com/contest/weekly-contest-254/">https://leetcode-cn.com/contest/weekly-contest-254/</a></p>
+<p>这场是后来补上的，打了一下虚拟赛，第一题比较简单，第二题大概猜了一下莽过去了，第三题完全没有思路，第四题做了一个多小时，历经一次推倒重写最后过了。</p>
+<span id="more"></span>
+<h1 id="1967-作为子字符串出现在单词中的字符串数目"><a href="#1967-作为子字符串出现在单词中的字符串数目" class="headerlink" title="1967. 作为子字符串出现在单词中的字符串数目"></a>1967. 作为子字符串出现在单词中的字符串数目</h1><h2 id="题目"><a href="#题目" class="headerlink" title="题目"></a>题目</h2><p>给你一个字符串数组 patterns 和一个字符串 word ，统计 patterns 中有多少个字符串是 word 的子字符串。返回字符串数目。</p>
+<p>子字符串 是字符串中的一个连续字符序列。</p>
+<p>示例 1：</p>
+<figure class="highlight applescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">输入：patterns = [<span class="string">&quot;a&quot;</span>,<span class="string">&quot;abc&quot;</span>,<span class="string">&quot;bc&quot;</span>,<span class="string">&quot;d&quot;</span>], <span class="built_in">word</span> = <span class="string">&quot;abc&quot;</span></span><br><span class="line">输出：<span class="number">3</span></span><br><span class="line">解释：</span><br><span class="line"></span><br><span class="line">- <span class="string">&quot;a&quot;</span> 是 <span class="string">&quot;abc&quot;</span> 的子字符串。</span><br><span class="line">- <span class="string">&quot;abc&quot;</span> 是 <span class="string">&quot;abc&quot;</span> 的子字符串。</span><br><span class="line">- <span class="string">&quot;bc&quot;</span> 是 <span class="string">&quot;abc&quot;</span> 的子字符串。</span><br><span class="line">- <span class="string">&quot;d&quot;</span> 不是 <span class="string">&quot;abc&quot;</span> 的子字符串。</span><br><span class="line">  patterns 中有 <span class="number">3</span> 个字符串作为子字符串出现在 <span class="built_in">word</span> 中。</span><br></pre></td></tr></table></figure>
+<p>示例 2：</p>
+<figure class="highlight applescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">输入：patterns = [<span class="string">&quot;a&quot;</span>,<span class="string">&quot;b&quot;</span>,<span class="string">&quot;c&quot;</span>], <span class="built_in">word</span> = <span class="string">&quot;aaaaabbbbb&quot;</span></span><br><span class="line">输出：<span class="number">2</span></span><br><span class="line">解释：</span><br><span class="line"></span><br><span class="line">- <span class="string">&quot;a&quot;</span> 是 <span class="string">&quot;aaaaabbbbb&quot;</span> 的子字符串。</span><br><span class="line">- <span class="string">&quot;b&quot;</span> 是 <span class="string">&quot;aaaaabbbbb&quot;</span> 的子字符串。</span><br><span class="line">- <span class="string">&quot;c&quot;</span> 不是 <span class="string">&quot;aaaaabbbbb&quot;</span> 的字符串。</span><br><span class="line">  patterns 中有 <span class="number">2</span> 个字符串作为子字符串出现在 <span class="built_in">word</span> 中。</span><br></pre></td></tr></table></figure>
+<p>示例 3：</p>
+<figure class="highlight smalltalk"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">输入：patterns = [<span class="comment">&quot;a&quot;</span>,<span class="comment">&quot;a&quot;</span>,<span class="comment">&quot;a&quot;</span>], word = <span class="comment">&quot;ab&quot;</span></span><br><span class="line">输出：<span class="number">3</span></span><br><span class="line">解释：patterns 中的每个字符串都作为子字符串出现在 word <span class="comment">&quot;ab&quot;</span> 中。</span><br></pre></td></tr></table></figure>
+<p>提示：</p>
+<p>1 &lt;= patterns.length &lt;= 100<br>1 &lt;= patterns[i].length &lt;= 100<br>1 &lt;= word.length &lt;= 100<br>patterns[i] 和 word 由小写英文字母组成</p>
+<h2 id="题解"><a href="#题解" class="headerlink" title="题解"></a>题解</h2><p>遍历patterns，直接用substr函数暴力比较即可</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span> &#123;</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="keyword">int</span> <span class="title">numOfStrings</span><span class="params">(vector&lt;string&gt;&amp; v, string s)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">int</span> ans=<span class="number">0</span>;</span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">auto</span>&amp; str:v)</span><br><span class="line">            <span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;s.<span class="built_in">length</span>();i++)</span><br><span class="line">                <span class="keyword">if</span>(s[i]==str[<span class="number">0</span>]&amp;&amp;s.<span class="built_in">substr</span>(i,str.<span class="built_in">length</span>())==str)&#123;</span><br><span class="line">                    ans++;</span><br><span class="line">                    <span class="keyword">break</span>;</span><br><span class="line">                &#125;</span><br><span class="line">        <span class="keyword">return</span> ans;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<h1 id="1968-构造元素不等于两相邻元素平均值的数组"><a href="#1968-构造元素不等于两相邻元素平均值的数组" class="headerlink" title="1968. 构造元素不等于两相邻元素平均值的数组"></a>1968. 构造元素不等于两相邻元素平均值的数组</h1><h2 id="题目-1"><a href="#题目-1" class="headerlink" title="题目"></a>题目</h2><p>给你一个 下标从 0 开始 的数组 nums ，数组由若干 互不相同的 整数组成。你打算重新排列数组中的元素以满足：重排后，数组中的每个元素都 不等于 其两侧相邻元素的 平均值 。</p>
+<p>更公式化的说法是，重新排列的数组应当满足这一属性：对于范围 1 &lt;= i &lt; nums.length - 1 中的每个 i ，(nums[i-1] + nums[i+1]) / 2 不等于 nums[i] 均成立 。</p>
+<p>返回满足题意的任一重排结果。</p>
+<p>示例 1：</p>
+<figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">输入：nums = [1,2,3,4,5]</span><br><span class="line">输出：[1,2,4,5,3]</span><br><span class="line">解释：</span><br><span class="line"><span class="attribute">i</span>=1, nums[i] = 2, 两相邻元素平均值为 (1+4) / 2 = 2.5</span><br><span class="line"><span class="attribute">i</span>=2, nums[i] = 4, 两相邻元素平均值为 (2+5) / 2 = 3.5</span><br><span class="line"><span class="attribute">i</span>=3, nums[i] = 5, 两相邻元素平均值为 (4+3) / 2 = 3.5</span><br></pre></td></tr></table></figure>
+<p>示例 2：</p>
+<figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">输入：nums = [6,2,0,9,7]</span><br><span class="line">输出：[9,7,6,2,0]</span><br><span class="line">解释：</span><br><span class="line"><span class="attribute">i</span>=1, nums[i] = 7, 两相邻元素平均值为 (9+6) / 2 = 7.5</span><br><span class="line"><span class="attribute">i</span>=2, nums[i] = 6, 两相邻元素平均值为 (7+2) / 2 = 4.5</span><br><span class="line"><span class="attribute">i</span>=3, nums[i] = 2, 两相邻元素平均值为 (6+0) / 2 = 3</span><br></pre></td></tr></table></figure>
+<p>提示：</p>
+<p>3 &lt;= nums.length &lt;= 10^5<br>0 &lt;= nums[i] &lt;= 10^5</p>
+<h2 id="题解-1"><a href="#题解-1" class="headerlink" title="题解"></a>题解</h2><p>首先我们注意到<strong>数组由若干互不相同的整数组成</strong>这个先决条件，从这个条件我们可以推出一些有趣的结论:</p>
+<p><img src="/img/Leetcode周赛第254场题解1.png" alt=""></p>
+<p>那么，如果我们可以保证每一个数字的左右两边都大于或者小于自己，这道题也就迎刃而解了，如果进行这样的操作呢？</p>
+<p>其实也并不难，只需要进行<strong>插值</strong>即可，将数组排序后在中间劈开，分为小的那部分和大的那部分，然后大的放一个，小的放一个形成新的数组，具体请看下图来理解：</p>
+<p><img src="/img/Leetcode周赛第254场题解2.png" alt=""></p>
+<p>很明显这样就能保证数组符合条件了，当然其实想要优化的话，可以把排序改成快排的划分操作，这样能将复杂度从$O(nlogn)$降为$O(n)$</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span> &#123;</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function">vector&lt;<span class="keyword">int</span>&gt; <span class="title">rearrangeArray</span><span class="params">(vector&lt;<span class="keyword">int</span>&gt;&amp; nums)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">int</span> n=nums.<span class="built_in">size</span>()/<span class="number">2</span>;</span><br><span class="line">        queue&lt;<span class="keyword">int</span>&gt; q1,q2;</span><br><span class="line">        <span class="built_in">sort</span>(nums.<span class="built_in">begin</span>(),nums.<span class="built_in">end</span>());</span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;=n;i++) q1.<span class="built_in">push</span>(nums[i]);</span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> i=n+<span class="number">1</span>;i&lt;nums.<span class="built_in">size</span>();i++) q2.<span class="built_in">push</span>(nums[i]);</span><br><span class="line">        vector&lt;<span class="keyword">int</span>&gt; ans;</span><br><span class="line">        <span class="keyword">while</span>(!q1.<span class="built_in">empty</span>()||!q2.<span class="built_in">empty</span>())&#123;</span><br><span class="line">            <span class="keyword">if</span>(!q1.<span class="built_in">empty</span>())&#123;</span><br><span class="line">                ans.<span class="built_in">push_back</span>(q1.<span class="built_in">front</span>());</span><br><span class="line">                q1.<span class="built_in">pop</span>();</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">if</span>(!q2.<span class="built_in">empty</span>())&#123;</span><br><span class="line">                ans.<span class="built_in">push_back</span>(q2.<span class="built_in">front</span>());</span><br><span class="line">                q2.<span class="built_in">pop</span>();</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> ans;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<h1 id="1969-数组元素的最小非零乘积"><a href="#1969-数组元素的最小非零乘积" class="headerlink" title="1969. 数组元素的最小非零乘积"></a>1969. 数组元素的最小非零乘积</h1><h2 id="题目-2"><a href="#题目-2" class="headerlink" title="题目"></a>题目</h2><p>给你一个正整数 p 。你有一个下标从 1 开始的数组 nums ，这个数组包含范围 [1, 2^p - 1] 内所有整数的二进制形式（两端都 包含）。你可以进行以下操作 任意 次：</p>
+<p>从 nums 中选择两个元素 x 和 y  。<br>选择 x 中的一位与 y 对应位置的位交换。对应位置指的是两个整数 相同位置 的二进制位。<br>比方说，如果 x = 1101 且 y = 0011 ，交换右边数起第 2 位后，我们得到 x = 1111 和 y = 0001 。</p>
+<p>请你算出进行以上操作 任意次 以后，nums 能得到的 最小非零 乘积。将乘积对 10^9 + 7 取余 后返回。</p>
+<p>注意：答案应为取余 之前 的最小值。</p>
+<p>示例 1：</p>
+<figure class="highlight nix"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">输入：<span class="attr">p</span> = <span class="number">1</span></span><br><span class="line">输出：<span class="number">1</span></span><br><span class="line">解释：<span class="attr">nums</span> = [<span class="number">1</span>] 。</span><br><span class="line">只有一个元素，所以乘积为该元素。</span><br></pre></td></tr></table></figure>
+<p>示例 2：</p>
+<figure class="highlight tap"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">输入：p = 2</span><br><span class="line">输出：6</span><br><span class="line">解释：nums = [01, 10, 11] 。</span><br><span class="line">所有交换要么使乘积变为<span class="number"> 0 </span>，要么乘积与初始乘积相同。</span><br><span class="line">所以，数组乘积<span class="number"> 1 </span>*<span class="number"> 2 </span>*<span class="number"> 3 </span>=<span class="number"> 6 </span>已经是最小值。</span><br></pre></td></tr></table></figure>
+<p>示例 3：</p>
+<figure class="highlight tap"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">输入：p = 3</span><br><span class="line">输出：1512</span><br><span class="line">解释：nums = [001, 010, 011, 100, 101, 110, 111]</span><br><span class="line"></span><br><span class="line">- 第一次操作中，我们交换第二个和第五个元素最左边的数位。</span><br><span class="line">  - 结果数组为 [001, 110, 011, 100, 001, 110, 111] 。</span><br><span class="line">- 第二次操作中，我们交换第三个和第四个元素中间的数位。</span><br><span class="line">  - 结果数组为 [001, 110, 001, 110, 001, 110, 111] 。</span><br><span class="line">    数组乘积<span class="number"> 1 </span>*<span class="number"> 6 </span>*<span class="number"> 1 </span>*<span class="number"> 6 </span>*<span class="number"> 1 </span>*<span class="number"> 6 </span>*<span class="number"> 7 </span>=<span class="number"> 1512 </span>是最小乘积。</span><br></pre></td></tr></table></figure>
+<p>提示：</p>
+<p>1 &lt;= p &lt;= 60</p>
+<h2 id="题解-2"><a href="#题解-2" class="headerlink" title="题解"></a>题解</h2><p>如何让相乘的结果最小，首先需要注意的一点就是要<strong>相乘的数相互之间的差越大越好</strong>，就比如1*5就要比2*3要小。</p>
+<p>还有就是，<strong>题目中的交换操作并不会改变所有数相加的总和</strong>。</p>
+<p>明确了这两点，那就来研究一下p=3的情况：</p>
+<p><img src="/img/Leetcode周赛第254场题解3.png" alt=""></p>
+<p>如果设p=4，也可以发现当统计[1,2^p-1]共15个数字的4个二进制位中1的个数是一样的都是8个。</p>
+<p><strong>最关键的来了，我们尝试一下转换思路，注意一下题目中说我们可以交换任意次，那么相当于我们是拿着这些1往全是0的矩阵里填！请看下图！</strong></p>
+<p><img src="/img/Leetcode周赛第254场题解4.png" alt=""></p>
+<p>那么，这怎么填这个矩阵可以使整个乘积最小呢，当然<strong>相乘的数相互之间的差距越大越好</strong>，也就是我们要尽量保证多出现1（因为不能出现0，那1就是最小的数了）：</p>
+<p><img src="/img/Leetcode周赛第254场题解5.png" alt=""></p>
+<p>最后按照这个填法模拟一下p=4的情况：</p>
+<p><img src="/img/Leetcode周赛第254场题解6.png" alt=""></p>
+<p>最后总结公式：</p>
+<p><img src="/img/Leetcode周赛第254场题解7.png" alt=""></p>
+<p>求幂次的操作可以使用快速幂完成，不过注意过程中会爆long long所以记得算一次取模一次。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span> &#123;</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="keyword">typedef</span> <span class="keyword">long</span> <span class="keyword">long</span> ll;</span><br><span class="line">    <span class="function">ll <span class="title">qmi</span><span class="params">(ll a,ll b)</span></span>&#123;</span><br><span class="line">        ll ans=<span class="number">1</span>,p=<span class="number">1e9</span>+<span class="number">7</span>;</span><br><span class="line">        <span class="keyword">while</span>(b)&#123;</span><br><span class="line">            <span class="keyword">if</span>(b&amp;<span class="number">1</span>) ans=(ans%p)*(a%p)%p;</span><br><span class="line">            b&gt;&gt;=<span class="number">1</span>;</span><br><span class="line">            a=(a%p)*(a%p)%p;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> ans;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">int</span> <span class="title">minNonZeroProduct</span><span class="params">(<span class="keyword">int</span> p)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">int</span> mod=<span class="number">1e9</span>+<span class="number">7</span>;</span><br><span class="line">        <span class="keyword">return</span> (((<span class="number">1ll</span>&lt;&lt;p)<span class="number">-1</span>)%mod)*(<span class="built_in">qmi</span>((<span class="number">1ll</span>&lt;&lt;p)<span class="number">-2</span>,(<span class="number">1ll</span>&lt;&lt;p<span class="number">-1</span>)<span class="number">-1</span>)%mod)%mod;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<h1 id="1970-你能穿过矩阵的最后一天"><a href="#1970-你能穿过矩阵的最后一天" class="headerlink" title="1970. 你能穿过矩阵的最后一天"></a>1970. 你能穿过矩阵的最后一天</h1><h2 id="题目-3"><a href="#题目-3" class="headerlink" title="题目"></a>题目</h2><p>给你一个下标从 1 开始的二进制矩阵，其中 0 表示陆地，1 表示水域。同时给你 row 和 col 分别表示矩阵中行和列的数目。</p>
+<p>一开始在第 0 天，整个 矩阵都是 陆地 。但每一天都会有一块新陆地被 水 淹没变成水域。给你一个下标从 1 开始的二维数组 cells ，其中 cells[i] = [ri, ci] 表示在第 i 天，第 ri 行 ci 列（下标都是从 1 开始）的陆地会变成 水域 （也就是 0 变成 1 ）。</p>
+<p>你想知道从矩阵最 上面 一行走到最 下面 一行，且只经过陆地格子的 最后一天 是哪一天。你可以从最上面一行的 任意 格子出发，到达最下面一行的 任意 格子。你只能沿着 四个 基本方向移动（也就是上下左右）。</p>
+<p>请返回只经过陆地格子能从最 上面 一行走到最 下面 一行的 最后一天 。</p>
+<p>示例 1：</p>
+<p><img src="/img/Leetcode周赛第254场题解8.png" alt=""></p>
+<figure class="highlight inform7"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">输入：row = 2, col = 2, cells = <span class="comment">[<span class="comment">[1,1]</span>,<span class="comment">[2,1]</span>,<span class="comment">[1,2]</span>,<span class="comment">[2,2]</span>]</span></span><br><span class="line">输出：2</span><br><span class="line">解释：上图描述了矩阵从第 0 天开始是如何变化的。</span><br><span class="line">可以从最上面一行到最下面一行的最后一天是第 2 天。</span><br></pre></td></tr></table></figure>
+<p>示例 2：</p>
+<p><img src="/img/Leetcode周赛第254场题解9.png" alt=""></p>
+<figure class="highlight inform7"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">输入：row = 2, col = 2, cells = <span class="comment">[<span class="comment">[1,1]</span>,<span class="comment">[1,2]</span>,<span class="comment">[2,1]</span>,<span class="comment">[2,2]</span>]</span></span><br><span class="line">输出：1</span><br><span class="line">解释：上图描述了矩阵从第 0 天开始是如何变化的。</span><br><span class="line">可以从最上面一行到最下面一行的最后一天是第 1 天。</span><br></pre></td></tr></table></figure>
+<p>示例 3：</p>
+<p><img src="/img/Leetcode周赛第254场题解10.png" alt=""></p>
+<figure class="highlight inform7"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">输入：row = 3, col = 3, cells = <span class="comment">[<span class="comment">[1,2]</span>,<span class="comment">[2,1]</span>,<span class="comment">[3,3]</span>,<span class="comment">[2,2]</span>,<span class="comment">[1,1]</span>,<span class="comment">[1,3]</span>,<span class="comment">[2,3]</span>,<span class="comment">[3,2]</span>,<span class="comment">[3,1]</span>]</span></span><br><span class="line">输出：3</span><br><span class="line">解释：上图描述了矩阵从第 0 天开始是如何变化的。</span><br><span class="line">可以从最上面一行到最下面一行的最后一天是第 3 天。</span><br></pre></td></tr></table></figure>
+<p>提示：</p>
+<p>2 &lt;= row, col &lt;= 2 <em> 10^4<br>4 &lt;= row </em> col &lt;= 2 <em> 10^4<br>cells.length == row </em> col<br>1 &lt;= ri &lt;= row<br>1 &lt;= ci &lt;= col<br>cells 中的所有格子坐标都是 唯一 的。</p>
+<h2 id="题解-3"><a href="#题解-3" class="headerlink" title="题解"></a>题解</h2><p>这道题花了我很长时间，主要还是对时间复杂度估计不足。</p>
+<p>首先我使用了BFS的方法，但是并没有使用去每张图上跑一遍BFS这么包里直接，而是做了一些改进：先从最后一张图中开始跑BFS，如果跑不到终点且BFS访问队列无法更新（说明路被海洋封死），那么我将队列中无法更新的点都记录下来，然后从最后一天往前倒退一天（将那一天的海洋变回陆地），再让那么点继续跑BFS，还是跑不到终点就继续往前倒回，一直反复到最终接近终点为止。</p>
+<p>只可惜这个方法还是超时了……算是一种不那么好的思路吧，也在这放出来给大家对比对比（毕竟我写了N久不放太可惜了）。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span> &#123;</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="keyword">typedef</span> pair&lt;<span class="keyword">int</span>,<span class="keyword">int</span>&gt; P;</span><br><span class="line">    <span class="function"><span class="keyword">int</span> <span class="title">latestDayToCross</span><span class="params">(<span class="keyword">int</span> n, <span class="keyword">int</span> m, vector&lt;vector&lt;<span class="keyword">int</span>&gt;&gt;&amp; v)</span> </span>&#123;</span><br><span class="line">        vector&lt;vector&lt;<span class="keyword">int</span>&gt;&gt; <span class="built_in">g</span>(n+<span class="number">10</span>,vector&lt;<span class="keyword">int</span>&gt;(m+<span class="number">10</span>,<span class="number">0</span>));</span><br><span class="line">        vector&lt;vector&lt;<span class="keyword">int</span>&gt;&gt; <span class="built_in">vis</span>(n+<span class="number">10</span>,vector&lt;<span class="keyword">int</span>&gt;(m+<span class="number">10</span>,<span class="number">0</span>));</span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">auto</span>&amp; it:v) g[it[<span class="number">0</span>]][it[<span class="number">1</span>]]=<span class="number">1</span>;</span><br><span class="line">        <span class="keyword">int</span> dx[]=&#123;<span class="number">0</span>,<span class="number">0</span>,<span class="number">-1</span>,<span class="number">1</span>&#125;,dy[]=&#123;<span class="number">-1</span>,<span class="number">1</span>,<span class="number">0</span>,<span class="number">0</span>&#125;;</span><br><span class="line">        queue&lt;P&gt; que,back;</span><br><span class="line">        <span class="keyword">bool</span> st=<span class="literal">false</span>;</span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">1</span>;i&lt;=m;i++)</span><br><span class="line">            <span class="keyword">if</span>(g[<span class="number">1</span>][i]==<span class="number">0</span>)</span><br><span class="line">                st=<span class="literal">true</span>,que.<span class="built_in">push</span>(&#123;<span class="number">1</span>,i&#125;);</span><br><span class="line">        <span class="keyword">int</span> ans=v.<span class="built_in">size</span>();</span><br><span class="line">        <span class="keyword">while</span>(!st)&#123;</span><br><span class="line">            ans--;</span><br><span class="line">            g[v[ans][<span class="number">0</span>]][v[ans][<span class="number">1</span>]]=<span class="number">0</span>;</span><br><span class="line">            <span class="keyword">if</span>(v[ans][<span class="number">0</span>]==<span class="number">1</span>)&#123;</span><br><span class="line">                que.<span class="built_in">push</span>(&#123;v[ans][<span class="number">0</span>],v[ans][<span class="number">1</span>]&#125;);</span><br><span class="line">                st=<span class="literal">true</span>;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">while</span>(!que.<span class="built_in">empty</span>())&#123;</span><br><span class="line">            <span class="keyword">int</span> x=que.<span class="built_in">front</span>().first,y=que.<span class="built_in">front</span>().second;</span><br><span class="line">            </span><br><span class="line">            </span><br><span class="line">            <span class="keyword">bool</span> is_update=<span class="literal">false</span>;</span><br><span class="line">            <span class="keyword">if</span>(x==n) <span class="keyword">break</span>;</span><br><span class="line">            <span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;<span class="number">4</span>;i++)&#123;</span><br><span class="line">                <span class="keyword">int</span> nx=x+dx[i],ny=y+dy[i];</span><br><span class="line">                <span class="keyword">if</span>(nx&gt;=<span class="number">1</span>&amp;&amp;nx&lt;=n&amp;&amp;ny&gt;=<span class="number">1</span>&amp;&amp;ny&lt;=m&amp;&amp;!g[nx][ny]&amp;&amp;!vis[nx][ny])&#123;</span><br><span class="line">                    que.<span class="built_in">push</span>(&#123;nx,ny&#125;);</span><br><span class="line">                    vis[nx][ny]=<span class="number">1</span>;</span><br><span class="line">                    is_update=<span class="literal">true</span>;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">if</span>(!is_update) &#123;back.<span class="built_in">push</span>(que.<span class="built_in">front</span>());que.<span class="built_in">pop</span>();&#125;</span><br><span class="line">            <span class="keyword">if</span>(que.<span class="built_in">empty</span>())&#123;</span><br><span class="line">                ans--;</span><br><span class="line">                que=back;</span><br><span class="line">                <span class="keyword">while</span>(!back.<span class="built_in">empty</span>()) back.<span class="built_in">pop</span>();</span><br><span class="line">                g[v[ans][<span class="number">0</span>]][v[ans][<span class="number">1</span>]]=<span class="number">0</span>;</span><br><span class="line">                <span class="keyword">if</span>(v[ans][<span class="number">0</span>]==<span class="number">1</span>) que.<span class="built_in">push</span>(&#123;v[ans][<span class="number">0</span>],v[ans][<span class="number">1</span>]&#125;);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> ans;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>超时之后我基本想不到什么优化的点子（毕竟在队列中点的保留那块已经优化到极致了），所以基本确定这个思路本身就有问题（因为这种非常规的BFS在下水平有限实在估不出具体的复杂度，只能说尝试了不行所以需要换条路）。</p>
+<p>重新考虑后脑袋一拍想到了并查集，除了在构造方面复杂一些，并查集处理这个问题简直完美，只要对每条边的两端进行一个merge操作，就可以知道任意两个点之间是否连通（只要在一个集合内就必然是连通的）。对于天数上仍然使用从最后一天往回倒，先在最后一天的图上构建一个并查集（遍历整张图，对每条边的两端做merge操作），然后判断第一行的节点是否与最后一行的节点连通，不连通就往回倒一天，将那天海洋变回陆地并向周围merge一遍，反复如此即可。</p>
+<p>需要注意，merge的时候要让编号大的节点做编号小的节点的父节点，这样find的时候只需要判断是不是最后一行就行了（因为一个集合的始祖节点一定是行数最高的节点）。</p>
+<p>p2n函数是将行列转换为节点编号的函数，因为需要将二维数组的坐标转换为并查集的一维坐标。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span> &#123;</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="keyword">typedef</span> pair&lt;<span class="keyword">int</span>,<span class="keyword">int</span>&gt; P;</span><br><span class="line">    <span class="keyword">int</span> n,m;</span><br><span class="line">    vector&lt;<span class="keyword">int</span>&gt; f;</span><br><span class="line">    <span class="function"><span class="keyword">int</span> <span class="title">p2n</span><span class="params">(<span class="keyword">int</span> x,<span class="keyword">int</span> y)</span></span>&#123;</span><br><span class="line">        <span class="keyword">return</span> x*m+y;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">int</span> <span class="title">find</span><span class="params">(<span class="keyword">int</span> x)</span></span>&#123;</span><br><span class="line">        <span class="keyword">return</span> f[x]=x==f[x]?x:<span class="built_in">find</span>(f[x]);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">merge</span><span class="params">(<span class="keyword">int</span> x,<span class="keyword">int</span> y)</span></span>&#123;</span><br><span class="line">        <span class="keyword">int</span> fx=<span class="built_in">find</span>(x),fy=<span class="built_in">find</span>(y);</span><br><span class="line">        <span class="keyword">if</span>(fx==fy) <span class="keyword">return</span>;</span><br><span class="line">        <span class="keyword">if</span>(fx&gt;fy) f[fy]=fx;</span><br><span class="line">        <span class="keyword">else</span> f[fx]=fy;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">int</span> <span class="title">latestDayToCross</span><span class="params">(<span class="keyword">int</span> row, <span class="keyword">int</span> col, vector&lt;vector&lt;<span class="keyword">int</span>&gt;&gt;&amp; v)</span> </span>&#123;</span><br><span class="line">        n=row,m=col;</span><br><span class="line">        vector&lt;vector&lt;<span class="keyword">int</span>&gt;&gt; <span class="built_in">g</span>(n+<span class="number">10</span>,vector&lt;<span class="keyword">int</span>&gt;(m+<span class="number">10</span>,<span class="number">0</span>));</span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">auto</span>&amp; it:v) g[it[<span class="number">0</span>]][it[<span class="number">1</span>]]=<span class="number">1</span>;</span><br><span class="line">        <span class="keyword">int</span> dx[]=&#123;<span class="number">0</span>,<span class="number">1</span>,<span class="number">0</span>,<span class="number">-1</span>&#125;,dy[]=&#123;<span class="number">1</span>,<span class="number">0</span>,<span class="number">-1</span>,<span class="number">0</span>&#125;;</span><br><span class="line">        f=vector&lt;<span class="keyword">int</span>&gt;((n+<span class="number">1</span>)*(m+<span class="number">1</span>),<span class="number">0</span>);</span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">1</span>;i&lt;=n;i++)</span><br><span class="line">            <span class="keyword">for</span>(<span class="keyword">int</span> j=<span class="number">1</span>;j&lt;=m;j++)</span><br><span class="line">                f[<span class="built_in">p2n</span>(i,j)]=<span class="built_in">p2n</span>(i,j);</span><br><span class="line">        <span class="keyword">int</span> ans=v.<span class="built_in">size</span>();</span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">1</span>;i&lt;=n;i++)</span><br><span class="line">            <span class="keyword">for</span>(<span class="keyword">int</span> j=<span class="number">1</span>;j&lt;=m;j++)</span><br><span class="line">                <span class="keyword">if</span>(g[i][j]==<span class="number">0</span>)</span><br><span class="line">                    <span class="keyword">for</span>(<span class="keyword">int</span> k=<span class="number">0</span>;k&lt;<span class="number">2</span>;k++)&#123;</span><br><span class="line">                        <span class="keyword">int</span> nx=i+dx[k],ny=j+dy[k];</span><br><span class="line">                        <span class="keyword">if</span>(nx&gt;=<span class="number">1</span>&amp;&amp;nx&lt;=n&amp;&amp;ny&gt;=<span class="number">1</span>&amp;&amp;ny&lt;=m&amp;&amp;g[nx][ny]==<span class="number">0</span>)</span><br><span class="line">                            <span class="built_in">merge</span>(<span class="built_in">p2n</span>(i,j),<span class="built_in">p2n</span>(nx,ny));</span><br><span class="line">                    &#125;</span><br><span class="line">        <span class="keyword">bool</span> st=<span class="literal">true</span>;</span><br><span class="line">        <span class="keyword">while</span>(st)&#123;</span><br><span class="line">            <span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">1</span>;i&lt;=m;i++)</span><br><span class="line">                <span class="keyword">if</span>(<span class="built_in">find</span>(<span class="built_in">p2n</span>(<span class="number">1</span>,i))&gt;=<span class="built_in">p2n</span>(n,m)-m+<span class="number">1</span>)&#123;</span><br><span class="line">                    st=<span class="literal">false</span>;</span><br><span class="line">                    <span class="keyword">break</span>;</span><br><span class="line">                &#125;</span><br><span class="line">            <span class="keyword">if</span>(!st) <span class="keyword">break</span>;    </span><br><span class="line">            ans--;</span><br><span class="line">            <span class="keyword">int</span> x=v[ans][<span class="number">0</span>],y=v[ans][<span class="number">1</span>];</span><br><span class="line">            g[x][y]=<span class="number">0</span>;</span><br><span class="line">            <span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;<span class="number">4</span>;i++)&#123;</span><br><span class="line">                <span class="keyword">int</span> nx=x+dx[i],ny=y+dy[i];</span><br><span class="line">                <span class="keyword">if</span>(nx&gt;=<span class="number">1</span>&amp;&amp;nx&lt;=n&amp;&amp;ny&gt;=<span class="number">1</span>&amp;&amp;ny&lt;=m&amp;&amp;g[nx][ny]==<span class="number">0</span>)</span><br><span class="line">                    <span class="built_in">merge</span>(<span class="built_in">p2n</span>(x,y),<span class="built_in">p2n</span>(nx,ny));</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> ans;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2021/08/09/Leetcode%E5%91%A8%E8%B5%9B%E7%AC%AC253%E5%9C%BA%E9%A2%98%E8%A7%A3/" rel="prev" title="Leetcode周赛第253场题解">
+      <i class="fa fa-chevron-left"></i> Leetcode周赛第253场题解
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%91%A8%E8%B5%9B%E4%BC%A0%E9%80%81%E9%97%A8"><span class="nav-number">1.</span> <span class="nav-text">周赛传送门</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#1967-%E4%BD%9C%E4%B8%BA%E5%AD%90%E5%AD%97%E7%AC%A6%E4%B8%B2%E5%87%BA%E7%8E%B0%E5%9C%A8%E5%8D%95%E8%AF%8D%E4%B8%AD%E7%9A%84%E5%AD%97%E7%AC%A6%E4%B8%B2%E6%95%B0%E7%9B%AE"><span class="nav-number">2.</span> <span class="nav-text">1967. 作为子字符串出现在单词中的字符串数目</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%A2%98%E7%9B%AE"><span class="nav-number">2.1.</span> <span class="nav-text">题目</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%A2%98%E8%A7%A3"><span class="nav-number">2.2.</span> <span class="nav-text">题解</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#1968-%E6%9E%84%E9%80%A0%E5%85%83%E7%B4%A0%E4%B8%8D%E7%AD%89%E4%BA%8E%E4%B8%A4%E7%9B%B8%E9%82%BB%E5%85%83%E7%B4%A0%E5%B9%B3%E5%9D%87%E5%80%BC%E7%9A%84%E6%95%B0%E7%BB%84"><span class="nav-number">3.</span> <span class="nav-text">1968. 构造元素不等于两相邻元素平均值的数组</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%A2%98%E7%9B%AE-1"><span class="nav-number">3.1.</span> <span class="nav-text">题目</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%A2%98%E8%A7%A3-1"><span class="nav-number">3.2.</span> <span class="nav-text">题解</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#1969-%E6%95%B0%E7%BB%84%E5%85%83%E7%B4%A0%E7%9A%84%E6%9C%80%E5%B0%8F%E9%9D%9E%E9%9B%B6%E4%B9%98%E7%A7%AF"><span class="nav-number">4.</span> <span class="nav-text">1969. 数组元素的最小非零乘积</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%A2%98%E7%9B%AE-2"><span class="nav-number">4.1.</span> <span class="nav-text">题目</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%A2%98%E8%A7%A3-2"><span class="nav-number">4.2.</span> <span class="nav-text">题解</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#1970-%E4%BD%A0%E8%83%BD%E7%A9%BF%E8%BF%87%E7%9F%A9%E9%98%B5%E7%9A%84%E6%9C%80%E5%90%8E%E4%B8%80%E5%A4%A9"><span class="nav-number">5.</span> <span class="nav-text">1970. 你能穿过矩阵的最后一天</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%A2%98%E7%9B%AE-3"><span class="nav-number">5.1.</span> <span class="nav-text">题目</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%A2%98%E8%A7%A3-3"><span class="nav-number">5.2.</span> <span class="nav-text">题解</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Lavender"
+      src="/img/Lavender.jpg">
+  <p class="site-author-name" itemprop="name">Lavender</p>
+  <div class="site-description" itemprop="description">再次出发</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">110</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+        <span class="site-state-item-count">18</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+        <span class="site-state-item-count">49</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/Lavender-QAQ" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;Lavender-QAQ" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title">
+      <i class="fa fa-fw fa-link"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="http://ltitan.github.io/" title="http:&#x2F;&#x2F;ltitan.github.io&#x2F;" rel="noopener" target="_blank">飞哥的技术园区</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://heshang.ink/" title="https:&#x2F;&#x2F;heshang.ink&#x2F;" rel="noopener" target="_blank">奎哥的Java课堂</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://kawaii-jump.github.io/" title="https:&#x2F;&#x2F;kawaii-jump.github.io&#x2F;" rel="noopener" target="_blank">涛哥的就业实录</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://49.232.1.238/" title="http:&#x2F;&#x2F;49.232.1.238&#x2F;" rel="noopener" target="_blank">薛老板的攻防战场</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://dumengblog.club/" title="https:&#x2F;&#x2F;dumengblog.club&#x2F;" rel="noopener" target="_blank">Dumeng的知识讲解</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://stephencuhui.github.io/" title="https:&#x2F;&#x2F;stephencuhui.github.io&#x2F;" rel="noopener" target="_blank">徽哥的步步攀升</a>
+        </li>
+    </ul>
+  </div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2017 – 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Lavender</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+      
+
+<script>
+  if (typeof MathJax === 'undefined') {
+    window.MathJax = {
+      loader: {
+        source: {
+          '[tex]/amsCd': '[tex]/amscd',
+          '[tex]/AMScd': '[tex]/amscd'
+        }
+      },
+      tex: {
+        inlineMath: {'[+]': [['$', '$']]},
+        tags: 'ams'
+      },
+      options: {
+        renderActions: {
+          findScript: [10, doc => {
+            document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+              const display = !!node.type.match(/; *mode=display/);
+              const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+              const text = document.createTextNode('');
+              node.parentNode.replaceChild(text, node);
+              math.start = {node: text, delim: '', n: 0};
+              math.end = {node: text, delim: '', n: 0};
+              doc.math.push(math);
+            });
+          }, '', false],
+          insertedScript: [200, () => {
+            document.querySelectorAll('mjx-container').forEach(node => {
+              let target = node.parentNode;
+              if (target.nodeName.toLowerCase() === 'li') {
+                target.parentNode.classList.add('has-jax');
+              }
+            });
+          }, '', false]
+        }
+      }
+    };
+    (function () {
+      var script = document.createElement('script');
+      script.src = '//cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js';
+      script.defer = true;
+      document.head.appendChild(script);
+    })();
+  } else {
+    MathJax.startup.document.state(0);
+    MathJax.texReset();
+    MathJax.typeset();
+  }
+</script>
+
+    
+
+  
+
+</body>
+</html>

@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/img/caffee32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/img/caffee16x16.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":false,"style":"default"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"valine","storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="今天我们的主题是一个几何的小知识点——极角排序。 关于极角先来解释一下极角吧。 我们首先来看一下最普通的直角坐标系下的角试想一下，我们将直角坐标换成极坐标，那么就会是这个样子的所以，我们先确定一条射线，然后我们就可以得出所有直线跟这条射线的夹角，我们可以将这种方式看作是直角坐标系被拿掉了y轴。 我们也可以规定逆时针为正或者是顺时针为正，当然我们习惯逆时针，因为直角坐标系就一直是这样的。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="极角排序">
+<meta property="og:url" content="http://example.com/2018/08/13/%E6%9E%81%E8%A7%92%E6%8E%92%E5%BA%8F/index.html">
+<meta property="og:site_name" content="In The End">
+<meta property="og:description" content="今天我们的主题是一个几何的小知识点——极角排序。 关于极角先来解释一下极角吧。 我们首先来看一下最普通的直角坐标系下的角试想一下，我们将直角坐标换成极坐标，那么就会是这个样子的所以，我们先确定一条射线，然后我们就可以得出所有直线跟这条射线的夹角，我们可以将这种方式看作是直角坐标系被拿掉了y轴。 我们也可以规定逆时针为正或者是顺时针为正，当然我们习惯逆时针，因为直角坐标系就一直是这样的。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://example.com/img/极角排序1.png">
+<meta property="og:image" content="http://example.com/img/极角排序2.png">
+<meta property="og:image" content="http://example.com/img/极角排序3.png">
+<meta property="og:image" content="http://example.com/img/极角排序4.png">
+<meta property="article:published_time" content="2018-08-13T10:07:04.000Z">
+<meta property="article:modified_time" content="2021-08-05T01:47:26.039Z">
+<meta property="article:author" content="Lavender">
+<meta property="article:tag" content="计算几何">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/img/极角排序1.png">
+
+<link rel="canonical" href="http://example.com/2018/08/13/%E6%9E%81%E8%A7%92%E6%8E%92%E5%BA%8F/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>极角排序 | In The End</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">In The End</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">个人博客</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2018/08/13/%E6%9E%81%E8%A7%92%E6%8E%92%E5%BA%8F/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/img/Lavender.jpg">
+      <meta itemprop="name" content="Lavender">
+      <meta itemprop="description" content="再次出发">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="In The End">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          极角排序
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2018-08-13 10:07:04" itemprop="dateCreated datePublished" datetime="2018-08-13T10:07:04Z">2018-08-13</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2021-08-05 01:47:26" itemprop="dateModified" datetime="2021-08-05T01:47:26Z">2021-08-05</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/ACM/" itemprop="url" rel="index"><span itemprop="name">ACM</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>今天我们的主题是一个几何的小知识点——极角排序。</p>
+<h1 id="关于极角"><a href="#关于极角" class="headerlink" title="关于极角"></a>关于极角</h1><p>先来解释一下极角吧。</p>
+<p>我们首先来看一下最普通的直角坐标系下的角<br><img src="/img/极角排序1.png" alt=""><br>试想一下，我们将直角坐标换成极坐标，那么就会是这个样子的<br><img src="/img/极角排序2.png" alt=""><br>所以，我们先确定一条射线，然后我们就可以得出所有直线跟这条射线的夹角，我们可以将这种方式看作是直角坐标系被拿掉了y轴。</p>
+<p>我们也可以规定逆时针为正或者是顺时针为正，当然我们习惯逆时针，因为直角坐标系就一直是这样的。</p>
+<span id="more"></span>
+<h1 id="极角排序"><a href="#极角排序" class="headerlink" title="极角排序"></a>极角排序</h1><p>顾名思义，就是按照极角大小的排序，我们假设平面上有很多个点，以一个点为轴，做一条水平线，然后我们就可以算出其他点和这个点连线的极角，然后我们根据极角来排序。如下图<br><img src="/img/极角排序3.png" alt=""><br>我们的目标就是以逆时针进行排序。我们有两种办法来解决。在此之前我们先定义好存储点坐标的结构体<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">point</span>&#123;</span></span><br><span class="line">    <span class="keyword">double</span> x;</span><br><span class="line">    <span class="keyword">double</span> y;</span><br><span class="line">    <span class="built_in">point</span>(<span class="keyword">double</span> x=<span class="number">0</span>, <span class="keyword">double</span> y=<span class="number">0</span>):<span class="built_in">x</span>(x),<span class="built_in">y</span>(y)&#123;&#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure></p>
+<h1 id="atan2函数（在cmath头文件中）"><a href="#atan2函数（在cmath头文件中）" class="headerlink" title="atan2函数（在cmath头文件中）"></a>atan2函数（在cmath头文件中）</h1><ul>
+<li>1、atan（x）表示求的是x的反正切，其返回值为[-pi/2,+pi/2]之间的一个数。</li>
+<li>2、atan2（y，x）求的是y/x的反正切，其返回值为[-pi,+pi]之间的一个数。</li>
+</ul>
+<p>我们可以知道，通过反正切就可以求出直线与x轴的夹角了，所以我们就有了下面的代码（注意atan2函数的参数是先y再x，正好反一下）<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">bool</span> <span class="title">compare</span><span class="params">(point a,point b)</span></span>&#123;</span><br><span class="line">    <span class="keyword">if</span>(<span class="built_in">atan2</span>(a.y,a.x)!=<span class="built_in">atan2</span>(b.y,b.x))</span><br><span class="line">        <span class="keyword">return</span> <span class="built_in">atan2</span>(a.y,a.x)&lt;<span class="built_in">atan2</span>(b.y,b.x);</span><br><span class="line">    <span class="keyword">else</span> <span class="keyword">return</span> a.x&lt;b.x;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h1 id="二维叉积"><a href="#二维叉积" class="headerlink" title="二维叉积"></a>二维叉积</h1><p>相信很多人都已经接触过线代中的三维叉积了吧，接下来我们要介绍的工具叫做二维叉积，二维叉积在极角排序中也是真重要的一个求解方法。</p>
+<p>例如： a=（x1,y1）,b=(x2,y2)<br>则 a×b=x1<em>y2-x2</em>y1</p>
+<p>那么我们得到axb有什么用呢，这里可以通过公式推导出这么一个结果<br><img src="/img/极角排序4.png" alt=""><br>那么我们就可以得到向量之间的位置关系了，这样就可以顺利地排序了，代码如下<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">double</span> <span class="title">cross</span><span class="params">(point a,point b,point c,point d)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> (b.x - a.x)*(d.y - c.y) - (b.y - a.y)*(d.x - c.x);</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">bool</span> <span class="title">compare</span><span class="params">(point a, point b)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="built_in">cross</span>(<span class="built_in">point</span>(), a, <span class="built_in">point</span>(), b) &gt;= <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><ul>
+<li>atan2在刷题的时候速度快，但是精度不佳</li>
+<li>使用二维叉积不会被卡精度，但是速度略慢</li>
+</ul>
+<p>请大家使用时看清楚题目在选择最合适的方法。</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E8%AE%A1%E7%AE%97%E5%87%A0%E4%BD%95/" rel="tag"># 计算几何</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2018/08/13/UVA11134%E9%A2%98%EF%BC%9A%E4%BC%A0%E8%AF%B4%E4%B8%AD%E7%9A%84%E8%BD%A6%EF%BC%88%E9%97%AE%E9%A2%98%E5%88%86%E8%A7%A3%EF%BC%89/" rel="prev" title="UVA11134题：传说中的车（问题分解）">
+      <i class="fa fa-chevron-left"></i> UVA11134题：传说中的车（问题分解）
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2018/08/14/UVA1606%E9%A2%98%EF%BC%9A%E4%B8%A4%E4%BA%B2%E6%80%A7%E5%88%86%E5%AD%90%EF%BC%88%E6%9E%81%E8%A7%92%E6%8E%92%E5%BA%8F-%E5%B9%B3%E9%9D%A2%E6%89%AB%E6%8F%8F%EF%BC%89/" rel="next" title="UVA1606题：两亲性分子（极角排序+平面扫描）">
+      UVA1606题：两亲性分子（极角排序+平面扫描） <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%85%B3%E4%BA%8E%E6%9E%81%E8%A7%92"><span class="nav-number">1.</span> <span class="nav-text">关于极角</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%9E%81%E8%A7%92%E6%8E%92%E5%BA%8F"><span class="nav-number">2.</span> <span class="nav-text">极角排序</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#atan2%E5%87%BD%E6%95%B0%EF%BC%88%E5%9C%A8cmath%E5%A4%B4%E6%96%87%E4%BB%B6%E4%B8%AD%EF%BC%89"><span class="nav-number">3.</span> <span class="nav-text">atan2函数（在cmath头文件中）</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%BA%8C%E7%BB%B4%E5%8F%89%E7%A7%AF"><span class="nav-number">4.</span> <span class="nav-text">二维叉积</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%80%BB%E7%BB%93"><span class="nav-number">5.</span> <span class="nav-text">总结</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Lavender"
+      src="/img/Lavender.jpg">
+  <p class="site-author-name" itemprop="name">Lavender</p>
+  <div class="site-description" itemprop="description">再次出发</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">110</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+        <span class="site-state-item-count">18</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+        <span class="site-state-item-count">49</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/Lavender-QAQ" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;Lavender-QAQ" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title">
+      <i class="fa fa-fw fa-link"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="http://ltitan.github.io/" title="http:&#x2F;&#x2F;ltitan.github.io&#x2F;" rel="noopener" target="_blank">飞哥的技术园区</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://heshang.ink/" title="https:&#x2F;&#x2F;heshang.ink&#x2F;" rel="noopener" target="_blank">奎哥的Java课堂</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://kawaii-jump.github.io/" title="https:&#x2F;&#x2F;kawaii-jump.github.io&#x2F;" rel="noopener" target="_blank">涛哥的就业实录</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://49.232.1.238/" title="http:&#x2F;&#x2F;49.232.1.238&#x2F;" rel="noopener" target="_blank">薛老板的攻防战场</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://dumengblog.club/" title="https:&#x2F;&#x2F;dumengblog.club&#x2F;" rel="noopener" target="_blank">Dumeng的知识讲解</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://stephencuhui.github.io/" title="https:&#x2F;&#x2F;stephencuhui.github.io&#x2F;" rel="noopener" target="_blank">徽哥的步步攀升</a>
+        </li>
+    </ul>
+  </div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2017 – 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Lavender</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+</body>
+</html>

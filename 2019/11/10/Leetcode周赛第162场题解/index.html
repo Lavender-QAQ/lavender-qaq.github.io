@@ -1,0 +1,571 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/img/caffee32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/img/caffee16x16.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":false,"style":"default"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"valine","storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="一小时自信AK，结果还是掉出了100名。。。  写一波题解，ACM公众号的题解就给广哥去更新了（手动滑稽）">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Leetcode周赛第162场题解">
+<meta property="og:url" content="http://example.com/2019/11/10/Leetcode%E5%91%A8%E8%B5%9B%E7%AC%AC162%E5%9C%BA%E9%A2%98%E8%A7%A3/index.html">
+<meta property="og:site_name" content="In The End">
+<meta property="og:description" content="一小时自信AK，结果还是掉出了100名。。。  写一波题解，ACM公众号的题解就给广哥去更新了（手动滑稽）">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://example.com/img/Leetcode周赛第162场题解1.png">
+<meta property="og:image" content="http://example.com/img/Leetcode周赛第162场题解2.png">
+<meta property="og:image" content="http://example.com/img/Leetcode周赛第162场题解3.png">
+<meta property="og:image" content="http://example.com/img/Leetcode周赛第162场题解4.png">
+<meta property="og:image" content="http://example.com/img/Leetcode周赛第162场题解5.png">
+<meta property="article:published_time" content="2019-11-10T12:37:59.000Z">
+<meta property="article:modified_time" content="2021-08-05T01:52:49.375Z">
+<meta property="article:author" content="Lavender">
+<meta property="article:tag" content="算法">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/img/Leetcode周赛第162场题解1.png">
+
+<link rel="canonical" href="http://example.com/2019/11/10/Leetcode%E5%91%A8%E8%B5%9B%E7%AC%AC162%E5%9C%BA%E9%A2%98%E8%A7%A3/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>Leetcode周赛第162场题解 | In The End</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">In The End</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">个人博客</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2019/11/10/Leetcode%E5%91%A8%E8%B5%9B%E7%AC%AC162%E5%9C%BA%E9%A2%98%E8%A7%A3/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/img/Lavender.jpg">
+      <meta itemprop="name" content="Lavender">
+      <meta itemprop="description" content="再次出发">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="In The End">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Leetcode周赛第162场题解
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2019-11-10 12:37:59" itemprop="dateCreated datePublished" datetime="2019-11-10T12:37:59Z">2019-11-10</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2021-08-05 01:52:49" itemprop="dateModified" datetime="2021-08-05T01:52:49Z">2021-08-05</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/ACM/" itemprop="url" rel="index"><span itemprop="name">ACM</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/ACM/Leetcode/" itemprop="url" rel="index"><span itemprop="name">Leetcode</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>一小时自信AK，结果还是掉出了100名。。。</p>
+<p><img src="/img/Leetcode周赛第162场题解1.png" alt="img"></p>
+<p>写一波题解，ACM公众号的题解就给广哥去更新了（手动滑稽） </p>
+<span id="more"></span>
+<h1 id="周赛传送门"><a href="#周赛传送门" class="headerlink" title="周赛传送门"></a>周赛传送门</h1><p><a target="_blank" rel="noopener" href="https://leetcode-cn.com/contest/weekly-contest-162">https://leetcode-cn.com/contest/weekly-contest-162</a></p>
+<h1 id="5255-奇数值单元格的数目"><a href="#5255-奇数值单元格的数目" class="headerlink" title="5255. 奇数值单元格的数目"></a>5255. 奇数值单元格的数目</h1><h2 id="题目"><a href="#题目" class="headerlink" title="题目"></a>题目</h2><p>给你一个 <code>n</code> 行 <code>m</code> 列的矩阵，最开始的时候，每个单元格中的值都是 <code>0</code>。</p>
+<p>另有一个索引数组 <code>indices</code>，<code>indices[i] = [ri, ci]</code> 中的 <code>ri</code> 和 <code>ci</code> 分别表示指定的行和列（从 <code>0</code> 开始编号）。</p>
+<p>你需要将每对 <code>[ri, ci]</code> 指定的行和列上的所有单元格的值加 <code>1</code>。</p>
+<p>请你在执行完所有 <code>indices</code> 指定的增量操作后，返回矩阵中 「奇数值单元格」 的数目。</p>
+<p><strong>示例 1：</strong></p>
+<p><img src="/img/Leetcode周赛第162场题解2.png" alt="img"></p>
+<figure class="highlight lua"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">输入：n = <span class="number">2</span>, m = <span class="number">3</span>, indices = <span class="string">[[0,1],[1,1]]</span></span><br><span class="line">输出：<span class="number">6</span></span><br><span class="line">解释：最开始的矩阵是 <span class="string">[[0,0,0],[0,0,0]]</span>。</span><br><span class="line">第一次增量操作后得到 <span class="string">[[1,2,1],[0,1,0]]</span>。</span><br><span class="line">最后的矩阵是 <span class="string">[[1,3,1],[1,3,1]]</span>，里面有 <span class="number">6</span> 个奇数。</span><br></pre></td></tr></table></figure>
+<p><strong>示例 2：</strong></p>
+<p><img src="/img/Leetcode周赛第162场题解3.png" alt="img"></p>
+<figure class="highlight lua"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">输入：n = <span class="number">2</span>, m = <span class="number">2</span>, indices = <span class="string">[[1,1],[0,0]]</span></span><br><span class="line">输出：<span class="number">0</span></span><br><span class="line">解释：最后的矩阵是 <span class="string">[[2,2],[2,2]]</span>，里面没有奇数。</span><br></pre></td></tr></table></figure>
+<p><strong>提示：</strong></p>
+<ul>
+<li>1 &lt;= n &lt;= 50</li>
+<li>1 &lt;= m &lt;= 50</li>
+<li>1 &lt;= indices.length &lt;= 100</li>
+<li>0 &lt;= indices[i][0] &lt; n</li>
+<li>0 &lt;= indices[i][1] &lt; m</li>
+</ul>
+<h2 id="题解"><a href="#题解" class="headerlink" title="题解"></a>题解</h2><p>这题是一个简单的模拟题，我们只需要跟着题目的描述操作就可以</p>
+<p>首先我们创建一个新的二维向量，然后遍历indices这个vector然后对相应地位置+1即可</p>
+<p>最后我们遍历二维向量统计奇数个数</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span> &#123;</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="keyword">int</span> <span class="title">oddCells</span><span class="params">(<span class="keyword">int</span> n, <span class="keyword">int</span> m, vector&lt;vector&lt;<span class="keyword">int</span>&gt;&gt;&amp; indices)</span> </span>&#123;</span><br><span class="line">        vector&lt;vector&lt;<span class="keyword">int</span>&gt;&gt; v=<span class="built_in">vector</span>(n+<span class="number">10</span>,vector&lt;<span class="keyword">int</span>&gt;(m+<span class="number">10</span>,<span class="number">0</span>));</span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">auto</span> x:indices)&#123;</span><br><span class="line">            <span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;m;i++) v[x[<span class="number">0</span>]][i]++;</span><br><span class="line">            <span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;n;i++) v[i][x[<span class="number">1</span>]]++;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">int</span> ans=<span class="number">0</span>;</span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;n;i++)</span><br><span class="line">            <span class="keyword">for</span>(<span class="keyword">int</span> j=<span class="number">0</span>;j&lt;m;j++)</span><br><span class="line">                <span class="keyword">if</span>(v[i][j]&amp;<span class="number">1</span>) ans++;</span><br><span class="line">        <span class="keyword">return</span> ans;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<h1 id="5256-重构-2-行二进制矩阵"><a href="#5256-重构-2-行二进制矩阵" class="headerlink" title="5256. 重构 2 行二进制矩阵"></a>5256. 重构 2 行二进制矩阵</h1><h2 id="题目-1"><a href="#题目-1" class="headerlink" title="题目"></a>题目</h2><p>给你一个 <code>2</code> 行 <code>n</code> 列的二进制数组：</p>
+<ul>
+<li>矩阵是一个二进制矩阵，这意味着矩阵中的每个元素不是 <code>0</code> 就是 <code>1</code>。</li>
+<li>第 <code>0</code> 行的元素之和为 <code>upper</code>。</li>
+<li>第 <code>1</code> 行的元素之和为 <code>lower</code>。</li>
+<li>第 <code>i</code> 列（从 <code>0</code> 开始编号）的元素之和为 <code>colsum[i]</code>，<code>colsum</code> 是一个长度为 <code>n</code> 的整数数组。</li>
+</ul>
+<p>你需要利用 <code>upper</code>，<code>lower</code> 和 <code>colsum</code> 来重构这个矩阵，并以二维整数数组的形式返回它。</p>
+<p>如果有多个不同的答案，那么任意一个都可以通过本题。</p>
+<p>如果不存在符合要求的答案，就请返回一个空的二维数组。</p>
+<p><strong>示例 1：</strong></p>
+<figure class="highlight lua"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">输入：<span class="built_in">upper</span> = <span class="number">2</span>, <span class="built_in">lower</span> = <span class="number">1</span>, colsum = [<span class="number">1</span>,<span class="number">1</span>,<span class="number">1</span>]</span><br><span class="line">输出：<span class="string">[[1,1,0],[0,0,1]]</span></span><br><span class="line">解释：<span class="string">[[1,0,1],[0,1,0]]</span> 和 <span class="string">[[0,1,1],[1,0,0]]</span> 也是正确答案。</span><br></pre></td></tr></table></figure>
+<p><strong>示例 2：</strong></p>
+<figure class="highlight nix"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">输入：<span class="attr">upper</span> = <span class="number">2</span>, <span class="attr">lower</span> = <span class="number">3</span>, <span class="attr">colsum</span> = [<span class="number">2</span>,<span class="number">2</span>,<span class="number">1</span>,<span class="number">1</span>]</span><br><span class="line">输出：[]</span><br></pre></td></tr></table></figure>
+<p><strong>示例 3：</strong></p>
+<figure class="highlight lua"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">输入：<span class="built_in">upper</span> = <span class="number">5</span>, <span class="built_in">lower</span> = <span class="number">5</span>, colsum = [<span class="number">2</span>,<span class="number">1</span>,<span class="number">2</span>,<span class="number">0</span>,<span class="number">1</span>,<span class="number">0</span>,<span class="number">1</span>,<span class="number">2</span>,<span class="number">0</span>,<span class="number">1</span>]</span><br><span class="line">输出：<span class="string">[[1,1,1,0,1,0,0,1,0,0],[1,0,1,0,0,0,1,1,0,1]]</span></span><br></pre></td></tr></table></figure>
+<p><strong>提示：</strong></p>
+<ul>
+<li>1 &lt;= colsum.length &lt;= 10^5</li>
+<li>0 &lt;= upper, lower &lt;= colsum.length</li>
+<li>0 &lt;= colsum[i] &lt;= 2</li>
+</ul>
+<h2 id="题解-1"><a href="#题解-1" class="headerlink" title="题解"></a>题解</h2><p>首先题目一开始没看仔细，然后wa了一发，压压惊之后猛然发现矩阵中的元素不是0就是1这个条件，突然醒悟QAQ</p>
+<p>首先判断一下有没有答案，我们来思考一下，矩阵的每行的和与每列的和肯定是相等的，所以说如果colsum和upper+lower都不相等的话那我们就可以直接返回空的vector<vector<int>&gt;了，然后当两个值是相同的时候就一定有答案吗？</p>
+<p>答案是不一定的，这里举个例子</p>
+<p>upper = 1，lower = 3，colsum = [2，2]</p>
+<p>可以发现并没有答案，upper=1这个很致命</p>
+<p>那么我们就发现了更深层次的问题，其实这个题就是upper和lower的分解问题（也就是upper和lower被colsum分解）</p>
+<p>由于只有两行，但是可以有很多列，所以显而易见我们是按列从左到右去填值的（按行你可以试试，试出来算我输）</p>
+<p>所以一共三种分解的情况（因为矩阵是二进制的矩阵）</p>
+<ul>
+<li><strong>colsum==0</strong>，代表矩阵这一列都是0，upper和lower也不会被减</li>
+<li><strong>colsum==2</strong>，很和谐的情况，表示upper和lower都要减一，矩阵两行也都要填1</li>
+<li><strong>colsum==1</strong>，upper和lower其中一个需要减一，那么肯定是两个中取大的那个减一，因为我们要尽可能的找到答案（如果upper或lower被减成负数显然没有答案）</li>
+</ul>
+<p>最后判断一下upper和lower有没有变成负数，变成负数就说明没答案了</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span> &#123;</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    vector&lt;vector&lt;<span class="keyword">int</span>&gt;&gt; <span class="built_in">reconstructMatrix</span>(<span class="keyword">int</span> upper, <span class="keyword">int</span> lower, vector&lt;<span class="keyword">int</span>&gt;&amp; col) &#123;</span><br><span class="line">        <span class="keyword">int</span> sum=<span class="number">0</span>;</span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">auto</span> x:col) sum+=x;</span><br><span class="line">        <span class="keyword">if</span>(sum!=upper+lower) <span class="keyword">return</span> vector&lt;vector&lt;<span class="keyword">int</span>&gt;&gt;();</span><br><span class="line">        <span class="keyword">int</span> n=<span class="number">2</span>,m=col.<span class="built_in">size</span>();</span><br><span class="line">        vector&lt;vector&lt;<span class="keyword">int</span>&gt;&gt; <span class="built_in">v</span>(n,vector&lt;<span class="keyword">int</span>&gt;(m,<span class="number">0</span>));</span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;m;i++)&#123;</span><br><span class="line">            <span class="keyword">if</span>(col[i]==<span class="number">2</span>)&#123;</span><br><span class="line">                v[<span class="number">0</span>][i]=v[<span class="number">1</span>][i]=<span class="number">1</span>;</span><br><span class="line">                upper--,lower--;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">else</span> <span class="keyword">if</span>(col[i]==<span class="number">1</span>)&#123;</span><br><span class="line">                <span class="keyword">if</span>(upper&gt;=lower) v[<span class="number">0</span>][i]=<span class="number">1</span>,upper--;</span><br><span class="line">                <span class="keyword">else</span> v[<span class="number">1</span>][i]=<span class="number">1</span>,lower--;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span>(upper&lt;<span class="number">0</span>||lower&lt;<span class="number">0</span>) <span class="keyword">return</span> vector&lt;vector&lt;<span class="keyword">int</span>&gt;&gt;();</span><br><span class="line">        <span class="keyword">return</span> v;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<h1 id="5257-统计封闭岛屿的数目"><a href="#5257-统计封闭岛屿的数目" class="headerlink" title="5257. 统计封闭岛屿的数目"></a>5257. 统计封闭岛屿的数目</h1><h2 id="题目-2"><a href="#题目-2" class="headerlink" title="题目"></a>题目</h2><p>有一个二维矩阵 <code>grid</code> ，每个位置要么是陆地（记号为 <code>0</code> ）要么是水域（记号为 <code>1</code> ）。</p>
+<p>我们从一块陆地出发，每次可以往上下左右 4 个方向相邻区域走，能走到的所有陆地区域，我们将其称为一座「<strong>岛屿</strong>」。</p>
+<p>如果一座岛屿 <strong>完全</strong> 由水域包围，即陆地边缘上下左右所有相邻区域都是水域，那么我们将其称为 「<strong>封闭岛屿</strong>」。</p>
+<p>请返回封闭岛屿的数目。</p>
+<p><strong>示例 1：</strong></p>
+<p><img src="/img/Leetcode周赛第162场题解4.png" alt="img"></p>
+<figure class="highlight dns"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">输入：grid = [[<span class="number">1,1,1,1</span>,<span class="number">1,1,1,0</span>],[<span class="number">1,0,0,0</span>,<span class="number">0,1,1,0</span>],[<span class="number">1,0,1,0</span>,<span class="number">1,1,1,0</span>],[<span class="number">1,0,0,0</span>,<span class="number">0,1,0,1</span>],[<span class="number">1,1,1,1</span>,<span class="number">1,1,1,0</span>]]</span><br><span class="line">输出：<span class="number">2</span></span><br><span class="line">解释：</span><br><span class="line">灰色区域的岛屿是封闭岛屿，因为这座岛屿完全被水域包围（即被 <span class="number">1</span> 区域包围）。</span><br></pre></td></tr></table></figure>
+<p><strong>示例 2：</strong></p>
+<p><img src="/img/Leetcode周赛第162场题解5.png" alt="img"></p>
+<figure class="highlight lua"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">输入：grid = <span class="string">[[0,0,1,0,0],[0,1,0,1,0],[0,1,1,1,0]]</span></span><br><span class="line">输出：<span class="number">1</span></span><br></pre></td></tr></table></figure>
+<p><strong>示例 3：</strong></p>
+<figure class="highlight inform7"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">输入：grid = <span class="comment">[<span class="comment">[1,1,1,1,1,1,1]</span>,</span></span><br><span class="line"><span class="comment">             <span class="comment">[1,0,0,0,0,0,1]</span>,</span></span><br><span class="line"><span class="comment">             <span class="comment">[1,0,1,1,1,0,1]</span>,</span></span><br><span class="line"><span class="comment">             <span class="comment">[1,0,1,0,1,0,1]</span>,</span></span><br><span class="line"><span class="comment">             <span class="comment">[1,0,1,1,1,0,1]</span>,</span></span><br><span class="line"><span class="comment">             <span class="comment">[1,0,0,0,0,0,1]</span>,</span></span><br><span class="line"><span class="comment">             <span class="comment">[1,1,1,1,1,1,1]</span>]</span></span><br><span class="line">输出：2</span><br></pre></td></tr></table></figure>
+<p><strong>提示：</strong></p>
+<ul>
+<li>1 &lt;= grid.length, grid[0].length &lt;= 100</li>
+<li>0 &lt;= grid[i][j] &lt;=1</li>
+</ul>
+<h2 id="题解-2"><a href="#题解-2" class="headerlink" title="题解"></a>题解</h2><p>这一题我觉得我的思路应该是很巧妙的了</p>
+<p>首先如果不熟悉这题的建议百度<strong>四连通</strong>，刷一刷普通的四连通题</p>
+<p>好的，我们假设你已经会四连通了，接下来看我下面的思路</p>
+<p>这题唯一的区别就在于如果连到边界的联通块是不能被计算进答案里的，那么我们可以利用这一点进行逆向思维</p>
+<p><strong>我们直接跑一圈边界，主动出击把边界的连通块全部干掉</strong></p>
+<p>对边界上的所有0块进行dfs或bfs的四连通，但是不计算进答案</p>
+<p>然后再对里面的块进行四联通，计算进答案里</p>
+<p>就是这个小变化就能AC这题</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span> &#123;</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="keyword">int</span> n,m;</span><br><span class="line">    <span class="keyword">int</span> dx[<span class="number">4</span>]= &#123;<span class="number">0</span>,<span class="number">0</span>,<span class="number">-1</span>,<span class="number">1</span>&#125;;</span><br><span class="line">    <span class="keyword">int</span> dy[<span class="number">4</span>]= &#123;<span class="number">-1</span>,<span class="number">1</span>,<span class="number">0</span>,<span class="number">0</span>&#125;;</span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">dfs</span><span class="params">(vector&lt;vector&lt;<span class="keyword">int</span>&gt;&gt;&amp; g,<span class="keyword">int</span> x,<span class="keyword">int</span> y)</span></span>&#123;</span><br><span class="line">        g[x][y]=<span class="number">1</span>;</span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;<span class="number">4</span>;i++)&#123;</span><br><span class="line">            <span class="keyword">int</span> nx=x+dx[i],ny=y+dy[i];</span><br><span class="line">            <span class="keyword">if</span>(nx&gt;=<span class="number">0</span>&amp;&amp;nx&lt;n&amp;&amp;ny&gt;=<span class="number">0</span>&amp;&amp;ny&lt;m&amp;&amp;g[nx][ny]==<span class="number">0</span>)</span><br><span class="line">                <span class="built_in">dfs</span>(g,nx,ny);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">int</span> <span class="title">closedIsland</span><span class="params">(vector&lt;vector&lt;<span class="keyword">int</span>&gt;&gt;&amp; g)</span> </span>&#123;</span><br><span class="line">        n=g.<span class="built_in">size</span>(),m=g[<span class="number">0</span>].<span class="built_in">size</span>();</span><br><span class="line">        <span class="keyword">int</span> ans=<span class="number">0</span>;</span><br><span class="line">        <span class="keyword">if</span>(n==<span class="number">1</span>||m==<span class="number">1</span>) <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;m;i++)&#123;</span><br><span class="line">            <span class="keyword">if</span>(g[<span class="number">0</span>][i]==<span class="number">0</span>) <span class="built_in">dfs</span>(g,<span class="number">0</span>,i);</span><br><span class="line">            <span class="keyword">if</span>(g[n<span class="number">-1</span>][i]==<span class="number">0</span>) <span class="built_in">dfs</span>(g,n<span class="number">-1</span>,i);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;n;i++)&#123;</span><br><span class="line">            <span class="keyword">if</span>(g[i][<span class="number">0</span>]==<span class="number">0</span>) <span class="built_in">dfs</span>(g,i,<span class="number">0</span>);</span><br><span class="line">            <span class="keyword">if</span>(g[i][m<span class="number">-1</span>]==<span class="number">0</span>) <span class="built_in">dfs</span>(g,i,m<span class="number">-1</span>);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">1</span>;i&lt;n<span class="number">-1</span>;i++)</span><br><span class="line">            <span class="keyword">for</span>(<span class="keyword">int</span> j=<span class="number">1</span>;j&lt;m<span class="number">-1</span>;j++)</span><br><span class="line">                <span class="keyword">if</span>(g[i][j]==<span class="number">0</span>)</span><br><span class="line">                    <span class="built_in">dfs</span>(g,i,j),ans++;</span><br><span class="line">        <span class="keyword">return</span> ans;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<h1 id="5258-得分最高的单词集合"><a href="#5258-得分最高的单词集合" class="headerlink" title="5258. 得分最高的单词集合"></a>5258. 得分最高的单词集合</h1><h2 id="题目-3"><a href="#题目-3" class="headerlink" title="题目"></a>题目</h2><p>你将会得到一份单词表 <code>words</code>，一个字母表 <code>letters</code> （可能会有重复字母），以及每个字母对应的得分情况表 <code>score</code>。</p>
+<p>请你帮忙计算玩家在单词拼写游戏中所能获得的「最高得分」：能够由 <code>letters</code> 里的字母拼写出的 <strong>任意</strong> 属于 <code>words</code> 单词子集中，分数最高的单词集合的得分。</p>
+<p>单词拼写游戏的规则概述如下：</p>
+<ul>
+<li>玩家需要用字母表 <code>letters</code> 里的字母来拼写单词表 <code>words</code> 中的单词。</li>
+<li>可以只使用字母表 <code>letters</code> 中的部分字母，但是每个字母最多被使用一次。</li>
+<li>单词表 <code>words</code> 中每个单词只能计分（使用）一次。</li>
+<li>根据字母得分情况表<code>score</code>，字母 <code>&#39;a&#39;</code>, <code>&#39;b&#39;</code>, <code>&#39;c&#39;</code>, … , <code>&#39;z&#39;</code> 对应的得分分别为 <code>score[0]</code>, <code>score[1]</code>, …, <code>score[25]</code>。</li>
+<li>本场游戏的「得分」是指：玩家所拼写出的单词集合里包含的所有字母的得分之和。</li>
+</ul>
+<p><strong>示例 1：</strong></p>
+<figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">输入：words = [<span class="string">&quot;dog&quot;</span>,<span class="string">&quot;cat&quot;</span>,<span class="string">&quot;dad&quot;</span>,<span class="string">&quot;good&quot;</span>], letters = [<span class="string">&quot;a&quot;</span>,<span class="string">&quot;a&quot;</span>,<span class="string">&quot;c&quot;</span>,<span class="string">&quot;d&quot;</span>,<span class="string">&quot;d&quot;</span>,<span class="string">&quot;d&quot;</span>,<span class="string">&quot;g&quot;</span>,<span class="string">&quot;o&quot;</span>,<span class="string">&quot;o&quot;</span>], score = [1,0,9,5,0,0,3,0,0,0,0,0,0,0,2,0,0,0,0,0,0,0,0,0,0,0]</span><br><span class="line">输出：23</span><br><span class="line">解释：</span><br><span class="line">字母得分为  <span class="attribute">a</span>=1, <span class="attribute">c</span>=9, <span class="attribute">d</span>=5, <span class="attribute">g</span>=3, <span class="attribute">o</span>=2</span><br><span class="line">使用给定的字母表 letters，我们可以拼写单词 <span class="string">&quot;dad&quot;</span> (5+1+5)和 <span class="string">&quot;good&quot;</span> (3+2+2+5)，得分为 23 。</span><br><span class="line">而单词 <span class="string">&quot;dad&quot;</span> 和 <span class="string">&quot;dog&quot;</span> 只能得到 21 分。</span><br></pre></td></tr></table></figure>
+<p><strong>示例 2：</strong></p>
+<figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">输入：words = [<span class="string">&quot;xxxz&quot;</span>,<span class="string">&quot;ax&quot;</span>,<span class="string">&quot;bx&quot;</span>,<span class="string">&quot;cx&quot;</span>], letters = [<span class="string">&quot;z&quot;</span>,<span class="string">&quot;a&quot;</span>,<span class="string">&quot;b&quot;</span>,<span class="string">&quot;c&quot;</span>,<span class="string">&quot;x&quot;</span>,<span class="string">&quot;x&quot;</span>,<span class="string">&quot;x&quot;</span>], score = [4,4,4,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,5,0,10]</span><br><span class="line">输出：27</span><br><span class="line">解释：</span><br><span class="line">字母得分为  <span class="attribute">a</span>=4, <span class="attribute">b</span>=4, <span class="attribute">c</span>=4, <span class="attribute">x</span>=5, <span class="attribute">z</span>=10</span><br><span class="line">使用给定的字母表 letters，我们可以组成单词 <span class="string">&quot;ax&quot;</span> (4+5)， <span class="string">&quot;bx&quot;</span> (4+5) 和 <span class="string">&quot;cx&quot;</span> (4+5) ，总得分为 27 。</span><br><span class="line">单词 <span class="string">&quot;xxxz&quot;</span> 的得分仅为 25 。</span><br></pre></td></tr></table></figure>
+<p><strong>示例 3：</strong></p>
+<figure class="highlight nix"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">输入：<span class="attr">words</span> = [<span class="string">&quot;leetcode&quot;</span>], <span class="attr">letters</span> = [<span class="string">&quot;l&quot;</span>,<span class="string">&quot;e&quot;</span>,<span class="string">&quot;t&quot;</span>,<span class="string">&quot;c&quot;</span>,<span class="string">&quot;o&quot;</span>,<span class="string">&quot;d&quot;</span>], <span class="attr">score</span> = [<span class="number">0</span>,<span class="number">0</span>,<span class="number">1</span>,<span class="number">1</span>,<span class="number">1</span>,<span class="number">0</span>,<span class="number">0</span>,<span class="number">0</span>,<span class="number">0</span>,<span class="number">0</span>,<span class="number">0</span>,<span class="number">1</span>,<span class="number">0</span>,<span class="number">0</span>,<span class="number">1</span>,<span class="number">0</span>,<span class="number">0</span>,<span class="number">0</span>,<span class="number">0</span>,<span class="number">1</span>,<span class="number">0</span>,<span class="number">0</span>,<span class="number">0</span>,<span class="number">0</span>,<span class="number">0</span>,<span class="number">0</span>]</span><br><span class="line">输出：<span class="number">0</span></span><br><span class="line">解释：</span><br><span class="line">字母 <span class="string">&quot;e&quot;</span> 在字母表 letters 中只出现了一次，所以无法组成单词表 words 中的单词。</span><br></pre></td></tr></table></figure>
+<p><strong>提示：</strong></p>
+<ul>
+<li>1 &lt;= words.length &lt;= 14</li>
+<li>1 &lt;= words[i].length &lt;= 15</li>
+<li>1 &lt;= letters.length &lt;= 100</li>
+<li>letters[i].length == 1</li>
+<li>score.length == 26</li>
+<li>0 &lt;= score[i] &lt;= 10</li>
+<li><code>words[i]</code> 和 <code>letters[i]</code> 只包含小写的英文字母。</li>
+</ul>
+<h2 id="题解-3"><a href="#题解-3" class="headerlink" title="题解"></a>题解</h2><p>第四题找对思路就不难</p>
+<p>首先看数据范围就感觉不对劲，怎么会这么小呢，结果果然是一题暴搜</p>
+<p>看到15这个神奇的数字，我果断来了波二进制暴搜，然后一发AC了</p>
+<p>首先我们对所有能用的字母进行一下哈希，统计一下每个字母出现了几次</p>
+<p>然后我们先进行一下（无谓）的剪枝，如果words有存在根本不可能被拼出来的单词的话就直接删除这个单词</p>
+<p>最后进行二进制的暴搜，枚举所有状态并判断可行性，如果可行就更新答案</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span> &#123;</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="keyword">int</span> s[<span class="number">30</span>],t[<span class="number">30</span>],tt[<span class="number">30</span>];</span><br><span class="line">    <span class="function"><span class="keyword">int</span> <span class="title">maxScoreWords</span><span class="params">(vector&lt;string&gt;&amp; words, vector&lt;<span class="keyword">char</span>&gt;&amp; letters, vector&lt;<span class="keyword">int</span>&gt;&amp; score)</span> </span>&#123;</span><br><span class="line">        <span class="built_in">memset</span>(s,<span class="number">0</span>,<span class="keyword">sizeof</span> s);</span><br><span class="line">        vector&lt;string&gt; v;</span><br><span class="line">        <span class="keyword">bool</span> flag;</span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">auto</span> x:letters) s[x-<span class="string">&#x27;a&#x27;</span>]++;</span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">auto</span> str:words)&#123;</span><br><span class="line">            <span class="built_in">memcpy</span>(t,s,<span class="keyword">sizeof</span> s);</span><br><span class="line">            flag=<span class="literal">true</span>;</span><br><span class="line">            <span class="keyword">for</span>(<span class="keyword">auto</span> c:str)&#123;</span><br><span class="line">                t[c-<span class="string">&#x27;a&#x27;</span>]--;</span><br><span class="line">                <span class="keyword">if</span>(t[c-<span class="string">&#x27;a&#x27;</span>]&lt;<span class="number">0</span>)&#123;</span><br><span class="line">                    flag=<span class="literal">false</span>;</span><br><span class="line">                    <span class="keyword">break</span>;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">if</span>(flag) v.<span class="built_in">push_back</span>(str);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">int</span> ans=<span class="number">0</span>;</span><br><span class="line">        <span class="keyword">int</span> n=v.<span class="built_in">size</span>();</span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;(<span class="number">1</span>&lt;&lt;n);i++)&#123;</span><br><span class="line">            <span class="built_in">memcpy</span>(t,s,<span class="keyword">sizeof</span> s);</span><br><span class="line">            flag=<span class="literal">true</span>;</span><br><span class="line">            <span class="keyword">int</span> sum=<span class="number">0</span>;</span><br><span class="line">            <span class="keyword">for</span>(<span class="keyword">int</span> j=<span class="number">0</span>;j&lt;n;j++)&#123;</span><br><span class="line">                <span class="keyword">if</span>(i&gt;&gt;j&amp;<span class="number">1</span>)&#123;</span><br><span class="line">                    <span class="keyword">bool</span> f=<span class="literal">true</span>;</span><br><span class="line">                    <span class="keyword">for</span>(<span class="keyword">auto</span> c:v[j])&#123;</span><br><span class="line">                        t[c-<span class="string">&#x27;a&#x27;</span>]--;</span><br><span class="line">                        sum+=score[c-<span class="string">&#x27;a&#x27;</span>];</span><br><span class="line">                        <span class="keyword">if</span>(t[c-<span class="string">&#x27;a&#x27;</span>]&lt;<span class="number">0</span>)&#123;</span><br><span class="line">                            flag=<span class="literal">false</span>;</span><br><span class="line">                            f=<span class="literal">false</span>;</span><br><span class="line">                            <span class="keyword">break</span>;</span><br><span class="line">                        &#125;</span><br><span class="line">                    &#125;</span><br><span class="line">                    <span class="keyword">if</span>(!f) <span class="keyword">break</span>;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">if</span>(flag) ans=<span class="built_in">max</span>(ans,sum);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> ans;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2019/11/08/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%EF%BC%9AC%E6%A8%A1%E6%8B%9F%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1%E7%BC%96%E7%A8%8B%E4%B8%8E%E5%8F%8C%E5%90%91%E5%BE%AA%E7%8E%AF%E9%93%BE%E8%A1%A8/" rel="prev" title="操作系统：面向对象编程与双向循环链表">
+      <i class="fa fa-chevron-left"></i> 操作系统：面向对象编程与双向循环链表
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2019/11/18/Leetcode%E5%91%A8%E8%B5%9B%E7%AC%AC163%E5%9C%BA%E9%A2%98%E8%A7%A3/" rel="next" title="Leetcode周赛第163场题解">
+      Leetcode周赛第163场题解 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%91%A8%E8%B5%9B%E4%BC%A0%E9%80%81%E9%97%A8"><span class="nav-number">1.</span> <span class="nav-text">周赛传送门</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#5255-%E5%A5%87%E6%95%B0%E5%80%BC%E5%8D%95%E5%85%83%E6%A0%BC%E7%9A%84%E6%95%B0%E7%9B%AE"><span class="nav-number">2.</span> <span class="nav-text">5255. 奇数值单元格的数目</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%A2%98%E7%9B%AE"><span class="nav-number">2.1.</span> <span class="nav-text">题目</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%A2%98%E8%A7%A3"><span class="nav-number">2.2.</span> <span class="nav-text">题解</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#5256-%E9%87%8D%E6%9E%84-2-%E8%A1%8C%E4%BA%8C%E8%BF%9B%E5%88%B6%E7%9F%A9%E9%98%B5"><span class="nav-number">3.</span> <span class="nav-text">5256. 重构 2 行二进制矩阵</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%A2%98%E7%9B%AE-1"><span class="nav-number">3.1.</span> <span class="nav-text">题目</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%A2%98%E8%A7%A3-1"><span class="nav-number">3.2.</span> <span class="nav-text">题解</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#5257-%E7%BB%9F%E8%AE%A1%E5%B0%81%E9%97%AD%E5%B2%9B%E5%B1%BF%E7%9A%84%E6%95%B0%E7%9B%AE"><span class="nav-number">4.</span> <span class="nav-text">5257. 统计封闭岛屿的数目</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%A2%98%E7%9B%AE-2"><span class="nav-number">4.1.</span> <span class="nav-text">题目</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%A2%98%E8%A7%A3-2"><span class="nav-number">4.2.</span> <span class="nav-text">题解</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#5258-%E5%BE%97%E5%88%86%E6%9C%80%E9%AB%98%E7%9A%84%E5%8D%95%E8%AF%8D%E9%9B%86%E5%90%88"><span class="nav-number">5.</span> <span class="nav-text">5258. 得分最高的单词集合</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%A2%98%E7%9B%AE-3"><span class="nav-number">5.1.</span> <span class="nav-text">题目</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%A2%98%E8%A7%A3-3"><span class="nav-number">5.2.</span> <span class="nav-text">题解</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Lavender"
+      src="/img/Lavender.jpg">
+  <p class="site-author-name" itemprop="name">Lavender</p>
+  <div class="site-description" itemprop="description">再次出发</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">110</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+        <span class="site-state-item-count">18</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+        <span class="site-state-item-count">49</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/Lavender-QAQ" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;Lavender-QAQ" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title">
+      <i class="fa fa-fw fa-link"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="http://ltitan.github.io/" title="http:&#x2F;&#x2F;ltitan.github.io&#x2F;" rel="noopener" target="_blank">飞哥的技术园区</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://heshang.ink/" title="https:&#x2F;&#x2F;heshang.ink&#x2F;" rel="noopener" target="_blank">奎哥的Java课堂</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://kawaii-jump.github.io/" title="https:&#x2F;&#x2F;kawaii-jump.github.io&#x2F;" rel="noopener" target="_blank">涛哥的就业实录</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://49.232.1.238/" title="http:&#x2F;&#x2F;49.232.1.238&#x2F;" rel="noopener" target="_blank">薛老板的攻防战场</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://dumengblog.club/" title="https:&#x2F;&#x2F;dumengblog.club&#x2F;" rel="noopener" target="_blank">Dumeng的知识讲解</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://stephencuhui.github.io/" title="https:&#x2F;&#x2F;stephencuhui.github.io&#x2F;" rel="noopener" target="_blank">徽哥的步步攀升</a>
+        </li>
+    </ul>
+  </div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2017 – 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Lavender</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+</body>
+</html>

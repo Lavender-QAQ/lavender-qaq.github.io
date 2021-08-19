@@ -1,0 +1,540 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/img/caffee32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/img/caffee16x16.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":false,"style":"default"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"valine","storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="掉分场掉分场，题目过慢了就被甩到后面去了，竞争激烈啊 周赛传送门https:&#x2F;&#x2F;leetcode-cn.com&#x2F;contest&#x2F;weekly-contest-164&#x2F;">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Leetcode周赛第164场题解">
+<meta property="og:url" content="http://example.com/2019/11/24/Leetcode%E5%91%A8%E8%B5%9B%E7%AC%AC164%E5%9C%BA%E9%A2%98%E8%A7%A3/index.html">
+<meta property="og:site_name" content="In The End">
+<meta property="og:description" content="掉分场掉分场，题目过慢了就被甩到后面去了，竞争激烈啊 周赛传送门https:&#x2F;&#x2F;leetcode-cn.com&#x2F;contest&#x2F;weekly-contest-164&#x2F;">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://example.com/img/Leetcode周赛第164场题解1.png">
+<meta property="og:image" content="http://example.com/img/Leetcode周赛第164场题解2.jpg">
+<meta property="og:image" content="http://example.com/img/Leetcode周赛第164场题解3.jpg">
+<meta property="og:image" content="http://example.com/img/Leetcode周赛第164场题解4.jpg">
+<meta property="article:published_time" content="2019-11-24T15:55:02.000Z">
+<meta property="article:modified_time" content="2021-08-05T01:57:54.994Z">
+<meta property="article:author" content="Lavender">
+<meta property="article:tag" content="算法">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/img/Leetcode周赛第164场题解1.png">
+
+<link rel="canonical" href="http://example.com/2019/11/24/Leetcode%E5%91%A8%E8%B5%9B%E7%AC%AC164%E5%9C%BA%E9%A2%98%E8%A7%A3/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>Leetcode周赛第164场题解 | In The End</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">In The End</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">个人博客</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2019/11/24/Leetcode%E5%91%A8%E8%B5%9B%E7%AC%AC164%E5%9C%BA%E9%A2%98%E8%A7%A3/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/img/Lavender.jpg">
+      <meta itemprop="name" content="Lavender">
+      <meta itemprop="description" content="再次出发">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="In The End">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Leetcode周赛第164场题解
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2019-11-24 15:55:02" itemprop="dateCreated datePublished" datetime="2019-11-24T15:55:02Z">2019-11-24</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2021-08-05 01:57:54" itemprop="dateModified" datetime="2021-08-05T01:57:54Z">2021-08-05</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/ACM/" itemprop="url" rel="index"><span itemprop="name">ACM</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/ACM/Leetcode/" itemprop="url" rel="index"><span itemprop="name">Leetcode</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>掉分场掉分场，题目过慢了就被甩到后面去了，竞争激烈啊</p>
+<h1 id="周赛传送门"><a href="#周赛传送门" class="headerlink" title="周赛传送门"></a>周赛传送门</h1><p><a target="_blank" rel="noopener" href="https://leetcode-cn.com/contest/weekly-contest-164/">https://leetcode-cn.com/contest/weekly-contest-164/</a></p>
+<span id="more"></span>
+<h1 id="访问所有点的最小时间"><a href="#访问所有点的最小时间" class="headerlink" title="访问所有点的最小时间"></a>访问所有点的最小时间</h1><h2 id="题目"><a href="#题目" class="headerlink" title="题目"></a>题目</h2><p>平面上有 <code>n</code> 个点，点的位置用整数坐标表示 <code>points[i] = [xi, yi]</code>。请你计算访问所有这些点需要的最小时间（以秒为单位）。</p>
+<p>你可以按照下面的规则在平面上移动：</p>
+<ul>
+<li>每一秒沿水平或者竖直方向移动一个单位长度，或者跨过对角线（可以看作在一秒内向水平和竖直方向各移动一个单位长度）。</li>
+<li>必须按照数组中出现的顺序来访问这些点。</li>
+</ul>
+<p><strong>示例 1：</strong></p>
+<p><img src="/img/Leetcode周赛第164场题解1.png" alt="img"></p>
+<figure class="highlight inform7"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">输入：points = <span class="comment">[<span class="comment">[1,1]</span>,<span class="comment">[3,4]</span>,<span class="comment">[-1,0]</span>]</span></span><br><span class="line">输出：7</span><br><span class="line">解释：一条最佳的访问路径是： <span class="comment">[1,1]</span> -&gt; <span class="comment">[2,2]</span> -&gt; <span class="comment">[3,3]</span> -&gt; <span class="comment">[3,4]</span> -&gt; <span class="comment">[2,3]</span> -&gt; <span class="comment">[1,2]</span> -&gt; <span class="comment">[0,1]</span> -&gt; <span class="comment">[-1,0]</span>   </span><br><span class="line">从 <span class="comment">[1,1]</span> 到 <span class="comment">[3,4]</span> 需要 3 秒 </span><br><span class="line">从 <span class="comment">[3,4]</span> 到 <span class="comment">[-1,0]</span> 需要 4 秒</span><br><span class="line">一共需要 7 秒</span><br></pre></td></tr></table></figure>
+<p><strong>示例 2：</strong></p>
+<figure class="highlight lua"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">输入：points = <span class="string">[[3,2],[-2,2]]</span></span><br><span class="line">输出：<span class="number">5</span></span><br></pre></td></tr></table></figure>
+<p><strong>提示：</strong></p>
+<ul>
+<li>points.length == n</li>
+<li>1 &lt;= n &lt;= 100</li>
+<li>points[i].length == 2</li>
+<li>-1000 &lt;= points[i][0], points[i][1] &lt;= 1000</li>
+</ul>
+<h2 id="题解"><a href="#题解" class="headerlink" title="题解"></a>题解</h2><p>直观的思路就是先尽可能地斜着走，然后最后走横线或者是竖线</p>
+<p>再思考一下其实就是横坐标与纵坐标的差的最大值</p>
+<p>因为斜线可以投影到横纵坐标上</p>
+<p>我下面的代码是直观的那种，比赛嘛，直接想到什么写什么了</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span> &#123;</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="keyword">int</span> <span class="title">minTimeToVisitAllPoints</span><span class="params">(vector&lt;vector&lt;<span class="keyword">int</span>&gt;&gt;&amp; p)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">int</span> n=p.<span class="built_in">size</span>();</span><br><span class="line">        <span class="keyword">int</span> ans=<span class="number">0</span>;</span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">1</span>;i&lt;n;i++)&#123;</span><br><span class="line">            ans+=<span class="built_in">min</span>(<span class="built_in">abs</span>(p[i][<span class="number">0</span>]-p[i<span class="number">-1</span>][<span class="number">0</span>]),<span class="built_in">abs</span>(p[i][<span class="number">1</span>]-p[i<span class="number">-1</span>][<span class="number">1</span>]));</span><br><span class="line">            ans+=<span class="built_in">abs</span>(<span class="built_in">abs</span>(p[i][<span class="number">0</span>]-p[i<span class="number">-1</span>][<span class="number">0</span>])-<span class="built_in">abs</span>(p[i][<span class="number">1</span>]-p[i<span class="number">-1</span>][<span class="number">1</span>]));</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> ans;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<h1 id="统计参与通信的服务器"><a href="#统计参与通信的服务器" class="headerlink" title="统计参与通信的服务器"></a>统计参与通信的服务器</h1><h2 id="题目-1"><a href="#题目-1" class="headerlink" title="题目"></a>题目</h2><p>这里有一幅服务器分布图，服务器的位置标识在 <code>m * n</code> 的整数矩阵网格 <code>grid</code> 中，1 表示单元格上有服务器，0 表示没有。</p>
+<p>如果两台服务器位于同一行或者同一列，我们就认为它们之间可以进行通信。</p>
+<p>请你统计并返回能够与至少一台其他服务器进行通信的服务器的数量。</p>
+<p><strong>示例 1：</strong></p>
+<p><img src="/img/Leetcode周赛第164场题解2.jpg" alt="img"></p>
+<figure class="highlight lua"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">输入：grid = <span class="string">[[1,0],[0,1]]</span></span><br><span class="line">输出：<span class="number">0</span></span><br><span class="line">解释：没有一台服务器能与其他服务器进行通信。</span><br></pre></td></tr></table></figure>
+<p><strong>示例 2：</strong></p>
+<p><img src="/img/Leetcode周赛第164场题解3.jpg" alt="img"></p>
+<figure class="highlight lua"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">输入：grid = <span class="string">[[1,0],[1,1]]</span></span><br><span class="line">输出：<span class="number">3</span></span><br><span class="line">解释：所有这些服务器都至少可以与一台别的服务器进行通信。</span><br></pre></td></tr></table></figure>
+<p><strong>示例 3：</strong></p>
+<p><img src="/img/Leetcode周赛第164场题解4.jpg" alt="img"></p>
+<figure class="highlight inform7"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">输入：grid = <span class="comment">[<span class="comment">[1,1,0,0]</span>,<span class="comment">[0,0,1,0]</span>,<span class="comment">[0,0,1,0]</span>,<span class="comment">[0,0,0,1]</span>]</span></span><br><span class="line">输出：4</span><br><span class="line">解释：第一行的两台服务器互相通信，第三列的两台服务器互相通信，但右下角的服务器无法与其他服务器通信。</span><br></pre></td></tr></table></figure>
+<p><strong>提示：</strong></p>
+<ul>
+<li>m == grid.length</li>
+<li>n == grid[i].length</li>
+<li><code>1 &lt;= m &lt;= 250</code></li>
+<li>1 &lt;= n &lt;= 250</li>
+<li>grid[i][j] == 0 or 1</li>
+</ul>
+<h2 id="题解-1"><a href="#题解-1" class="headerlink" title="题解"></a>题解</h2><p>我们提取一下重点，问题的关键在于判断主机所在行和列是否有别的主机</p>
+<p>所以我们直接开两个哈希表，行和列的哈希表直接枚举即可</p>
+<p>先O(n^2)构造哈希表，再O(n^2)查找主机，判断主机所在的行和列的哈希表是不是有大于2</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span> &#123;</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="keyword">int</span> <span class="title">countServers</span><span class="params">(vector&lt;vector&lt;<span class="keyword">int</span>&gt;&gt;&amp; g)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">int</span> n=g.<span class="built_in">size</span>(),m=g[<span class="number">0</span>].<span class="built_in">size</span>();</span><br><span class="line">        <span class="keyword">int</span> sn[<span class="number">300</span>],sm[<span class="number">300</span>];</span><br><span class="line">        <span class="built_in">memset</span>(sn,<span class="number">0</span>,<span class="keyword">sizeof</span> sn);</span><br><span class="line">        <span class="built_in">memset</span>(sm,<span class="number">0</span>,<span class="keyword">sizeof</span> sm);</span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;n;i++)</span><br><span class="line">            <span class="keyword">for</span>(<span class="keyword">int</span> j=<span class="number">0</span>;j&lt;m;j++)</span><br><span class="line">                <span class="keyword">if</span>(g[i][j]==<span class="number">1</span>)</span><br><span class="line">                    sn[i]++,sm[j]++;</span><br><span class="line">        <span class="keyword">int</span> ans=<span class="number">0</span>;</span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;n;i++)</span><br><span class="line">            <span class="keyword">for</span>(<span class="keyword">int</span> j=<span class="number">0</span>;j&lt;m;j++)</span><br><span class="line">                <span class="keyword">if</span>(g[i][j]==<span class="number">1</span>&amp;&amp;(sn[i]&gt;<span class="number">1</span>||sm[j]&gt;<span class="number">1</span>))</span><br><span class="line">                    ans++;</span><br><span class="line">        <span class="keyword">return</span> ans;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<h1 id="搜索推荐系统"><a href="#搜索推荐系统" class="headerlink" title="搜索推荐系统"></a>搜索推荐系统</h1><h2 id="题目-2"><a href="#题目-2" class="headerlink" title="题目"></a>题目</h2><p>给你一个产品数组 <code>products</code> 和一个字符串 <code>searchWord</code> ，<code>products</code> 数组中每个产品都是一个字符串。</p>
+<p>请你设计一个推荐系统，在依次输入单词 <code>searchWord</code> 的每一个字母后，推荐 <code>products</code> 数组中前缀与 <code>searchWord</code> 相同的最多三个产品。如果前缀相同的可推荐产品超过三个，请按字典序返回最小的三个。</p>
+<p>请你以二维列表的形式，返回在输入 <code>searchWord</code> 每个字母后相应的推荐产品的列表。</p>
+<p><strong>示例 1：</strong></p>
+<figure class="highlight prolog"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">输入：products = [<span class="string">&quot;mobile&quot;</span>,<span class="string">&quot;mouse&quot;</span>,<span class="string">&quot;moneypot&quot;</span>,<span class="string">&quot;monitor&quot;</span>,<span class="string">&quot;mousepad&quot;</span>], searchWord = <span class="string">&quot;mouse&quot;</span></span><br><span class="line">输出：[</span><br><span class="line">[<span class="string">&quot;mobile&quot;</span>,<span class="string">&quot;moneypot&quot;</span>,<span class="string">&quot;monitor&quot;</span>],</span><br><span class="line">[<span class="string">&quot;mobile&quot;</span>,<span class="string">&quot;moneypot&quot;</span>,<span class="string">&quot;monitor&quot;</span>],</span><br><span class="line">[<span class="string">&quot;mouse&quot;</span>,<span class="string">&quot;mousepad&quot;</span>],</span><br><span class="line">[<span class="string">&quot;mouse&quot;</span>,<span class="string">&quot;mousepad&quot;</span>],</span><br><span class="line">[<span class="string">&quot;mouse&quot;</span>,<span class="string">&quot;mousepad&quot;</span>]</span><br><span class="line">]</span><br><span class="line">解释：按字典序排序后的产品列表是 [<span class="string">&quot;mobile&quot;</span>,<span class="string">&quot;moneypot&quot;</span>,<span class="string">&quot;monitor&quot;</span>,<span class="string">&quot;mouse&quot;</span>,<span class="string">&quot;mousepad&quot;</span>]</span><br><span class="line">输入 m 和 mo，由于所有产品的前缀都相同，所以系统返回字典序最小的三个产品 [<span class="string">&quot;mobile&quot;</span>,<span class="string">&quot;moneypot&quot;</span>,<span class="string">&quot;monitor&quot;</span>]</span><br><span class="line">输入 mou， mous 和 mouse 后系统都返回 [<span class="string">&quot;mouse&quot;</span>,<span class="string">&quot;mousepad&quot;</span>]</span><br></pre></td></tr></table></figure>
+<p><strong>示例 2：</strong></p>
+<figure class="highlight prolog"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">输入：products = [<span class="string">&quot;havana&quot;</span>], searchWord = <span class="string">&quot;havana&quot;</span></span><br><span class="line">输出：[[<span class="string">&quot;havana&quot;</span>],[<span class="string">&quot;havana&quot;</span>],[<span class="string">&quot;havana&quot;</span>],[<span class="string">&quot;havana&quot;</span>],[<span class="string">&quot;havana&quot;</span>],[<span class="string">&quot;havana&quot;</span>]]</span><br></pre></td></tr></table></figure>
+<p><strong>示例 3：</strong></p>
+<figure class="highlight prolog"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">输入：products = [<span class="string">&quot;bags&quot;</span>,<span class="string">&quot;baggage&quot;</span>,<span class="string">&quot;banner&quot;</span>,<span class="string">&quot;box&quot;</span>,<span class="string">&quot;cloths&quot;</span>], searchWord = <span class="string">&quot;bags&quot;</span></span><br><span class="line">输出：[[<span class="string">&quot;baggage&quot;</span>,<span class="string">&quot;bags&quot;</span>,<span class="string">&quot;banner&quot;</span>],[<span class="string">&quot;baggage&quot;</span>,<span class="string">&quot;bags&quot;</span>,<span class="string">&quot;banner&quot;</span>],[<span class="string">&quot;baggage&quot;</span>,<span class="string">&quot;bags&quot;</span>],[<span class="string">&quot;bags&quot;</span>]]</span><br></pre></td></tr></table></figure>
+<p><strong>示例 4：</strong></p>
+<figure class="highlight prolog"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">输入：products = [<span class="string">&quot;havana&quot;</span>], searchWord = <span class="string">&quot;tatiana&quot;</span></span><br><span class="line">输出：[[],[],[],[],[],[],[]]</span><br></pre></td></tr></table></figure>
+<p><strong>提示：</strong></p>
+<ul>
+<li>1 &lt;= products.length &lt;= 1000</li>
+<li>1 &lt;= Σ products[i].length &lt;= 2 * 10^4</li>
+<li><code>products[i]</code> 中所有的字符都是小写英文字母。</li>
+<li>1 &lt;= searchWord.length &lt;= 1000</li>
+<li><code>searchWord</code> 中所有字符都是小写英文字母。</li>
+</ul>
+<h2 id="题解-2"><a href="#题解-2" class="headerlink" title="题解"></a>题解</h2><p>写了个Trie树但是人家排序就过了。。。</p>
+<p>不说了，构建Trie树，然后DFS即可，都是泪啊</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span> &#123;</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="keyword">int</span> son[<span class="number">20010</span>][<span class="number">26</span>],cnt[<span class="number">20010</span>],idx=<span class="number">0</span>,d=<span class="number">0</span>;</span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">insert</span><span class="params">(string&amp; s)</span></span>&#123;</span><br><span class="line">        <span class="keyword">int</span> p=<span class="number">0</span>;</span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">auto</span> x:s)&#123;</span><br><span class="line">            <span class="keyword">int</span> u=x-<span class="string">&#x27;a&#x27;</span>;</span><br><span class="line">            <span class="keyword">if</span>(!son[p][u]) son[p][u]=++idx;</span><br><span class="line">            p=son[p][u];</span><br><span class="line">        &#125;</span><br><span class="line">        cnt[p]++;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">cal</span><span class="params">(vector&lt;string&gt;&amp; v,string &amp;s)</span></span>&#123;</span><br><span class="line">        <span class="keyword">if</span>(d==<span class="number">0</span>) <span class="keyword">return</span>;</span><br><span class="line">        <span class="keyword">int</span> p=<span class="number">0</span>;</span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">auto</span> x:s)&#123;</span><br><span class="line">            <span class="keyword">int</span> u=x-<span class="string">&#x27;a&#x27;</span>;</span><br><span class="line">            <span class="keyword">if</span>(!son[p][u]) <span class="keyword">return</span>;</span><br><span class="line">            p=son[p][u];</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="built_in">dfs</span>(v,s,p);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">dfs</span><span class="params">(vector&lt;string&gt;&amp; v,string&amp; t,<span class="keyword">int</span> p)</span></span>&#123;</span><br><span class="line">        <span class="keyword">if</span>(d==<span class="number">0</span>) <span class="keyword">return</span>;</span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;cnt[p]&amp;&amp;d;i++)&#123;</span><br><span class="line">            v.<span class="built_in">push_back</span>(t);</span><br><span class="line">            d--;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span>(d==<span class="number">0</span>) <span class="keyword">return</span>;</span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;<span class="number">26</span>;i++)&#123;</span><br><span class="line">            t+=(<span class="keyword">char</span>)(<span class="string">&#x27;a&#x27;</span>+i);</span><br><span class="line">            <span class="keyword">if</span>(son[p][i]) <span class="built_in">dfs</span>(v,t,son[p][i]);</span><br><span class="line">            t.<span class="built_in">pop_back</span>();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    vector&lt;vector&lt;string&gt;&gt; <span class="built_in">suggestedProducts</span>(vector&lt;string&gt;&amp; products, string word) &#123;</span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">auto</span> s:products) <span class="built_in">insert</span>(s);</span><br><span class="line">        vector&lt;vector&lt;string&gt;&gt; ans;</span><br><span class="line">        string t;</span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">auto</span> c:word)&#123;</span><br><span class="line">            t+=c;</span><br><span class="line">            vector&lt;string&gt; v;</span><br><span class="line">            d=<span class="number">3</span>;</span><br><span class="line">            <span class="built_in">cal</span>(v,t);</span><br><span class="line">            ans.<span class="built_in">push_back</span>(v);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> ans;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<h1 id="停在原地的方案数"><a href="#停在原地的方案数" class="headerlink" title="停在原地的方案数"></a>停在原地的方案数</h1><h2 id="题目-3"><a href="#题目-3" class="headerlink" title="题目"></a>题目</h2><p>有一个长度为 <code>arrLen</code> 的数组，开始有一个指针在索引 <code>0</code> 处。</p>
+<p>每一步操作中，你可以将指针向左或向右移动 1 步，或者停在原地（指针不能被移动到数组范围外）。</p>
+<p>给你两个整数 <code>steps</code> 和 <code>arrLen</code> ，请你计算并返回：在恰好执行 <code>steps</code> 次操作以后，指针仍然指向索引 <code>0</code> 处的方案数。</p>
+<p>由于答案可能会很大，请返回方案数 <strong>模</strong> <code>10^9 + 7</code> 后的结果。</p>
+<p><strong>示例 1：</strong></p>
+<figure class="highlight nix"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">输入：<span class="attr">steps</span> = <span class="number">3</span>, <span class="attr">arrLen</span> = <span class="number">2</span></span><br><span class="line">输出：<span class="number">4</span></span><br><span class="line">解释：<span class="number">3</span> 步后，总共有 <span class="number">4</span> 种不同的方法可以停在索引 <span class="number">0</span> 处。</span><br><span class="line">向右，向左，不动</span><br><span class="line">不动，向右，向左</span><br><span class="line">向右，不动，向左</span><br><span class="line">不动，不动，不动</span><br></pre></td></tr></table></figure>
+<p><strong>示例 2：</strong></p>
+<figure class="highlight nix"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">输入：<span class="attr">steps</span> = <span class="number">2</span>, <span class="attr">arrLen</span> = <span class="number">4</span></span><br><span class="line">输出：<span class="number">2</span></span><br><span class="line">解释：<span class="number">2</span> 步后，总共有 <span class="number">2</span> 种不同的方法可以停在索引 <span class="number">0</span> 处。</span><br><span class="line">向右，向左</span><br><span class="line">不动，不动</span><br></pre></td></tr></table></figure>
+<p><strong>示例 3：</strong></p>
+<figure class="highlight nix"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">输入：<span class="attr">steps</span> = <span class="number">4</span>, <span class="attr">arrLen</span> = <span class="number">2</span></span><br><span class="line">输出：<span class="number">8</span></span><br></pre></td></tr></table></figure>
+<p><strong>提示：</strong></p>
+<ul>
+<li>1 &lt;= steps &lt;= 500</li>
+<li>1 &lt;= arrLen &lt;= 10^6</li>
+</ul>
+<h2 id="题解-3"><a href="#题解-3" class="headerlink" title="题解"></a>题解</h2><p>这题yy了好多莫名其妙的定理然后最后是动态规划</p>
+<p>首先确定表示状态的二位数组dp[i][j]，i代表走了几步，j代表现在的位置</p>
+<p>那么dp[i][j]就可以从dp[i-1][j]（原地不动）和dp[i-1][j-1]（从右边走过来）以及dp[i-1][j+1]（从左边走过来）共同转移得到</p>
+<p>初始化的时候dp[0][0]=1，最后输出的是dp[steps][0]，也就是经过所有步数回到0点</p>
+<p>有个小坑，dp的边界是min(steps,len-1)，为什么要len-1因为题目中说了len是长度，且从0开始，所以需要减1</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span> &#123;</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="keyword">int</span> dp[<span class="number">600</span>][<span class="number">600</span>];</span><br><span class="line">    <span class="keyword">const</span> <span class="keyword">int</span> mod=<span class="number">1e9</span>+<span class="number">7</span>;</span><br><span class="line">    <span class="function"><span class="keyword">int</span> <span class="title">numWays</span><span class="params">(<span class="keyword">int</span> steps, <span class="keyword">int</span> len)</span> </span>&#123;</span><br><span class="line">        <span class="built_in">memset</span>(dp,<span class="number">0</span>,<span class="keyword">sizeof</span> dp);</span><br><span class="line">        <span class="keyword">int</span> n=<span class="built_in">min</span>(steps,len<span class="number">-1</span>);</span><br><span class="line">        dp[<span class="number">0</span>][<span class="number">0</span>]=<span class="number">1</span>;</span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">1</span>;i&lt;=steps;i++)</span><br><span class="line">            <span class="keyword">for</span>(<span class="keyword">int</span> j=<span class="number">0</span>;j&lt;=n;j++)&#123;</span><br><span class="line">                dp[i][j]=dp[i<span class="number">-1</span>][j];</span><br><span class="line">                <span class="keyword">if</span> (j&gt;<span class="number">0</span>)  (dp[i][j]+=dp[i<span class="number">-1</span>][j<span class="number">-1</span>])%=mod;</span><br><span class="line">                <span class="keyword">if</span> (j&lt;=n<span class="number">-1</span>) (dp[i][j]+=dp[i<span class="number">-1</span>][j+<span class="number">1</span>])%=mod;</span><br><span class="line">            &#125;</span><br><span class="line">        <span class="keyword">return</span> dp[steps][<span class="number">0</span>];</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2019/11/18/Leetcode%E5%91%A8%E8%B5%9B%E7%AC%AC163%E5%9C%BA%E9%A2%98%E8%A7%A3/" rel="prev" title="Leetcode周赛第163场题解">
+      <i class="fa fa-chevron-left"></i> Leetcode周赛第163场题解
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2019/12/01/Leetcode%E7%AC%AC14%E5%9C%BA%E5%8F%8C%E5%91%A8%E8%B5%9B/" rel="next" title="Leetcode第14场双周赛">
+      Leetcode第14场双周赛 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%91%A8%E8%B5%9B%E4%BC%A0%E9%80%81%E9%97%A8"><span class="nav-number">1.</span> <span class="nav-text">周赛传送门</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%AE%BF%E9%97%AE%E6%89%80%E6%9C%89%E7%82%B9%E7%9A%84%E6%9C%80%E5%B0%8F%E6%97%B6%E9%97%B4"><span class="nav-number">2.</span> <span class="nav-text">访问所有点的最小时间</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%A2%98%E7%9B%AE"><span class="nav-number">2.1.</span> <span class="nav-text">题目</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%A2%98%E8%A7%A3"><span class="nav-number">2.2.</span> <span class="nav-text">题解</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%BB%9F%E8%AE%A1%E5%8F%82%E4%B8%8E%E9%80%9A%E4%BF%A1%E7%9A%84%E6%9C%8D%E5%8A%A1%E5%99%A8"><span class="nav-number">3.</span> <span class="nav-text">统计参与通信的服务器</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%A2%98%E7%9B%AE-1"><span class="nav-number">3.1.</span> <span class="nav-text">题目</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%A2%98%E8%A7%A3-1"><span class="nav-number">3.2.</span> <span class="nav-text">题解</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%90%9C%E7%B4%A2%E6%8E%A8%E8%8D%90%E7%B3%BB%E7%BB%9F"><span class="nav-number">4.</span> <span class="nav-text">搜索推荐系统</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%A2%98%E7%9B%AE-2"><span class="nav-number">4.1.</span> <span class="nav-text">题目</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%A2%98%E8%A7%A3-2"><span class="nav-number">4.2.</span> <span class="nav-text">题解</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%81%9C%E5%9C%A8%E5%8E%9F%E5%9C%B0%E7%9A%84%E6%96%B9%E6%A1%88%E6%95%B0"><span class="nav-number">5.</span> <span class="nav-text">停在原地的方案数</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%A2%98%E7%9B%AE-3"><span class="nav-number">5.1.</span> <span class="nav-text">题目</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%A2%98%E8%A7%A3-3"><span class="nav-number">5.2.</span> <span class="nav-text">题解</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Lavender"
+      src="/img/Lavender.jpg">
+  <p class="site-author-name" itemprop="name">Lavender</p>
+  <div class="site-description" itemprop="description">再次出发</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">110</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+        <span class="site-state-item-count">18</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+        <span class="site-state-item-count">49</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/Lavender-QAQ" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;Lavender-QAQ" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title">
+      <i class="fa fa-fw fa-link"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="http://ltitan.github.io/" title="http:&#x2F;&#x2F;ltitan.github.io&#x2F;" rel="noopener" target="_blank">飞哥的技术园区</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://heshang.ink/" title="https:&#x2F;&#x2F;heshang.ink&#x2F;" rel="noopener" target="_blank">奎哥的Java课堂</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://kawaii-jump.github.io/" title="https:&#x2F;&#x2F;kawaii-jump.github.io&#x2F;" rel="noopener" target="_blank">涛哥的就业实录</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://49.232.1.238/" title="http:&#x2F;&#x2F;49.232.1.238&#x2F;" rel="noopener" target="_blank">薛老板的攻防战场</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://dumengblog.club/" title="https:&#x2F;&#x2F;dumengblog.club&#x2F;" rel="noopener" target="_blank">Dumeng的知识讲解</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://stephencuhui.github.io/" title="https:&#x2F;&#x2F;stephencuhui.github.io&#x2F;" rel="noopener" target="_blank">徽哥的步步攀升</a>
+        </li>
+    </ul>
+  </div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2017 – 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Lavender</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+</body>
+</html>

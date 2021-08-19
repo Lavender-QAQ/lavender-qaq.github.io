@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/img/caffee32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/img/caffee16x16.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":false,"style":"default"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"valine","storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="今天的主题就是大名鼎鼎的哈夫曼编码了。首先我们通过杭电的一道题来引入主题。先给出传送门：http:&#x2F;&#x2F;acm.hdu.edu.cn&#x2F;showproblem.php?pid&#x3D;2527">
+<meta property="og:type" content="article">
+<meta property="og:title" content="贪心算法：哈夫曼编码（HDU1053 2527题）">
+<meta property="og:url" content="http://example.com/2018/08/08/%E8%B4%AA%E5%BF%83%E7%AE%97%E6%B3%95%EF%BC%9A%E5%93%88%E5%A4%AB%E6%9B%BC%E7%BC%96%E7%A0%81%EF%BC%88HDU1053-2527%E9%A2%98%EF%BC%89/index.html">
+<meta property="og:site_name" content="In The End">
+<meta property="og:description" content="今天的主题就是大名鼎鼎的哈夫曼编码了。首先我们通过杭电的一道题来引入主题。先给出传送门：http:&#x2F;&#x2F;acm.hdu.edu.cn&#x2F;showproblem.php?pid&#x3D;2527">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://example.com/img/哈夫曼编码1.jpg">
+<meta property="og:image" content="http://example.com/img/哈夫曼编码2.png">
+<meta property="og:image" content="http://example.com/img/哈夫曼编码3.png">
+<meta property="og:image" content="http://example.com/img/哈夫曼编码4.png">
+<meta property="og:image" content="http://example.com/img/哈夫曼编码5.png">
+<meta property="og:image" content="http://example.com/img/哈夫曼编码6.png">
+<meta property="og:image" content="http://example.com/img/哈夫曼编码7.png">
+<meta property="og:image" content="http://example.com/img/哈夫曼编码8.png">
+<meta property="og:image" content="http://example.com/img/哈夫曼编码9.png">
+<meta property="article:published_time" content="2018-08-08T15:59:46.000Z">
+<meta property="article:modified_time" content="2021-08-05T01:49:59.004Z">
+<meta property="article:author" content="Lavender">
+<meta property="article:tag" content="数据结构">
+<meta property="article:tag" content="优先队列">
+<meta property="article:tag" content="贪心">
+<meta property="article:tag" content="哈夫曼编码">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/img/哈夫曼编码1.jpg">
+
+<link rel="canonical" href="http://example.com/2018/08/08/%E8%B4%AA%E5%BF%83%E7%AE%97%E6%B3%95%EF%BC%9A%E5%93%88%E5%A4%AB%E6%9B%BC%E7%BC%96%E7%A0%81%EF%BC%88HDU1053-2527%E9%A2%98%EF%BC%89/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>贪心算法：哈夫曼编码（HDU1053 2527题） | In The End</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">In The End</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">个人博客</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2018/08/08/%E8%B4%AA%E5%BF%83%E7%AE%97%E6%B3%95%EF%BC%9A%E5%93%88%E5%A4%AB%E6%9B%BC%E7%BC%96%E7%A0%81%EF%BC%88HDU1053-2527%E9%A2%98%EF%BC%89/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/img/Lavender.jpg">
+      <meta itemprop="name" content="Lavender">
+      <meta itemprop="description" content="再次出发">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="In The End">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          贪心算法：哈夫曼编码（HDU1053 2527题）
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2018-08-08 15:59:46" itemprop="dateCreated datePublished" datetime="2018-08-08T15:59:46Z">2018-08-08</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2021-08-05 01:49:59" itemprop="dateModified" datetime="2021-08-05T01:49:59Z">2021-08-05</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/ACM/" itemprop="url" rel="index"><span itemprop="name">ACM</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/ACM/%E6%9D%AD%E7%94%B5oj/" itemprop="url" rel="index"><span itemprop="name">杭电oj</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>今天的主题就是大名鼎鼎的哈夫曼编码了。首先我们通过杭电的一道题来引入主题。<br>先给出传送门：<a target="_blank" rel="noopener" href="http://acm.hdu.edu.cn/showproblem.php?pid=2527">http://acm.hdu.edu.cn/showproblem.php?pid=2527</a></p>
+<span id="more"></span>
+<h1 id="HDU2527"><a href="#HDU2527" class="headerlink" title="HDU2527"></a>HDU2527</h1><p><strong>Safe Or Unsafe</strong><br>Time Limit: 2000/1000 MS (Java/Others)    Memory Limit: 32768/32768 K (Java/Others)<br>Total Submission(s): 3428    Accepted Submission(s): 1402</p>
+<p><strong>Problem Description</strong><br>Javac++ 一天在看计算机的书籍的时候，看到了一个有趣的东西！每一串字符都可以被编码成一些数字来储存信息，但是不同的编码方式得到的储存空间是不一样的！并且当储存空间大于一定的值的时候是不安全的！所以Javac++ 就想是否有一种方式是可以得到字符编码最小的空间值！显然这是可以的，因为书上有这一块内容—哈夫曼编码(Huffman Coding)；一个字母的权值等于该字母在字符串中出现的频率。所以Javac++ 想让你帮忙，给你安全数值和一串字符串，并让你判断这个字符串是否是安全的？</p>
+<p><strong>Input</strong><br>输入有多组case，首先是一个数字n表示有n组数据，然后每一组数据是有一个数值m(integer)，和一串字符串没有空格只有包含小写字母组成！</p>
+<p><strong>Output</strong><br>如果字符串的编码值小于等于给定的值则输出yes，否则输出no。</p>
+<p><strong>Sample Input</strong><br>2<br>12<br>helloworld<br>66<br>ithinkyoucandoit</p>
+<p><strong>Sample Output</strong><br>no<br>yes</p>
+<p>首先我们可以看到这道题的题意应该比较清晰了，就是将字符串进行编码，转换为2进制的一串数字。那么如何编码呢，那我们就要引入哈夫曼编码了，在此之前我先引出哈夫曼树的概念。</p>
+<h1 id="哈夫曼树"><a href="#哈夫曼树" class="headerlink" title="哈夫曼树"></a>哈夫曼树</h1><p>首先我们假设我们的字符串是“AAABCCD”，那么假设我们有下面这一棵树的结构，每次我们从树根向下走，想左就是0，向右就是1，这样我们就可以对字符进行二进制表示了。<br><img src="/img/哈夫曼编码1.jpg" alt=""><br><img src="/img/哈夫曼编码2.png" alt=""><br>我们就可以轻易地得到这个字符串的二进制编码“111111111101101100”</p>
+<p>而且你可以观察出一个现象，这个字符串不会产生歧义，不会出现一个二进制串对应好多种情况的问题，这是为什么呢？因为哈夫曼树的所有字符的位置必须是叶子节点（没有子节点的节点，最后的节点），由于每个叶子节点的路径都是独一无二的，所以我们会发现编码也不会引起歧义，不会出现像A为“111”而B是“11”这种无法判断的情况。</p>
+<p>还有一个特别有意思的情况，我们会改变一下哈夫曼树的样子，就像下图这样<br><img src="/img/哈夫曼编码3.png" alt=""><br>我们可以看到这时二进制变成了“00000001101011”，明显比第一次的短吧，在实际应用中，如果数据量很大，省下一个比特可能都会带来很大的变化。</p>
+<p>最后我们再看看下图<br><img src="/img/哈夫曼编码4.png" alt=""><br>这次二进制编码变成了“0001101010111”，很明显这次的最短吧。经过三张图片的比对你会发现，只要把出现次数越多的字母放在上面，把出现次数越少的字母放在下面，这样我们编码出来的二进制串就会是最短长度。</p>
+<p>在很多的实际应用中，很多哈夫曼编码的程序就会根据字符出现的次数来动态创建哈夫曼树，这样可以使二进制码最短，然后解码方根据这个哈夫曼树和二进制码也可以最快地得出字符串。</p>
+<p>那么HDU2527就是要我们根据这个字符串找到最短的二进制码，换言之就是找到最好的哈夫曼树，那么我们该怎么做呢？</p>
+<h1 id="最优哈夫曼树"><a href="#最优哈夫曼树" class="headerlink" title="最优哈夫曼树"></a>最优哈夫曼树</h1><p>首先我们需要这样几个步骤：</p>
+<ul>
+<li>1.按出现频率排队，出现次数越多的字符排在越后面。</li>
+<li>2.把两个队伍最前面的节点（就是次数最少的两个）相加，然后在两个节点头上生成一个父节点，并把父节点的出现次数设置为两个子节点出现次数的总和。</li>
+<li>3.再次排序，始终次数较低的节点放在左边，然后继续第二步，直到最后只剩一个节点跳出循环。</li>
+<li>4.最后剩下的节点就是这棵最优哈夫曼树的根节点。</li>
+</ul>
+<p>下面是是图示<br><img src="/img/哈夫曼编码5.png" alt=""><br><img src="/img/哈夫曼编码6.png" alt=""><br><img src="/img/哈夫曼编码7.png" alt=""><br><img src="/img/哈夫曼编码8.png" alt=""><br><img src="/img/哈夫曼编码9.png" alt=""><br>所以我们会发现其实最麻烦的还是一直要排序这一步，所以我们采用优先队列，而且是从小到大的优先队列，就可以轻松搞定这个排序的任务，然后就是算出最小长度，我们可以发现一个字符所占的长度是由它的出现次数×字符所占的位数（就是深度）决定的，因为跟深度有关，我们又要将树慢慢地变深，所以我们可不可以直接每一步合并的时候将合并后的值sum直接加到答案ans中去，需要合并三次的节点就会重复加3次，正好就是深度，所以就有了下面的代码：<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;cstring&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;queue&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> std;</span><br><span class="line"><span class="keyword">int</span> ch[<span class="number">30</span>];</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span>&#123;</span><br><span class="line">    <span class="keyword">int</span> T;</span><br><span class="line">    <span class="keyword">while</span>(cin&gt;&gt;T)&#123;</span><br><span class="line">        <span class="keyword">int</span> n;</span><br><span class="line">        string s;</span><br><span class="line">        <span class="keyword">while</span>(T--)&#123;</span><br><span class="line">            cin&gt;&gt;n&gt;&gt;s;</span><br><span class="line">            <span class="built_in">memset</span>(ch,<span class="number">0</span>,<span class="built_in"><span class="keyword">sizeof</span></span>(ch));</span><br><span class="line">            <span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;s.<span class="built_in">length</span>();i++)</span><br><span class="line">                ch[s[i]-<span class="string">&#x27;a&#x27;</span>]++;</span><br><span class="line">            priority_queue&lt;<span class="keyword">int</span>,vector&lt;<span class="keyword">int</span>&gt;,greater&lt;<span class="keyword">int</span>&gt; &gt; que;</span><br><span class="line">            <span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;<span class="number">30</span>;i++)</span><br><span class="line">                <span class="keyword">if</span>(ch[i])</span><br><span class="line">                    que.<span class="built_in">push</span>(ch[i]);</span><br><span class="line">            <span class="keyword">int</span> flag=<span class="number">1</span>,sum=<span class="number">0</span>,ans=<span class="number">0</span>;</span><br><span class="line">            <span class="keyword">if</span>(que.<span class="built_in">size</span>()==<span class="number">1</span>)&#123;</span><br><span class="line">                flag=<span class="number">0</span>;</span><br><span class="line">                ans=que.<span class="built_in">size</span>();</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">while</span>(que.<span class="built_in">size</span>()&gt;<span class="number">1</span>&amp;&amp;flag)&#123;</span><br><span class="line">                <span class="keyword">int</span> t1=que.<span class="built_in">top</span>();que.<span class="built_in">pop</span>();</span><br><span class="line">                <span class="keyword">int</span> t2=que.<span class="built_in">top</span>();que.<span class="built_in">pop</span>();</span><br><span class="line">                sum=t1+t2;</span><br><span class="line">                ans+=sum;</span><br><span class="line">                que.<span class="built_in">push</span>(sum);</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="comment">//cout &lt;&lt; ans &lt;&lt; endl;</span></span><br><span class="line">            <span class="keyword">if</span>(ans&lt;n)</span><br><span class="line">                cout &lt;&lt; <span class="string">&quot;yes&quot;</span> &lt;&lt; endl;</span><br><span class="line">            <span class="keyword">else</span></span><br><span class="line">                cout &lt;&lt; <span class="string">&quot;no&quot;</span> &lt;&lt; endl;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure></p>
+<h1 id="HDU1053题"><a href="#HDU1053题" class="headerlink" title="HDU1053题"></a>HDU1053题</h1><p>题目传送门：<a target="_blank" rel="noopener" href="http://acm.hdu.edu.cn/showproblem.php?pid=1053">http://acm.hdu.edu.cn/showproblem.php?pid=1053</a><br>题目是英文的，请大家点击链接自行查看。</p>
+<p>这道题也是换汤不换药，也用上面的思路做就可以了，无非就是多了个除一下然后保留小数的操作罢了<br>下面是AC代码：<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;cstring&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;queue&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iomanip&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> std;</span><br><span class="line"><span class="keyword">int</span> ch[<span class="number">30</span>];</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span>&#123;</span><br><span class="line">    string s;</span><br><span class="line">    <span class="keyword">while</span>(cin&gt;&gt;s&amp;&amp;s!=<span class="string">&quot;END&quot;</span>)&#123;</span><br><span class="line">        <span class="built_in">memset</span>(ch,<span class="number">0</span>,<span class="built_in"><span class="keyword">sizeof</span></span>(ch));</span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;s.<span class="built_in">length</span>();i++) &#123;</span><br><span class="line">            <span class="keyword">if</span> (s[i] == <span class="string">&#x27;_&#x27;</span>)</span><br><span class="line">                s[i]=<span class="string">&#x27;Z&#x27;</span>+<span class="number">1</span>;</span><br><span class="line">            ch[s[i]-<span class="string">&#x27;A&#x27;</span>]++;</span><br><span class="line">        &#125;</span><br><span class="line">        priority_queue&lt;<span class="keyword">int</span>,vector&lt;<span class="keyword">int</span>&gt;,greater&lt;<span class="keyword">int</span>&gt; &gt; que;</span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;<span class="number">30</span>;i++)</span><br><span class="line">            <span class="keyword">if</span>(ch[i])</span><br><span class="line">                que.<span class="built_in">push</span>(ch[i]);</span><br><span class="line">        <span class="keyword">int</span> ans=<span class="number">0</span>,sum=<span class="number">0</span>;</span><br><span class="line">        <span class="keyword">int</span> flag=<span class="number">1</span>;</span><br><span class="line">        <span class="keyword">if</span>(que.<span class="built_in">size</span>()==<span class="number">1</span>) &#123;</span><br><span class="line">            ans = que.<span class="built_in">top</span>();</span><br><span class="line">            flag = <span class="number">0</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">while</span>(que.<span class="built_in">size</span>()&gt;<span class="number">1</span>&amp;&amp;flag)&#123;</span><br><span class="line">            <span class="keyword">int</span> t1=que.<span class="built_in">top</span>();que.<span class="built_in">pop</span>();</span><br><span class="line">            <span class="keyword">int</span> t2=que.<span class="built_in">top</span>();que.<span class="built_in">pop</span>();</span><br><span class="line">            sum=t1+t2;</span><br><span class="line">            ans+=sum;</span><br><span class="line">            que.<span class="built_in">push</span>(sum);</span><br><span class="line">        &#125;</span><br><span class="line">        cout &lt;&lt; s.<span class="built_in">length</span>()*<span class="number">8</span> &lt;&lt; <span class="string">&#x27; &#x27;</span> &lt;&lt; ans &lt;&lt; <span class="string">&#x27; &#x27;</span>;</span><br><span class="line">        cout &lt;&lt; fixed &lt;&lt; <span class="built_in">setprecision</span>(<span class="number">1</span>) &lt;&lt; (<span class="keyword">double</span>)(s.<span class="built_in">length</span>()*<span class="number">8</span>)/ans &lt;&lt; endl;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure><br>ok，总算是写完了。。哈哈。</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" rel="tag"># 数据结构</a>
+              <a href="/tags/%E4%BC%98%E5%85%88%E9%98%9F%E5%88%97/" rel="tag"># 优先队列</a>
+              <a href="/tags/%E8%B4%AA%E5%BF%83/" rel="tag"># 贪心</a>
+              <a href="/tags/%E5%93%88%E5%A4%AB%E6%9B%BC%E7%BC%96%E7%A0%81/" rel="tag"># 哈夫曼编码</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2018/08/07/%E8%B4%AA%E5%BF%83%E7%AE%97%E6%B3%95%EF%BC%9A%E5%8C%BA%E9%97%B4%E7%9B%B8%E5%85%B3%E9%97%AE%E9%A2%98/" rel="prev" title="贪心算法：区间相关问题">
+      <i class="fa fa-chevron-left"></i> 贪心算法：区间相关问题
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2018/08/09/%E5%8C%BA%E5%9D%97%E9%93%BE%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B04%EF%BC%9A%E6%AF%94%E7%89%B9%E5%B8%81%E4%BA%A4%E6%98%93/" rel="next" title="区块链学习笔记4：比特币交易">
+      区块链学习笔记4：比特币交易 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#HDU2527"><span class="nav-number">1.</span> <span class="nav-text">HDU2527</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%93%88%E5%A4%AB%E6%9B%BC%E6%A0%91"><span class="nav-number">2.</span> <span class="nav-text">哈夫曼树</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%9C%80%E4%BC%98%E5%93%88%E5%A4%AB%E6%9B%BC%E6%A0%91"><span class="nav-number">3.</span> <span class="nav-text">最优哈夫曼树</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#HDU1053%E9%A2%98"><span class="nav-number">4.</span> <span class="nav-text">HDU1053题</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Lavender"
+      src="/img/Lavender.jpg">
+  <p class="site-author-name" itemprop="name">Lavender</p>
+  <div class="site-description" itemprop="description">再次出发</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">110</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+        <span class="site-state-item-count">18</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+        <span class="site-state-item-count">49</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/Lavender-QAQ" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;Lavender-QAQ" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title">
+      <i class="fa fa-fw fa-link"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="http://ltitan.github.io/" title="http:&#x2F;&#x2F;ltitan.github.io&#x2F;" rel="noopener" target="_blank">飞哥的技术园区</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://heshang.ink/" title="https:&#x2F;&#x2F;heshang.ink&#x2F;" rel="noopener" target="_blank">奎哥的Java课堂</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://kawaii-jump.github.io/" title="https:&#x2F;&#x2F;kawaii-jump.github.io&#x2F;" rel="noopener" target="_blank">涛哥的就业实录</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://49.232.1.238/" title="http:&#x2F;&#x2F;49.232.1.238&#x2F;" rel="noopener" target="_blank">薛老板的攻防战场</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://dumengblog.club/" title="https:&#x2F;&#x2F;dumengblog.club&#x2F;" rel="noopener" target="_blank">Dumeng的知识讲解</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://stephencuhui.github.io/" title="https:&#x2F;&#x2F;stephencuhui.github.io&#x2F;" rel="noopener" target="_blank">徽哥的步步攀升</a>
+        </li>
+    </ul>
+  </div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2017 – 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Lavender</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+</body>
+</html>

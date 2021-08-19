@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/img/caffee32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/img/caffee16x16.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":false,"style":"default"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"valine","storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="这次这篇文章主要是讨论一个经典的问题和一个经典的算法,首先我们可以看到这个问题叫做RMQ问题,然后我们接下来讨论的这个算法就是用来解决这个经典的问题的,由Tarjan大牛发明创造的Sparse-Table算法. RMQ问题先来说说RMQ问题,RMQ问题的全称叫做范围最值问题(Range Minimum&#x2F;Maximum Query),是指这样一个问题：对于长度为n的数列A，回答若干次询问RMQ(i,">
+<meta property="og:type" content="article">
+<meta property="og:title" content="UVA11235题:频繁出现的数值(RMQ问题+Sparse-Table算法)">
+<meta property="og:url" content="http://example.com/2018/10/01/UVA11235%E9%A2%98-%E9%A2%91%E7%B9%81%E5%87%BA%E7%8E%B0%E7%9A%84%E6%95%B0%E5%80%BC-RMQ%E9%97%AE%E9%A2%98-Sparse-Table%E7%AE%97%E6%B3%95/index.html">
+<meta property="og:site_name" content="In The End">
+<meta property="og:description" content="这次这篇文章主要是讨论一个经典的问题和一个经典的算法,首先我们可以看到这个问题叫做RMQ问题,然后我们接下来讨论的这个算法就是用来解决这个经典的问题的,由Tarjan大牛发明创造的Sparse-Table算法. RMQ问题先来说说RMQ问题,RMQ问题的全称叫做范围最值问题(Range Minimum&#x2F;Maximum Query),是指这样一个问题：对于长度为n的数列A，回答若干次询问RMQ(i,">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://example.com/img/RMQ问题1.png">
+<meta property="article:published_time" content="2018-10-01T14:01:52.000Z">
+<meta property="article:modified_time" content="2021-08-05T01:54:47.826Z">
+<meta property="article:author" content="Lavender">
+<meta property="article:tag" content="数据结构">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/img/RMQ问题1.png">
+
+<link rel="canonical" href="http://example.com/2018/10/01/UVA11235%E9%A2%98-%E9%A2%91%E7%B9%81%E5%87%BA%E7%8E%B0%E7%9A%84%E6%95%B0%E5%80%BC-RMQ%E9%97%AE%E9%A2%98-Sparse-Table%E7%AE%97%E6%B3%95/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>UVA11235题:频繁出现的数值(RMQ问题+Sparse-Table算法) | In The End</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">In The End</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">个人博客</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2018/10/01/UVA11235%E9%A2%98-%E9%A2%91%E7%B9%81%E5%87%BA%E7%8E%B0%E7%9A%84%E6%95%B0%E5%80%BC-RMQ%E9%97%AE%E9%A2%98-Sparse-Table%E7%AE%97%E6%B3%95/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/img/Lavender.jpg">
+      <meta itemprop="name" content="Lavender">
+      <meta itemprop="description" content="再次出发">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="In The End">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          UVA11235题:频繁出现的数值(RMQ问题+Sparse-Table算法)
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2018-10-01 14:01:52" itemprop="dateCreated datePublished" datetime="2018-10-01T14:01:52Z">2018-10-01</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2021-08-05 01:54:47" itemprop="dateModified" datetime="2021-08-05T01:54:47Z">2021-08-05</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/ACM/" itemprop="url" rel="index"><span itemprop="name">ACM</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/ACM/UVA/" itemprop="url" rel="index"><span itemprop="name">UVA</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>这次这篇文章主要是讨论一个经典的问题和一个经典的算法,首先我们可以看到这个问题叫做RMQ问题,然后我们接下来讨论的这个算法就是用来解决这个经典的问题的,由Tarjan大牛发明创造的Sparse-Table算法.</p>
+<h1 id="RMQ问题"><a href="#RMQ问题" class="headerlink" title="RMQ问题"></a>RMQ问题</h1><p>先来说说RMQ问题,RMQ问题的全称叫做范围最值问题(Range Minimum/Maximum Query),是指这样一个问题：对于长度为n的数列A，回答若干次询问RMQ(i,j)，返回数列A中下标在区间[i,j]中的最小/大值。</p>
+<span id="more"></span>
+<h1 id="Sparse-Table算法-简称ST算法"><a href="#Sparse-Table算法-简称ST算法" class="headerlink" title="Sparse-Table算法(简称ST算法)"></a>Sparse-Table算法(简称ST算法)</h1><p>Tarjan大牛发明了很多知名的算法,Sparse-Table算法就是其中的一个,我们首先来讲一下这个算法的原理.</p>
+<p>我们可以看到在RMQ问题中最浪费时间的就是一次接着一次的查询,如果查询次数多的话是非常浪费时间的,不过,既然我们每次查询的性质都一样的话(都是一个范围内求最值),我们可不可以经过一些预先的处理,将多次查询的复杂度降下来呢?</p>
+<p>答案是可以的,我们完全可以这样做,我们原先是使用一维数组存数据,然后机械地去寻找最值,我们现在仍然还是使用这一维的数据,不过,我们可以建立另一个维度去存放关于最值的信息.假如我们最开始是使用d[i]去存储数据,但是我现在再开另一个维度使其变成d[i][j],我们使用d[i][0]存储原来的数据.</p>
+<p>那么在j&gt;0的数据中存什么呢,这就是关键了.当j=1,我们存储的就是两两之间的最值.当j=2时,我们存储的是四个四个之间的最值.当j=3时,我们存储每八个元素的最值.细心地同学已经可以发现了,就是2的j次方嘛!</p>
+<p>所以我们可以用这种方法去保留最值,当然我们初始化的时候得使用一下动态规划,利用已经求出来的区间最值去求更大的区间最值.</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">init</span><span class="params">(<span class="keyword">const</span> vector&lt;<span class="keyword">int</span>&gt;&amp; a)</span></span>&#123;</span><br><span class="line">	<span class="keyword">int</span> n=a.<span class="built_in">size</span>();</span><br><span class="line">    <span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;n;i++)</span><br><span class="line">        d[i][<span class="number">0</span>]=a[i].cnt;</span><br><span class="line">    <span class="keyword">for</span>(<span class="keyword">int</span> j=<span class="number">1</span>;(<span class="number">1</span>&lt;&lt;j)&lt;=n;j++)</span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>;i+(<span class="number">1</span>&lt;&lt;j)<span class="number">-1</span>&lt;n;i++)</span><br><span class="line">            d[i][j]=<span class="built_in">max</span>(d[i][j<span class="number">-1</span>],d[i+(<span class="number">1</span>&lt;&lt;(j<span class="number">-1</span>))][j<span class="number">-1</span>]);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>接下来就是如何查询的问题了,查询的操作有一点抽象,建议同学们自己找一些例子去理解一下,不要干看.</p>
+<p>如果我们要查询[L,R]的最大值,我们有已经初始化成功的d数组,我们首先得算出(R-L+1)介于2的几次方之间,然后取两个刚好比(R-L+1)小一个量级的维度2^k,如下图<br><img src="/img/RMQ问题1.png" alt=""><br>有人会担心重复覆盖的元素会影响结果,这个很显然是不会的.以下是代码:<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">RMQ</span><span class="params">(<span class="keyword">int</span> L,<span class="keyword">int</span> R)</span></span>&#123;</span><br><span class="line">    <span class="keyword">if</span>(L&gt;R)</span><br><span class="line">        <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">int</span> k=<span class="number">0</span>;</span><br><span class="line">    <span class="keyword">while</span>((<span class="number">1</span>&lt;&lt;(k+<span class="number">1</span>))&lt;=R-L+<span class="number">1</span>)</span><br><span class="line">        k++;</span><br><span class="line">    <span class="keyword">return</span> <span class="built_in">max</span>(d[L][k],d[R-(<span class="number">1</span>&lt;&lt;k)+<span class="number">1</span>][k]);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h1 id="一道题目-题目翻译来自洛谷"><a href="#一道题目-题目翻译来自洛谷" class="headerlink" title="一道题目(题目翻译来自洛谷)"></a>一道题目(题目翻译来自洛谷)</h1><p>题目传送门:<a target="_blank" rel="noopener" href="https://www.luogu.org/problemnew/show/UVA11235">https://www.luogu.org/problemnew/show/UVA11235</a></p>
+<p>题目描述： 给出一个非降序排列的整数数组a1,a2,…,an,你的任务是对于一系列询问i,j,回答ai,ai+1,…aj中出现次数最多的值所出现的次数</p>
+<p>输入数据： 输入包含多组数据。每组数据第一行为两个整数n和q（1≤n，q≤100000）。第二行包含n个非降序排列的整数a1,a2,…,an（-100000≤ai≤100000）。以下q行每行包含两个整数i和j（1≤i≤j≤n），输入结束标志为n=0</p>
+<p>输出格式 对于每个查询i，j，输出查询结果，也就是i~j中出现次数最多的数的个数，之间用换行隔开</p>
+<p>注：朴素算法可能会超时！（这个注释原本题目里面就有，不是我自己加的。。）</p>
+<p>由 @hicc0305 提供翻译</p>
+<h1 id="分析"><a href="#分析" class="headerlink" title="分析"></a>分析</h1><p>首先这道题乍看上去好像想不到RMQ问题上,不过仔细一想,如果我们提前把每个数出现的次数都统计下来放到一个数组里,不就等于每一次询问就是在求区间最大值吗?</p>
+<p>但是这题目并不是统计一下然后跑一遍ST算法这么简单的,因为我们的题目的询问的位置很可能会在一串连续的向相同的数字中间,然后在外部的数字就不会被算进去,这时候我们根据元素值去进行ST算法后就会多算值,那就很糟糕了.</p>
+<p>那么我们就要记忆每一串相同的数字的起始位置和终止位置,然后在我们使用ST算的时候最左边的那个元素和最右边的元素我们都不要使用ST算法去算(只有最左边的元素和最右边的元素可能会被截断),而是使用相对位置去算,然后中间的元素就可以使用正常的高效的ST算法运算,最后得到的三个结果取个最大值就可以了.</p>
+<p>以下是AC代码:<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;algorithm&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> std;</span><br><span class="line"><span class="keyword">const</span> <span class="keyword">int</span> maxn=<span class="number">100010</span>;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">Segment</span>&#123;</span></span><br><span class="line">    <span class="keyword">int</span> val;</span><br><span class="line">    <span class="keyword">int</span> cnt;</span><br><span class="line">    <span class="built_in">Segment</span>(<span class="keyword">int</span> val,<span class="keyword">int</span> cnt):<span class="built_in">val</span>(val),<span class="built_in">cnt</span>(cnt)&#123;&#125;</span><br><span class="line">    <span class="built_in">Segment</span>():<span class="built_in">val</span>(<span class="number">0</span>),<span class="built_in">cnt</span>(<span class="number">0</span>)&#123;&#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">Loc</span>&#123;</span></span><br><span class="line">    <span class="keyword">int</span> left;</span><br><span class="line">    <span class="keyword">int</span> right;</span><br><span class="line">    <span class="keyword">int</span> num;</span><br><span class="line">    <span class="built_in">Loc</span>():<span class="built_in">left</span>(<span class="number">0</span>),<span class="built_in">right</span>(<span class="number">0</span>),<span class="built_in">num</span>(<span class="number">0</span>)&#123;&#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">int</span> d[maxn][<span class="number">20</span>];</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">init</span><span class="params">(<span class="keyword">const</span> Segment* a,<span class="keyword">int</span> seg_num)</span></span>&#123;</span><br><span class="line">    <span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;seg_num;i++)</span><br><span class="line">        d[i][<span class="number">0</span>]=a[i].cnt;</span><br><span class="line">    <span class="keyword">for</span>(<span class="keyword">int</span> j=<span class="number">1</span>;(<span class="number">1</span>&lt;&lt;j)&lt;=seg_num;j++)</span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>;i+(<span class="number">1</span>&lt;&lt;j)<span class="number">-1</span>&lt;seg_num;i++)</span><br><span class="line">            d[i][j]=<span class="built_in">max</span>(d[i][j<span class="number">-1</span>],d[i+(<span class="number">1</span>&lt;&lt;(j<span class="number">-1</span>))][j<span class="number">-1</span>]);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">RMQ</span><span class="params">(<span class="keyword">int</span> L,<span class="keyword">int</span> R)</span></span>&#123;</span><br><span class="line">    <span class="keyword">if</span>(L&gt;R)</span><br><span class="line">        <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">int</span> k=<span class="number">0</span>;</span><br><span class="line">    <span class="keyword">while</span>((<span class="number">1</span>&lt;&lt;(k+<span class="number">1</span>))&lt;=R-L+<span class="number">1</span>)</span><br><span class="line">        k++;</span><br><span class="line">    <span class="keyword">return</span> <span class="built_in">max</span>(d[L][k],d[R-(<span class="number">1</span>&lt;&lt;k)+<span class="number">1</span>][k]);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span>&#123;</span><br><span class="line">    ios::<span class="built_in">sync_with_stdio</span>(<span class="literal">false</span>);</span><br><span class="line">    <span class="keyword">int</span> n,q;</span><br><span class="line">    <span class="keyword">while</span>(cin&gt;&gt;n&amp;&amp;n)&#123;</span><br><span class="line">        cin&gt;&gt;q;</span><br><span class="line">        <span class="keyword">int</span> *s=<span class="keyword">new</span> <span class="keyword">int</span>[n+<span class="number">10</span>];</span><br><span class="line">        Segment* seg=<span class="keyword">new</span> Segment[n+<span class="number">10</span>];</span><br><span class="line">        Loc* loc=<span class="keyword">new</span> Loc[n+<span class="number">10</span>];</span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">1</span>;i&lt;=n;i++)</span><br><span class="line">            cin&gt;&gt;s[i];</span><br><span class="line">        <span class="keyword">int</span> count=<span class="number">1</span>,seg_num=<span class="number">0</span>;</span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">1</span>;i&lt;=n;i++)&#123;</span><br><span class="line">            <span class="keyword">while</span>(s[i]==s[i+<span class="number">1</span>])&#123;</span><br><span class="line">                i++;</span><br><span class="line">                count++;</span><br><span class="line">            &#125;</span><br><span class="line">            seg[seg_num].val=s[i];</span><br><span class="line">            seg[seg_num].cnt=count;</span><br><span class="line">            seg_num++;</span><br><span class="line">            count=<span class="number">1</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">int</span> num=<span class="number">1</span>,left,right,f;</span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;seg_num;i++)&#123;</span><br><span class="line">            f=<span class="number">0</span>;</span><br><span class="line">            <span class="keyword">while</span>(s[num]==seg[i].val)&#123;</span><br><span class="line">                <span class="keyword">if</span>(!f) &#123;</span><br><span class="line">                    left = num;</span><br><span class="line">                    right= left+seg[i].cnt<span class="number">-1</span>;</span><br><span class="line">                    f=<span class="number">1</span>;</span><br><span class="line">                &#125;</span><br><span class="line">                loc[num].num=i;</span><br><span class="line">                loc[num].left=left;</span><br><span class="line">                loc[num].right=right;</span><br><span class="line">                num++;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="built_in">init</span>(seg,seg_num);</span><br><span class="line">        <span class="keyword">int</span> a,b;</span><br><span class="line">        <span class="keyword">while</span>(q--)&#123;</span><br><span class="line">            cin&gt;&gt;a&gt;&gt;b;</span><br><span class="line">            <span class="keyword">if</span>(a&gt;b)</span><br><span class="line">                <span class="built_in">swap</span>(a,b);</span><br><span class="line">            <span class="keyword">if</span>(loc[a].num==loc[b].num)</span><br><span class="line">                cout &lt;&lt; b-a+<span class="number">1</span> &lt;&lt; endl;</span><br><span class="line">            <span class="keyword">else</span></span><br><span class="line">                cout &lt;&lt; <span class="built_in">max</span>(loc[a].right-a+<span class="number">1</span>,<span class="built_in">max</span>(b-loc[b].left+<span class="number">1</span>,<span class="built_in">RMQ</span>(loc[a].num+<span class="number">1</span>,loc[b].num<span class="number">-1</span>))) &lt;&lt; endl;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure></p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" rel="tag"># 数据结构</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2018/09/12/%E7%BB%84%E5%90%88%E6%B8%B8%E6%88%8F%E4%B8%8E%E5%8D%9A%E5%BC%88%E8%AE%BA/" rel="prev" title="组合游戏与博弈论">
+      <i class="fa fa-chevron-left"></i> 组合游戏与博弈论
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2018/10/17/%E6%A0%91%E7%8A%B6%E6%95%B0%E7%BB%84%E5%8F%8AUVA1248/" rel="next" title="树状数组及UVA1248">
+      树状数组及UVA1248 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#RMQ%E9%97%AE%E9%A2%98"><span class="nav-number">1.</span> <span class="nav-text">RMQ问题</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Sparse-Table%E7%AE%97%E6%B3%95-%E7%AE%80%E7%A7%B0ST%E7%AE%97%E6%B3%95"><span class="nav-number">2.</span> <span class="nav-text">Sparse-Table算法(简称ST算法)</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%B8%80%E9%81%93%E9%A2%98%E7%9B%AE-%E9%A2%98%E7%9B%AE%E7%BF%BB%E8%AF%91%E6%9D%A5%E8%87%AA%E6%B4%9B%E8%B0%B7"><span class="nav-number">3.</span> <span class="nav-text">一道题目(题目翻译来自洛谷)</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%88%86%E6%9E%90"><span class="nav-number">4.</span> <span class="nav-text">分析</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Lavender"
+      src="/img/Lavender.jpg">
+  <p class="site-author-name" itemprop="name">Lavender</p>
+  <div class="site-description" itemprop="description">再次出发</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">110</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+        <span class="site-state-item-count">18</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+        <span class="site-state-item-count">49</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/Lavender-QAQ" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;Lavender-QAQ" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title">
+      <i class="fa fa-fw fa-link"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="http://ltitan.github.io/" title="http:&#x2F;&#x2F;ltitan.github.io&#x2F;" rel="noopener" target="_blank">飞哥的技术园区</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://heshang.ink/" title="https:&#x2F;&#x2F;heshang.ink&#x2F;" rel="noopener" target="_blank">奎哥的Java课堂</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://kawaii-jump.github.io/" title="https:&#x2F;&#x2F;kawaii-jump.github.io&#x2F;" rel="noopener" target="_blank">涛哥的就业实录</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://49.232.1.238/" title="http:&#x2F;&#x2F;49.232.1.238&#x2F;" rel="noopener" target="_blank">薛老板的攻防战场</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://dumengblog.club/" title="https:&#x2F;&#x2F;dumengblog.club&#x2F;" rel="noopener" target="_blank">Dumeng的知识讲解</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://stephencuhui.github.io/" title="https:&#x2F;&#x2F;stephencuhui.github.io&#x2F;" rel="noopener" target="_blank">徽哥的步步攀升</a>
+        </li>
+    </ul>
+  </div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2017 – 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Lavender</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+</body>
+</html>

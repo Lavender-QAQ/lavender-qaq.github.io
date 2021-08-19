@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/img/caffee32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/img/caffee16x16.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":false,"style":"default"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"valine","storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="贪心算法与区间问题这次跟前一篇文章一样，也是三道题，都是关于区间相交问题的。所谓区间问题，就是一个覆盖范围，那么要在一定条件下保证覆盖范围不重叠，这也是一个很有意思的问题。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="贪心算法：区间相关问题">
+<meta property="og:url" content="http://example.com/2018/08/07/%E8%B4%AA%E5%BF%83%E7%AE%97%E6%B3%95%EF%BC%9A%E5%8C%BA%E9%97%B4%E7%9B%B8%E5%85%B3%E9%97%AE%E9%A2%98/index.html">
+<meta property="og:site_name" content="In The End">
+<meta property="og:description" content="贪心算法与区间问题这次跟前一篇文章一样，也是三道题，都是关于区间相交问题的。所谓区间问题，就是一个覆盖范围，那么要在一定条件下保证覆盖范围不重叠，这也是一个很有意思的问题。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://example.com/img/区间相关问题1.png">
+<meta property="og:image" content="http://example.com/img/区间相关问题2.png">
+<meta property="og:image" content="http://example.com/img/区间相关问题2.png">
+<meta property="article:published_time" content="2018-08-07T12:45:02.000Z">
+<meta property="article:modified_time" content="2021-08-05T01:50:02.952Z">
+<meta property="article:author" content="Lavender">
+<meta property="article:tag" content="贪心">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/img/区间相关问题1.png">
+
+<link rel="canonical" href="http://example.com/2018/08/07/%E8%B4%AA%E5%BF%83%E7%AE%97%E6%B3%95%EF%BC%9A%E5%8C%BA%E9%97%B4%E7%9B%B8%E5%85%B3%E9%97%AE%E9%A2%98/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>贪心算法：区间相关问题 | In The End</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">In The End</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">个人博客</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2018/08/07/%E8%B4%AA%E5%BF%83%E7%AE%97%E6%B3%95%EF%BC%9A%E5%8C%BA%E9%97%B4%E7%9B%B8%E5%85%B3%E9%97%AE%E9%A2%98/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/img/Lavender.jpg">
+      <meta itemprop="name" content="Lavender">
+      <meta itemprop="description" content="再次出发">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="In The End">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          贪心算法：区间相关问题
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2018-08-07 12:45:02" itemprop="dateCreated datePublished" datetime="2018-08-07T12:45:02Z">2018-08-07</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2021-08-05 01:50:02" itemprop="dateModified" datetime="2021-08-05T01:50:02Z">2021-08-05</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/ACM/" itemprop="url" rel="index"><span itemprop="name">ACM</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/ACM/%E6%9D%AD%E7%94%B5oj/" itemprop="url" rel="index"><span itemprop="name">杭电oj</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="贪心算法与区间问题"><a href="#贪心算法与区间问题" class="headerlink" title="贪心算法与区间问题"></a>贪心算法与区间问题</h1><p>这次跟前一篇文章一样，也是三道题，都是关于区间相交问题的。所谓区间问题，就是一个覆盖范围，那么要在一定条件下保证覆盖范围不重叠，这也是一个很有意思的问题。</p>
+<span id="more"></span>
+<h1 id="选择不相交区间"><a href="#选择不相交区间" class="headerlink" title="选择不相交区间"></a>选择不相交区间</h1><p>首先我们研究的第一个问题就是如何在一众区间中选择尽量多的不相交的区间，我特意找到了我很久以前做过的一道题（那时候还没有这么系统地学习算法），就是HDU的2037题，题目叫“今年暑假不AC”（哈哈），相信有很多通过HDU11页开始ACM之旅的同学可能也做过，那我们就来重新温习一下。</p>
+<p>首先贴出传送门：<a target="_blank" rel="noopener" href="http://acm.hdu.edu.cn/showproblem.php?pid=2037">http://acm.hdu.edu.cn/showproblem.php?pid=2037</a><br>我下面也将整道题目复制了过来。<br><figure class="highlight excel"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line">Problem Description</span><br><span class="line">“今年暑假不AC？”</span><br><span class="line">“是的。”</span><br><span class="line">“那你干什么呢？”</span><br><span class="line">“看世界杯呀，笨蛋！”</span><br><span class="line">“@#$%^&amp;*%...”</span><br><span class="line"></span><br><span class="line">确实如此，世界杯来了，球迷的节日也来了，估计很多ACMer也会抛开电脑，奔向电视了。</span><br><span class="line">作为球迷，一定想看尽量多的完整的比赛，当然，作为新时代的好青年，你一定还会看一些其它的节目，比如新闻联播（永远不要忘记关心国家大事）、非常<span class="number">6</span>+<span class="number">7</span>、超级女生，以及王小丫的《开心辞典》等等，假设你已经知道了所有你喜欢看的电视节目的转播时间表，你会合理安排吗？（目标是能看尽量多的完整节目）</span><br><span class="line"> </span><br><span class="line">Input</span><br><span class="line">输入数据包含多个测试实例，每个测试实例的第一行只有一个整数<span class="built_in">n</span>(<span class="comment">n&lt;=100</span>)，表示你喜欢看的节目的总数，然后是<span class="built_in">n</span>行数据，每行包括两个数据Ti_s,Ti_e (<span class="number">1</span>&lt;=i&lt;=<span class="built_in">n</span>)，分别表示第i个节目的开始和结束时间，为了简化问题，每个时间都用一个正整数表示。<span class="built_in">n</span>=<span class="number">0</span>表示输入结束，不做处理。</span><br><span class="line"> </span><br><span class="line">Output</span><br><span class="line">对于每个测试实例，输出能完整看到的电视节目的个数，每个测试实例的输出占一行。</span><br><span class="line"> </span><br><span class="line">Sample Input</span><br><span class="line"><span class="number">12</span></span><br><span class="line"><span class="number">1</span> <span class="number">3</span></span><br><span class="line"><span class="number">3</span> <span class="number">4</span></span><br><span class="line"><span class="number">0</span> <span class="number">7</span></span><br><span class="line"><span class="number">3</span> <span class="number">8</span></span><br><span class="line"><span class="number">15</span> <span class="number">19</span></span><br><span class="line"><span class="number">15</span> <span class="number">20</span></span><br><span class="line"><span class="number">10</span> <span class="number">15</span></span><br><span class="line"><span class="number">8</span> <span class="number">18</span></span><br><span class="line"><span class="number">6</span> <span class="number">12</span></span><br><span class="line"><span class="number">5</span> <span class="number">10</span></span><br><span class="line"><span class="number">4</span> <span class="number">14</span></span><br><span class="line"><span class="number">2</span> <span class="number">9</span></span><br><span class="line"><span class="number">0</span></span><br><span class="line"></span><br><span class="line">Sample Output</span><br><span class="line"><span class="number">5</span></span><br></pre></td></tr></table></figure><br>很多人可能第一时间会想到的就是排序，有些人会说对区间长度进行排序，有些人会说根据左端点进行排序，有些人会说对于右端点进行排序。那么究竟哪一种贪心的方案才是对的呢？我希望你看到这里可以自己动脑思考一下，或者是拿起笔自己画一下，又或者你可以机智地想出其他的贪心方案，那就尝试写出代码到HDU上提交看看能不能AC。总之，先请独立思考后再看下面的部分。</p>
+<p>好的，那我就来分析一下这三种贪心方案的正确性。</p>
+<p>1.对长度贪心<br>这种方案我觉得还是比较容易举出反例的，比如我下面画的这张图<br><img src="/img/区间相关问题1.png" alt=""><br>我们可以轻松的看出最中间的区间，虽然它短但是它同时破坏了两个区间，所以我们对长度贪心并不能得出正确答案。</p>
+<p>2.对左端点贪心<br>那么假设我们对左端点贪心呢，我们把左端点从小到大排序可行吗？我觉得这种可能是最容易看出来的了，比如下图<br><img src="/img/区间相关问题2.png" alt=""><br>最左边这块完美地把所有区间抹杀了，所以这样贪心也是不行的。</p>
+<p>3.对右端点贪心<br>很庆幸我们终于找到了正确的方法，可以在纸上自己画一下，我们会惊讶的发现用右端点排序得出的第一个区间永远是可选的，而且，右端点排序的贪心还非常方便，我们只需判断三种情况，就是相交的，分离的和包含的，首先分离的最好判断（直接选上不就完了），其次是包含的，我们肯定选择被包含的区间，因为被包含的区间更小，更能为后续的区间省空间，然后是相交的，我们只要按照右端点从小到大的顺序就可以完全避开纠结的过程（相交直接排除就可以了）。</p>
+<p>其实关于上述的右端点排序为什么正确，语言上真的很难描述清楚，但是我绞尽脑汁想到了一个不太靠谱的证明：为什么左端点枚举错了但右端点却是对的呢？原因可能在于右端点枚举的特性，我们以最小的右端点为例，这个右端点就像一个通行站，别的区间的左端点可以通过它向外延伸，但是如果有别的区间的右端点全部都在它的右边，这就意味着别的区间永远会有这么一段（不管多短）永远在它的右边，所以它所在的区间永远比别的靠左。</p>
+<p>这个东西需要比较强的理解能力，希望大家能积极思考。下面是AC代码，代码还是相当简单的<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;algorithm&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> std;</span><br><span class="line"><span class="keyword">typedef</span> pair&lt;<span class="keyword">int</span>,<span class="keyword">int</span>&gt; P;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span>&#123;</span><br><span class="line">    ios::<span class="built_in">sync_with_stdio</span>(<span class="literal">false</span>);</span><br><span class="line">    cin.<span class="built_in">tie</span>(<span class="number">0</span>);</span><br><span class="line">    <span class="keyword">int</span> n;</span><br><span class="line">    <span class="keyword">while</span>(cin&gt;&gt;n&amp;&amp;n)&#123;</span><br><span class="line">        P* a=<span class="keyword">new</span> P[n+<span class="number">10</span>];</span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;n;i++)</span><br><span class="line">            cin&gt;&gt;a[i].first&gt;&gt;a[i].second;</span><br><span class="line">        <span class="built_in">sort</span>(a,a+n,[](P A,P B)&#123;<span class="keyword">return</span> A.second&lt;B.second;&#125;);</span><br><span class="line">        <span class="keyword">int</span> s=a[<span class="number">0</span>].second,ans=<span class="number">1</span>;</span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">1</span>;i&lt;n;i++)&#123;</span><br><span class="line">            <span class="keyword">if</span>(s&lt;=a[i].first)&#123;</span><br><span class="line">                s=a[i].second;</span><br><span class="line">                ans++;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        cout &lt;&lt; ans &lt;&lt; endl;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h1 id="区间选点问题"><a href="#区间选点问题" class="headerlink" title="区间选点问题"></a>区间选点问题</h1><p>数轴上有n个闭区间，去最少的点，使每个区间内至少都包含一个点（不同区间内含的点可以是同一个）<br><img src="/img/区间相关问题2.png" alt=""><br>我们可以采用上一题的思路，只不过我们要小小地采取一点变化。我们每次在一个区间内放小球就直接放在最右边，因为整个区间是按照右端点排序的，所以，我们只需排除那些不需要放球的区间就可以知道要放多少球了，搞懂了上一题这题就非常简单了，而且代码也只需要修改一处即可。<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;algorithm&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> std;</span><br><span class="line"><span class="keyword">typedef</span> pair&lt;<span class="keyword">int</span>,<span class="keyword">int</span>&gt; P;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span>&#123;</span><br><span class="line">    ios::<span class="built_in">sync_with_stdio</span>(<span class="literal">false</span>);</span><br><span class="line">    cin.<span class="built_in">tie</span>(<span class="number">0</span>);</span><br><span class="line">    <span class="keyword">int</span> n;</span><br><span class="line">    <span class="keyword">while</span>(cin&gt;&gt;n&amp;&amp;n)&#123;</span><br><span class="line">        P* a=<span class="keyword">new</span> P[n+<span class="number">10</span>];</span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;n;i++)</span><br><span class="line">            cin&gt;&gt;a[i].first&gt;&gt;a[i].second;</span><br><span class="line">        <span class="built_in">sort</span>(a,a+n,[](P A,P B)&#123;<span class="keyword">return</span> A.second&lt;B.second;&#125;);</span><br><span class="line">        <span class="keyword">int</span> s=a[<span class="number">0</span>].second,ans=<span class="number">1</span>;</span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">1</span>;i&lt;n;i++)&#123;</span><br><span class="line">            <span class="keyword">if</span>(a[i].first&gt;s)&#123;<span class="comment">//只需要改动一下条件即可</span></span><br><span class="line">                ans++;</span><br><span class="line">                s=a[i].second;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        cout &lt;&lt; ans &lt;&lt; endl;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure></p>
+<h1 id="区间覆盖问题"><a href="#区间覆盖问题" class="headerlink" title="区间覆盖问题"></a>区间覆盖问题</h1><p>数轴上有n个闭区间[a,b]。然后我们会得到一个指定的范围[s,t]，我们要选出最少的区间来完全覆盖这个指定的范围（需要判断无解的情况）。</p>
+<p>首先我认为这是这次的三道题里面最麻烦的一道（我自己做这题的时间也是第三题比前面两题慢一些），但是做完之后其实我觉得思路还是蛮清晰的，就是一些细节的地方需要处理得比较细致。</p>
+<p>首先紫书上有一个非常好的办法，先用左端点排序（注意这次不是右端点了），对在[s,t]范围以外所有区间直接不予考虑，然后修建在[s,t]中的区间的范围，例如左端点小于s的变成s，右端点大于t变成t，这样就非常简洁明了了。后面的步骤我是这样想的，既然修建了区间，那我就找最左边的区间（假设区间是[s,x]），那么完全可以将答案+1然后将所求区间变成[x+1，t]，然后我们重复利用上面的修剪过程，最后知道所求区间不断缩小到0，或者是找不到区间来填充输出“无解”。</p>
+<p>过程仍需大家用心体会，我这里先把代码放上来了，我自己测试没有出什么问题，如果有错误请在下方评论区指出或给出错误数据，谢谢<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;algorithm&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;vector&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;cstring&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> std;</span><br><span class="line"><span class="keyword">typedef</span> pair&lt;<span class="keyword">int</span>,<span class="keyword">int</span>&gt; P;</span><br><span class="line"><span class="keyword">int</span> n,s,t,ans;</span><br><span class="line">P p[<span class="number">1000</span>];</span><br><span class="line"></span><br><span class="line"><span class="comment">//修剪区间函数，注意left是引用，不然做不到修剪的效果</span></span><br><span class="line"><span class="function"><span class="keyword">bool</span> <span class="title">cut</span><span class="params">(<span class="keyword">int</span>&amp; left,<span class="keyword">int</span> s,<span class="keyword">int</span> t)</span></span>&#123;</span><br><span class="line">    <span class="keyword">int</span> count=<span class="number">0</span>;</span><br><span class="line">    <span class="keyword">bool</span> flag= <span class="literal">false</span>;</span><br><span class="line">    <span class="keyword">for</span>(<span class="keyword">int</span> it=left;it&lt;n;it++)&#123;</span><br><span class="line">        <span class="comment">//直接删除超范围的</span></span><br><span class="line">        <span class="keyword">if</span>(p[it].second&lt;s)</span><br><span class="line">            left++,count++;</span><br><span class="line">        <span class="keyword">else</span> <span class="keyword">if</span>(p[it].first&gt;t)</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">        <span class="keyword">else</span>&#123;<span class="comment">//对于有一部分在范围内的区间，直接将范围外的部分剪掉</span></span><br><span class="line">            flag=<span class="literal">true</span>;</span><br><span class="line">            count++;</span><br><span class="line">            <span class="keyword">if</span>(p[it].first&lt;s)</span><br><span class="line">                p[it].first=s;</span><br><span class="line">            <span class="keyword">if</span>(p[it].second&gt;t)</span><br><span class="line">                p[it].second=t;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> flag;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">sol</span><span class="params">()</span></span>&#123;</span><br><span class="line">    <span class="comment">//首先对左端点进行排序（因为我们后续是对左端点进行迭代）</span></span><br><span class="line">    <span class="built_in">sort</span>(p,p+n,[](P A,P B)&#123;<span class="keyword">return</span> A.first&lt;B.first;&#125;);</span><br><span class="line">    <span class="comment">//我只选择修剪了左端，其实右端也可以修剪，但是我嫌麻烦没加上去</span></span><br><span class="line">    <span class="keyword">int</span> left=<span class="number">0</span>;</span><br><span class="line">    <span class="keyword">if</span>(!<span class="built_in">cut</span>(left,s,t))&#123;</span><br><span class="line">        cout &lt;&lt; <span class="string">&quot;无解&quot;</span> &lt;&lt; endl;</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">//因为一开始没+1出了一些bug</span></span><br><span class="line">    <span class="keyword">int</span> k=p[left].second+<span class="number">1</span>;</span><br><span class="line">    ans=<span class="number">1</span>;</span><br><span class="line">    <span class="keyword">while</span>(k&lt;=t)&#123;<span class="comment">//后面就是对范围的不断填充，k越来越靠近t</span></span><br><span class="line">        <span class="keyword">if</span>(!<span class="built_in">cut</span>(left,k,t))&#123;</span><br><span class="line">            cout &lt;&lt; <span class="string">&quot;无解&quot;</span> &lt;&lt; endl;</span><br><span class="line">            <span class="keyword">return</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        k=p[left].second+<span class="number">1</span>;</span><br><span class="line">        ans++;</span><br><span class="line">    &#125;</span><br><span class="line">    cout &lt;&lt; <span class="string">&quot;需要&quot;</span> &lt;&lt; ans &lt;&lt; <span class="string">&quot;个区间&quot;</span> &lt;&lt; endl;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span>&#123;</span><br><span class="line">    ios::<span class="built_in">sync_with_stdio</span>(<span class="literal">false</span>);</span><br><span class="line">    <span class="keyword">while</span>(cin&gt;&gt;n&amp;&amp;n)&#123;</span><br><span class="line">        <span class="built_in">memset</span>(p,<span class="number">0</span>,<span class="built_in"><span class="keyword">sizeof</span></span>(p));</span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;n;i++)</span><br><span class="line">            cin &gt;&gt; p[i].first &gt;&gt; p[i].second;</span><br><span class="line">        cout &lt;&lt; <span class="string">&quot;输入线段范围：&quot;</span>;</span><br><span class="line">        cin&gt;&gt;s&gt;&gt;t;</span><br><span class="line">        <span class="built_in">sol</span>();</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure><br>OK，那么贪心算法与区间的问题也搞定了，下一篇应该就是哈夫曼编码了。</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E8%B4%AA%E5%BF%83/" rel="tag"># 贪心</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2018/08/07/%E8%B4%AA%E5%BF%83%E7%AE%97%E6%B3%95%EF%BC%9A%E8%83%8C%E5%8C%85%E7%9B%B8%E5%85%B3%E9%97%AE%E9%A2%98/" rel="prev" title="贪心算法：背包相关问题">
+      <i class="fa fa-chevron-left"></i> 贪心算法：背包相关问题
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2018/08/08/%E8%B4%AA%E5%BF%83%E7%AE%97%E6%B3%95%EF%BC%9A%E5%93%88%E5%A4%AB%E6%9B%BC%E7%BC%96%E7%A0%81%EF%BC%88HDU1053-2527%E9%A2%98%EF%BC%89/" rel="next" title="贪心算法：哈夫曼编码（HDU1053 2527题）">
+      贪心算法：哈夫曼编码（HDU1053 2527题） <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%B4%AA%E5%BF%83%E7%AE%97%E6%B3%95%E4%B8%8E%E5%8C%BA%E9%97%B4%E9%97%AE%E9%A2%98"><span class="nav-number">1.</span> <span class="nav-text">贪心算法与区间问题</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E9%80%89%E6%8B%A9%E4%B8%8D%E7%9B%B8%E4%BA%A4%E5%8C%BA%E9%97%B4"><span class="nav-number">2.</span> <span class="nav-text">选择不相交区间</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%8C%BA%E9%97%B4%E9%80%89%E7%82%B9%E9%97%AE%E9%A2%98"><span class="nav-number">3.</span> <span class="nav-text">区间选点问题</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%8C%BA%E9%97%B4%E8%A6%86%E7%9B%96%E9%97%AE%E9%A2%98"><span class="nav-number">4.</span> <span class="nav-text">区间覆盖问题</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Lavender"
+      src="/img/Lavender.jpg">
+  <p class="site-author-name" itemprop="name">Lavender</p>
+  <div class="site-description" itemprop="description">再次出发</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">110</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+        <span class="site-state-item-count">18</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+        <span class="site-state-item-count">49</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/Lavender-QAQ" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;Lavender-QAQ" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title">
+      <i class="fa fa-fw fa-link"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="http://ltitan.github.io/" title="http:&#x2F;&#x2F;ltitan.github.io&#x2F;" rel="noopener" target="_blank">飞哥的技术园区</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://heshang.ink/" title="https:&#x2F;&#x2F;heshang.ink&#x2F;" rel="noopener" target="_blank">奎哥的Java课堂</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://kawaii-jump.github.io/" title="https:&#x2F;&#x2F;kawaii-jump.github.io&#x2F;" rel="noopener" target="_blank">涛哥的就业实录</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://49.232.1.238/" title="http:&#x2F;&#x2F;49.232.1.238&#x2F;" rel="noopener" target="_blank">薛老板的攻防战场</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://dumengblog.club/" title="https:&#x2F;&#x2F;dumengblog.club&#x2F;" rel="noopener" target="_blank">Dumeng的知识讲解</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://stephencuhui.github.io/" title="https:&#x2F;&#x2F;stephencuhui.github.io&#x2F;" rel="noopener" target="_blank">徽哥的步步攀升</a>
+        </li>
+    </ul>
+  </div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2017 – 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Lavender</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+</body>
+</html>

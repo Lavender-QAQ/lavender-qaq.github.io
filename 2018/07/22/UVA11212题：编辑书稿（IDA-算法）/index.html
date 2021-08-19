@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/img/caffee32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/img/caffee16x16.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":false,"style":"default"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"valine","storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="迭代加深搜索 + 启发式搜索（A*） &#x3D; IDA*这次所介绍的算法用到了前一篇文章（埃及分数）中介绍过的迭代加深搜索，不熟悉迭代加深搜索的同学建议先看我前一篇文章，介绍IDA*之前，让我们先普及一下A*算法，我后续也会写关于A*算法的题目。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="UVA11212题：编辑书稿（IDA*算法）">
+<meta property="og:url" content="http://example.com/2018/07/22/UVA11212%E9%A2%98%EF%BC%9A%E7%BC%96%E8%BE%91%E4%B9%A6%E7%A8%BF%EF%BC%88IDA-%E7%AE%97%E6%B3%95%EF%BC%89/index.html">
+<meta property="og:site_name" content="In The End">
+<meta property="og:description" content="迭代加深搜索 + 启发式搜索（A*） &#x3D; IDA*这次所介绍的算法用到了前一篇文章（埃及分数）中介绍过的迭代加深搜索，不熟悉迭代加深搜索的同学建议先看我前一篇文章，介绍IDA*之前，让我们先普及一下A*算法，我后续也会写关于A*算法的题目。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://example.com/img/编辑书稿1.png">
+<meta property="og:image" content="http://example.com/img/编辑书稿2.png">
+<meta property="article:published_time" content="2018-07-21T17:32:39.000Z">
+<meta property="article:modified_time" content="2021-08-05T01:54:42.728Z">
+<meta property="article:author" content="Lavender">
+<meta property="article:tag" content="DFS">
+<meta property="article:tag" content="搜索">
+<meta property="article:tag" content="IDA*">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/img/编辑书稿1.png">
+
+<link rel="canonical" href="http://example.com/2018/07/22/UVA11212%E9%A2%98%EF%BC%9A%E7%BC%96%E8%BE%91%E4%B9%A6%E7%A8%BF%EF%BC%88IDA-%E7%AE%97%E6%B3%95%EF%BC%89/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>UVA11212题：编辑书稿（IDA*算法） | In The End</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">In The End</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">个人博客</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2018/07/22/UVA11212%E9%A2%98%EF%BC%9A%E7%BC%96%E8%BE%91%E4%B9%A6%E7%A8%BF%EF%BC%88IDA-%E7%AE%97%E6%B3%95%EF%BC%89/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/img/Lavender.jpg">
+      <meta itemprop="name" content="Lavender">
+      <meta itemprop="description" content="再次出发">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="In The End">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          UVA11212题：编辑书稿（IDA*算法）
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2018-07-21 17:32:39" itemprop="dateCreated datePublished" datetime="2018-07-21T17:32:39Z">2018-07-21</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2021-08-05 01:54:42" itemprop="dateModified" datetime="2021-08-05T01:54:42Z">2021-08-05</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/ACM/" itemprop="url" rel="index"><span itemprop="name">ACM</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/ACM/UVA/" itemprop="url" rel="index"><span itemprop="name">UVA</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="迭代加深搜索-启发式搜索（A-）-IDA"><a href="#迭代加深搜索-启发式搜索（A-）-IDA" class="headerlink" title="迭代加深搜索 + 启发式搜索（A*） = IDA*"></a>迭代加深搜索 + 启发式搜索（A*） = IDA*</h1><p>这次所介绍的算法用到了前一篇文章（埃及分数）中介绍过的迭代加深搜索，不熟悉迭代加深搜索的同学建议先看我前一篇文章，介绍IDA*之前，让我们先普及一下A*算法，我后续也会写关于A*算法的题目。</p>
+<span id="more"></span>
+<h2 id="度娘的解释"><a href="#度娘的解释" class="headerlink" title="度娘的解释"></a>度娘的解释</h2><p>在一些问题求解时，我们希望能够求解出状态空间搜索的最短路径，也就是用最快的方法求解问题，A*就是干这种事情的！</p>
+<p>我们先下个定义，如果一个估价函数可以找出最短的路径，我们称之为可采纳性。A*算法是一个可采纳的最好优先算法。A*算法的估价函数可表示为：</p>
+<p><strong> f’(n) = g’(n) + h’(n) </strong></p>
+<p>这里，f’(n)是估价函数，g’(n)是起点到节点n的最短路径值，h’(n)是n到目标的最短路经的启发值。由于这个f’(n)其实是无法预先知道的，所以我们用前面的估价函数f(n)做近似。g(n)代替g’(n)，但 g(n)&gt;=g’(n)才可（大多数情况下都是满足的，可以不用考虑），h(n)代替h’(n)，但h(n)&lt;=h’(n)才可（这一点特别的重要）。可以证明应用这样的估价函数是可以找到最短路径的，也就是可采纳的。我们说应用这种估价函数的最好优先算法就是A*算法。</p>
+<p>举一个例子，其实广度优先算法就是A*算法的特例。其中g(n)是节点所在的层数，h(n)=0，这种h(n)肯定小于h’(n)。</p>
+<p>再说一个问题，就是有关h(n)启发函数的信息性。h(n)的信息性通俗点说其实就是在估计一个节点的值时的约束条件，如果信息越多或约束条件越多则排除的节点就越多，估价函数越好或说这个算法越好。这就是为什么广度优先算法的不甚为好的原因了，因为它的h(n)=0，没有一点启发信息。但在游戏开发中由于实时性的问题，h(n)的信息越多，它的计算量就越大，耗费的时间就越多。就应该适当的减小h(n)的信息，即减小约束条件。但算法的准确性就差了，这里就有一个平衡的问题。</p>
+<h2 id="个人理解（通俗易懂）"><a href="#个人理解（通俗易懂）" class="headerlink" title="个人理解（通俗易懂）"></a>个人理解（通俗易懂）</h2><p>其实为什么不在前一篇来介绍IDA*算法的目的就在这里，我需要使用前一篇博客的题目（埃及分数问题）的例子，所以没看过埃及分数的同学建议先去补补。在埃及分数问题中，我们只关注两个问题，相加的个数以及分母枚举上限。</p>
+<p>接下来为了能让大家更好的理解，我们发动抽象大法，将它看成一个有很多个面组成的空间，每个面上都有一堆金币，而我们是一个淘金者（黄金矿工哈哈），我们必须挖到指定数量的金币才能回家，还有一个关键的条件，越到地底金币越少（挺反常哈）。首先我们从最上面的空间向下深度搜索相加个数相当于挖洞，而在每个面进行枚举分母相当与收集金币，当我们发现的时候我们又继续往下打洞，反复地打洞，找金币，打洞，找金币，直到我们在某一层找到金币为止。</p>
+<p>好的，现在你脑子里应该有这么一个景象了，现在我来加深你找宝藏的难度了，如果每一层都非常宽阔或者无限大，你该怎么解决这个问题。这时候你会非常尴尬的觉得这个问题爆炸了靠运气了，好，再给你两个条件，我说假设最大可以挖到maxd层，我给你两个函数，g(n)代表你现在所在的层数，h(n)代表通过你这一层拿到的金币估计接下来你还能挖到多少金币（乐观估价函数）。举个例子吧，假如我让你去一个只能挖三层的地方，挖7个金币，你首先在第一层挖到了三个金币，你非常开心，但是这时候你使用了h(n)大法。</p>
+<p>h(n)首先需要g(n)兄弟来帮忙，g(n)兄弟告诉h(n)这里是第一层，h(n)开始计算：恩，第一层挖到了3个么，因为每一层的金币都会比上一层少，所以第二层最多挖出2个，第三层最多挖出一个。然后h(n)跑过来告诉你说你最多还能挖3个金币，然后你就放下铁撬不干了（妈的根本完不成的任务！）。所以，h(n)在这里就相当与一个利用剩余层数快速计算出你接下来会获得的金币的近似值，避免让你白干活。</p>
+<p>顺便提一句，许多AI领域或算法研究领域中的路径搜索算法是基于任意(现实情况)的图设计的，而不是基于网格的图。所以，这种依据现实情况“机智”地绕路的算法，非常具有启蒙意义。</p>
+<p>我们再给一些例子，这是外国论文中有人测试的例子，同样是有障碍的最短路径，使用BFS与A*相比较<br>这是基于贪心策略的BFS：<br><img src="/img/编辑书稿1.png" alt=""><br>这是曼哈顿距离+A*：<br><img src="/img/编辑书稿2.png" alt=""><br>我们可以看到BFS一头撞上了墙，而A*机智地绕开了（了解贪心与BFS的应该会知道为什么会撞墙）。</p>
+<h1 id="题意"><a href="#题意" class="headerlink" title="题意"></a>题意</h1><p>首先给出传送门<a target="_blank" rel="noopener" href="https://vjudge.net/problem/UVA-11212">https://vjudge.net/problem/UVA-11212</a></p>
+<p>这一次介绍的题目呢也是一道经典的IDA*题目，让我们先看看题意</p>
+<p>你有一篇n个自然段组成的文章，希望将它们排列成1，2，…，n。可以用Ctrl+X（剪切）和Ctrl+V（粘贴）快捷键来完成任务。每次可以剪切一段连续的自然段，粘贴时按照顺序粘贴。注意，剪贴板只有一个，所以不能连续剪切两次，只能剪切和粘贴交替。例如，为了将{2，4，1，5，3，6}变为升序，可以剪切1将其放到2前，然后剪切3将其放到4前。再如，排列{3，4，5，1，2}，只需一次剪切和一次粘贴即可——将{3，4，5}放在{1，2}后，或者将{1，2}放在{3，4，5}前。（本段摘自《算法竞赛入门经典（第2版）》）</p>
+<p>本题利用迭代加深搜索，可以发现最多只需要n-1步，关键在于如何有效地剪枝。考虑后继不正确的数字的个数h，可以证明每次剪切时h最多减少3（因为一次剪切最多只会改变3个数字的后继，若剪切后这3个数字的后继都正确，则h最多减少了3），因此当h&gt;3*(maxd-d)时剪枝即可，在这里，我们可以不用过于关注哪个是g(n)哪个是h(n)，只要能高效地剪枝就行了</p>
+<p>所以我们只需像解决埃及分数问题一样，枚举步数，然后在每一中步数情况中枚举剪切位置即可。</p>
+<p>当然我们还可以进行优化，在每次选取剪切的位置的时候，我们不要去选取已经排好序的数字，这样反而会打乱，所以我们只需枚举没有按顺序排的位置。当然，剪切板中的数组最好是有序的，为了整体有序并减少步数，我们应当维持剪切板中的数组也是有序的。</p>
+<p>对于这道题与启发式算法的详细解释可以拿这篇博客作为参考：<a target="_blank" rel="noopener" href="https://blog.csdn.net/flsjzl/article/details/51785488">https://blog.csdn.net/flsjzl/article/details/51785488</a></p>
+<h1 id="代码实现"><a href="#代码实现" class="headerlink" title="代码实现"></a>代码实现</h1><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;algorithm&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;cstring&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> std;</span><br><span class="line"></span><br><span class="line"><span class="keyword">int</span> maxd,n,a[<span class="number">10</span>],b[<span class="number">10</span>];</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">inline</span> <span class="keyword">bool</span> <span class="title">judge</span><span class="params">()</span></span>&#123;<span class="comment">//判断是否已全部有序</span></span><br><span class="line">    <span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">1</span>;i&lt;=n;i++)</span><br><span class="line">        <span class="keyword">if</span>(a[i<span class="number">-1</span>]!=i)</span><br><span class="line">            <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">    <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">inline</span> <span class="keyword">int</span> <span class="title">cal</span><span class="params">()</span></span>&#123;<span class="comment">//计算出还没排好的数字的数量</span></span><br><span class="line">    <span class="keyword">int</span> count=<span class="number">0</span>;</span><br><span class="line">    <span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">1</span>;i&lt;n;i++)</span><br><span class="line">        <span class="keyword">if</span>(a[i]!=a[i<span class="number">-1</span>]+<span class="number">1</span>)</span><br><span class="line">            count++;</span><br><span class="line">    <span class="keyword">return</span> count;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">bool</span> <span class="title">dfs</span><span class="params">(<span class="keyword">int</span> d)</span></span>&#123;</span><br><span class="line">    <span class="keyword">int</span> h=<span class="built_in">cal</span>();</span><br><span class="line">    <span class="keyword">if</span>(h==<span class="number">0</span>)</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">    <span class="keyword">if</span>(<span class="number">3</span>*(maxd-d)&lt;h)</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">    <span class="comment">//这里的操作类似于回溯法，所以我们要用copy数组暂时保存a数组，以便枚举完一种情况后回头</span></span><br><span class="line">    <span class="keyword">int</span> *copy=<span class="keyword">new</span> <span class="keyword">int</span>[n];</span><br><span class="line">    <span class="comment">//move数组模拟剪切板</span></span><br><span class="line">    <span class="keyword">int</span> *move=<span class="keyword">new</span> <span class="keyword">int</span>[n];</span><br><span class="line">    <span class="comment">//保存于copy</span></span><br><span class="line">    <span class="built_in">memcpy</span>(copy,a, <span class="built_in"><span class="keyword">sizeof</span></span>(<span class="keyword">int</span>)*n);</span><br><span class="line">    <span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;n;i++)&#123;<span class="comment">//枚举被剪切数组的起点</span></span><br><span class="line">        <span class="keyword">if</span>(i==<span class="number">0</span>||a[i]!=a[i<span class="number">-1</span>]+<span class="number">1</span>) &#123;<span class="comment">//起点不枚举连续数组的中间部分</span></span><br><span class="line">            <span class="keyword">for</span> (<span class="keyword">int</span> j = i; j &lt; n; j++) &#123;<span class="comment">//枚举终点</span></span><br><span class="line">                <span class="keyword">while</span>(j!=n<span class="number">-1</span>&amp;&amp;a[j+<span class="number">1</span>]==a[j]+<span class="number">1</span>) j++;<span class="comment">//终点枚举连续的数组的末尾</span></span><br><span class="line">                <span class="built_in">memcpy</span>(move,copy+i,<span class="built_in"><span class="keyword">sizeof</span></span>(<span class="keyword">int</span>)*(j-i+<span class="number">1</span>));<span class="comment">//将枚举部分放入剪切板</span></span><br><span class="line">                <span class="keyword">for</span>(<span class="keyword">int</span> k=j+<span class="number">1</span>;k&lt;n;k++)&#123;<span class="comment">//枚举剪切数组插入的位置</span></span><br><span class="line">                    <span class="keyword">while</span>(k!=n<span class="number">-1</span>&amp;&amp;a[k+<span class="number">1</span>]==a[k]+<span class="number">1</span>) k++;<span class="comment">//同样的，不要破坏已经连续的</span></span><br><span class="line">                    <span class="comment">//移动数组</span></span><br><span class="line">                    <span class="built_in">memcpy</span>(a+i,copy+j+<span class="number">1</span>,<span class="built_in"><span class="keyword">sizeof</span></span>(<span class="keyword">int</span>)*(k-j));</span><br><span class="line">                    <span class="built_in">memcpy</span>(a+i+k-j,move,<span class="built_in"><span class="keyword">sizeof</span></span>(<span class="keyword">int</span>)*(j-i+<span class="number">1</span>));</span><br><span class="line">                    <span class="comment">//继续向下深搜</span></span><br><span class="line">                    <span class="keyword">if</span>(<span class="built_in">dfs</span>(d+<span class="number">1</span>))</span><br><span class="line">                        <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">                    <span class="comment">//不要忘记回溯回来</span></span><br><span class="line">                    <span class="built_in">memcpy</span>(a,copy, <span class="built_in"><span class="keyword">sizeof</span></span>(<span class="keyword">int</span>)*n);</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">sol</span><span class="params">()</span></span>&#123;</span><br><span class="line">    <span class="keyword">if</span>(<span class="built_in">cal</span>()==<span class="number">0</span>)</span><br><span class="line">        <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">    <span class="comment">//枚举最大深度</span></span><br><span class="line">    <span class="keyword">for</span>(maxd=<span class="number">1</span>;maxd&lt;n;maxd++)&#123;</span><br><span class="line">       <span class="keyword">if</span>(<span class="built_in">dfs</span>(<span class="number">0</span>))<span class="comment">//从0开始dfs</span></span><br><span class="line">           <span class="keyword">return</span> maxd;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span>&#123;</span><br><span class="line">    ios::<span class="built_in">sync_with_stdio</span>(<span class="literal">false</span>);</span><br><span class="line">    cin.<span class="built_in">tie</span>(<span class="number">0</span>);</span><br><span class="line">    <span class="keyword">for</span>(<span class="keyword">int</span> cas=<span class="number">1</span>;cin&gt;&gt;n&amp;&amp;n;cas++)&#123;</span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;n;i++) &#123;</span><br><span class="line">            cin &gt;&gt; a[i];</span><br><span class="line">        &#125;</span><br><span class="line">        cout &lt;&lt;<span class="string">&quot;Case &quot;</span>&lt;&lt;cas&lt;&lt;<span class="string">&quot;: &quot;</span>&lt;&lt; <span class="built_in">sol</span>() &lt;&lt; endl;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>麻烦的A*与IDA*终于写完了，现在博客能留言了，欢迎大家留言评论！<br>讲道理挖金币这个例子还是很生动的，毕竟当时灵光一现想出来这么一个例子。<br>A*与IDA*听起来似乎很高端，其实理解并不难，难点在于应用，找到乐观估价函数等。</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/DFS/" rel="tag"># DFS</a>
+              <a href="/tags/%E6%90%9C%E7%B4%A2/" rel="tag"># 搜索</a>
+              <a href="/tags/IDA/" rel="tag"># IDA*</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2018/07/21/%E5%9F%83%E5%8F%8A%E5%88%86%E6%95%B0%E9%97%AE%E9%A2%98%EF%BC%88%E8%BF%AD%E4%BB%A3%E5%8A%A0%E6%B7%B1%E6%90%9C%E7%B4%A2%EF%BC%89/" rel="prev" title="埃及分数问题（迭代加深搜索）">
+      <i class="fa fa-chevron-left"></i> 埃及分数问题（迭代加深搜索）
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2018/07/23/UVA12325%E9%A2%98%EF%BC%9A%E5%AE%9D%E7%AE%B1%EF%BC%88%E6%9A%B4%E5%8A%9B%E6%B1%82%E8%A7%A3%EF%BC%89/" rel="next" title="UVA12325题：宝箱（暴力求解）">
+      UVA12325题：宝箱（暴力求解） <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%BF%AD%E4%BB%A3%E5%8A%A0%E6%B7%B1%E6%90%9C%E7%B4%A2-%E5%90%AF%E5%8F%91%E5%BC%8F%E6%90%9C%E7%B4%A2%EF%BC%88A-%EF%BC%89-IDA"><span class="nav-number">1.</span> <span class="nav-text">迭代加深搜索 + 启发式搜索（A*） &#x3D; IDA*</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%BA%A6%E5%A8%98%E7%9A%84%E8%A7%A3%E9%87%8A"><span class="nav-number">1.1.</span> <span class="nav-text">度娘的解释</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%AA%E4%BA%BA%E7%90%86%E8%A7%A3%EF%BC%88%E9%80%9A%E4%BF%97%E6%98%93%E6%87%82%EF%BC%89"><span class="nav-number">1.2.</span> <span class="nav-text">个人理解（通俗易懂）</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E9%A2%98%E6%84%8F"><span class="nav-number">2.</span> <span class="nav-text">题意</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%BB%A3%E7%A0%81%E5%AE%9E%E7%8E%B0"><span class="nav-number">3.</span> <span class="nav-text">代码实现</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Lavender"
+      src="/img/Lavender.jpg">
+  <p class="site-author-name" itemprop="name">Lavender</p>
+  <div class="site-description" itemprop="description">再次出发</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">110</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+        <span class="site-state-item-count">18</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+        <span class="site-state-item-count">49</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/Lavender-QAQ" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;Lavender-QAQ" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title">
+      <i class="fa fa-fw fa-link"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="http://ltitan.github.io/" title="http:&#x2F;&#x2F;ltitan.github.io&#x2F;" rel="noopener" target="_blank">飞哥的技术园区</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://heshang.ink/" title="https:&#x2F;&#x2F;heshang.ink&#x2F;" rel="noopener" target="_blank">奎哥的Java课堂</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://kawaii-jump.github.io/" title="https:&#x2F;&#x2F;kawaii-jump.github.io&#x2F;" rel="noopener" target="_blank">涛哥的就业实录</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://49.232.1.238/" title="http:&#x2F;&#x2F;49.232.1.238&#x2F;" rel="noopener" target="_blank">薛老板的攻防战场</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://dumengblog.club/" title="https:&#x2F;&#x2F;dumengblog.club&#x2F;" rel="noopener" target="_blank">Dumeng的知识讲解</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://stephencuhui.github.io/" title="https:&#x2F;&#x2F;stephencuhui.github.io&#x2F;" rel="noopener" target="_blank">徽哥的步步攀升</a>
+        </li>
+    </ul>
+  </div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2017 – 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Lavender</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+</body>
+</html>

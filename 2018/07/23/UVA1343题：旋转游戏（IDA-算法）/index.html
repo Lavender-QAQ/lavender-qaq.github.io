@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/img/caffee32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/img/caffee16x16.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":false,"style":"default"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"valine","storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="你没看错又是关于IDA*的题目，那是因为我正在刷刘老师的例题和习题。。。 这次的IDA*也是非常具有标志性的题，确实以后碰到这种状态空间搜索IDA*是一个非常不错的选择。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="UVA1343题：旋转游戏（IDA*算法）">
+<meta property="og:url" content="http://example.com/2018/07/23/UVA1343%E9%A2%98%EF%BC%9A%E6%97%8B%E8%BD%AC%E6%B8%B8%E6%88%8F%EF%BC%88IDA-%E7%AE%97%E6%B3%95%EF%BC%89/index.html">
+<meta property="og:site_name" content="In The End">
+<meta property="og:description" content="你没看错又是关于IDA*的题目，那是因为我正在刷刘老师的例题和习题。。。 这次的IDA*也是非常具有标志性的题，确实以后碰到这种状态空间搜索IDA*是一个非常不错的选择。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://example.com/img/旋转游戏1.png">
+<meta property="article:published_time" content="2018-07-22T17:14:27.000Z">
+<meta property="article:modified_time" content="2021-08-05T01:53:41.969Z">
+<meta property="article:author" content="Lavender">
+<meta property="article:tag" content="搜索">
+<meta property="article:tag" content="IDA*">
+<meta property="article:tag" content="dfs">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/img/旋转游戏1.png">
+
+<link rel="canonical" href="http://example.com/2018/07/23/UVA1343%E9%A2%98%EF%BC%9A%E6%97%8B%E8%BD%AC%E6%B8%B8%E6%88%8F%EF%BC%88IDA-%E7%AE%97%E6%B3%95%EF%BC%89/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>UVA1343题：旋转游戏（IDA*算法） | In The End</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">In The End</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">个人博客</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2018/07/23/UVA1343%E9%A2%98%EF%BC%9A%E6%97%8B%E8%BD%AC%E6%B8%B8%E6%88%8F%EF%BC%88IDA-%E7%AE%97%E6%B3%95%EF%BC%89/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/img/Lavender.jpg">
+      <meta itemprop="name" content="Lavender">
+      <meta itemprop="description" content="再次出发">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="In The End">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          UVA1343题：旋转游戏（IDA*算法）
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2018-07-22 17:14:27" itemprop="dateCreated datePublished" datetime="2018-07-22T17:14:27Z">2018-07-22</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2021-08-05 01:53:41" itemprop="dateModified" datetime="2021-08-05T01:53:41Z">2021-08-05</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/ACM/" itemprop="url" rel="index"><span itemprop="name">ACM</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/ACM/UVA/" itemprop="url" rel="index"><span itemprop="name">UVA</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>你没看错又是关于IDA*的题目，那是因为我正在刷刘老师的例题和习题。。。</p>
+<p>这次的IDA*也是非常具有标志性的题，确实以后碰到这种状态空间搜索IDA*是一个非常不错的选择。</p>
+<span id="more"></span>
+<h1 id="题目"><a href="#题目" class="headerlink" title="题目"></a>题目</h1><p>传送门：<a target="_blank" rel="noopener" href="https://vjudge.net/problem/UVA-1343">https://vjudge.net/problem/UVA-1343</a></p>
+<p>有个＃字型的棋盘，2行2列，一共24个格，每个格子上都有一个数字（1或2或3），如下图：<br><img src="/img/旋转游戏1.png" alt=""><br>我们可以往A,B,C,D,E,F,G,H八个方向拉动，每次拉动会把离那个字母最靠近的数字移到最远处，然后其他数字会靠近那个字母一位（其实就相当与滚动一样）。现在的目标是找到最短的步数使得中间8个位置的数字相同（要么同时为1,要么同时为2,要么同时为3），如果相同步数有多种情况，则输出字典序最小的那种。</p>
+<p>首先我们会想到八数码问题，的确挺像，但是问题在于八数码的情况并没有这个多，如果我们做的操作为x，那我们所得到的情况就为8的x次方，这就非常可怕了，所以这题用BFS做必须要有非常优秀的剪枝。刘老师在书上所写BFS的方法是将1,2,3分开讨论，比如说讨论1的时候将2,3看成同样的数字，这样可以减少枚举情况。</p>
+<p>但是，这题并不建议使用BFS，因为非常麻烦，再者，IDA*在解决状态空间问题上可是一个好工具。昨天我们着重介绍了A*算法的g(n)函数和h(n)函数，由于g(n)函数就是深度，所以，我们只需要找到h(n)就能搞定这个问题。</p>
+<p>我们可以这样思考，假设每一次我们的移动可以多增加一个相同的数字，那么如果我们最大移动步数（最大深度）减去现在的移动步数无法大于现在仍然所需的相同数字，那我们就可以直接跳出了，所以，我们就得出了h(n)。核心的判断条件为：</p>
+<p><strong> d(当前步数)+h()(当前情况下得到答案仍需多少步) &lt; maxn(最大步数) </strong></p>
+<p>所以，我们只需对最大步数maxn进行迭代即可</p>
+<h1 id="代码"><a href="#代码" class="headerlink" title="代码"></a>代码</h1><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;algorithm&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;cstring&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;vector&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> std;</span><br><span class="line"></span><br><span class="line"><span class="keyword">int</span> a[<span class="number">24</span>];</span><br><span class="line"><span class="keyword">int</span> map[<span class="number">8</span>][<span class="number">7</span>]=&#123;<span class="comment">//将每个格子对应在一维数组中的位置记下来方便移动</span></span><br><span class="line">        &#123;<span class="number">0</span>,<span class="number">2</span>,<span class="number">6</span>,<span class="number">11</span>,<span class="number">15</span>,<span class="number">20</span>,<span class="number">22</span>&#125;,&#123;<span class="number">1</span>,<span class="number">3</span>,<span class="number">8</span>,<span class="number">12</span>,<span class="number">17</span>,<span class="number">21</span>,<span class="number">23</span>&#125;,<span class="comment">//A和B</span></span><br><span class="line">        &#123;<span class="number">10</span>,<span class="number">9</span>,<span class="number">8</span>,<span class="number">7</span>,<span class="number">6</span>,<span class="number">5</span>,<span class="number">4</span>&#125;,&#123;<span class="number">19</span>,<span class="number">18</span>,<span class="number">17</span>,<span class="number">16</span>,<span class="number">15</span>,<span class="number">14</span>,<span class="number">13</span>&#125;,<span class="comment">//C和D</span></span><br><span class="line">        &#123;<span class="number">23</span>,<span class="number">21</span>,<span class="number">17</span>,<span class="number">12</span>,<span class="number">8</span>,<span class="number">3</span>,<span class="number">1</span>&#125;,&#123;<span class="number">22</span>,<span class="number">20</span>,<span class="number">15</span>,<span class="number">11</span>,<span class="number">6</span>,<span class="number">2</span>,<span class="number">0</span>&#125;,<span class="comment">//E和F</span></span><br><span class="line">        &#123;<span class="number">13</span>,<span class="number">14</span>,<span class="number">15</span>,<span class="number">16</span>,<span class="number">17</span>,<span class="number">18</span>,<span class="number">19</span>&#125;,&#123;<span class="number">4</span>,<span class="number">5</span>,<span class="number">6</span>,<span class="number">7</span>,<span class="number">8</span>,<span class="number">9</span>,<span class="number">10</span>&#125; <span class="comment">//G和H</span></span><br><span class="line">&#125;;</span><br><span class="line"><span class="comment">//将中心的需要检查的格子在一维数组中的位置记下来</span></span><br><span class="line"><span class="keyword">int</span> check[<span class="number">8</span>]=&#123;<span class="number">6</span>,<span class="number">7</span>,<span class="number">8</span>,<span class="number">11</span>,<span class="number">12</span>,<span class="number">15</span>,<span class="number">16</span>,<span class="number">17</span>&#125;;</span><br><span class="line"><span class="keyword">int</span> maxd;</span><br><span class="line"><span class="keyword">char</span> ans[<span class="number">100</span>];</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">inline</span> <span class="keyword">int</span> <span class="title">h</span><span class="params">()</span></span>&#123;<span class="comment">//估计出还要多少步</span></span><br><span class="line">    <span class="keyword">int</span> sum1=<span class="number">0</span>,sum2=<span class="number">0</span>,sum3=<span class="number">0</span>;</span><br><span class="line">    <span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;<span class="number">8</span>;i++)&#123;</span><br><span class="line">        <span class="keyword">if</span>(a[check[i]]==<span class="number">1</span>)</span><br><span class="line">            sum1++;</span><br><span class="line">        <span class="keyword">if</span>(a[check[i]]==<span class="number">2</span>)</span><br><span class="line">            sum2++;</span><br><span class="line">        <span class="keyword">if</span>(a[check[i]]==<span class="number">3</span>)</span><br><span class="line">            sum3++;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">8</span>-<span class="built_in">max</span>(<span class="built_in">max</span>(sum1,sum2),sum3);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">move</span><span class="params">(<span class="keyword">int</span> num)</span></span>&#123;<span class="comment">//移动</span></span><br><span class="line">    <span class="keyword">int</span> t=a[map[num][<span class="number">0</span>]];</span><br><span class="line">    <span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">1</span>;i&lt;<span class="number">7</span>;i++)</span><br><span class="line">        a[map[num][i<span class="number">-1</span>]]=a[map[num][i]];</span><br><span class="line">    a[map[num][<span class="number">6</span>]]=t;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">bool</span> <span class="title">dfs</span><span class="params">(<span class="keyword">int</span> d)</span></span>&#123;<span class="comment">//深度搜索</span></span><br><span class="line">    <span class="keyword">int</span> need=<span class="built_in">h</span>();</span><br><span class="line">    <span class="keyword">if</span>(!need)</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">    <span class="keyword">if</span>(d+need&gt;maxd)</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">    <span class="keyword">int</span> t[<span class="number">24</span>];</span><br><span class="line">    <span class="built_in">memcpy</span>(t,a, <span class="built_in"><span class="keyword">sizeof</span></span>(a));</span><br><span class="line">    <span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;<span class="number">8</span>;i++)&#123;</span><br><span class="line">        <span class="built_in">move</span>(i);</span><br><span class="line">        ans[d]=<span class="string">&#x27;A&#x27;</span>+i;</span><br><span class="line">        <span class="keyword">if</span>(<span class="built_in">dfs</span>(d+<span class="number">1</span>))</span><br><span class="line">            <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">        <span class="built_in">memcpy</span>(a,t, <span class="built_in"><span class="keyword">sizeof</span></span>(t));</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">sol</span><span class="params">()</span></span>&#123;</span><br><span class="line">    <span class="keyword">if</span>(<span class="built_in">h</span>()==<span class="number">0</span>)&#123;<span class="comment">//一开始就正确的情况</span></span><br><span class="line">        cout &lt;&lt; <span class="string">&quot;No moves needed&quot;</span> &lt;&lt;endl;</span><br><span class="line">        cout &lt;&lt; a[<span class="number">6</span>] &lt;&lt; endl;</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">for</span>(maxd=<span class="number">1</span>;;maxd++)&#123;<span class="comment">//对最大步数进行迭代</span></span><br><span class="line">        <span class="keyword">if</span>(<span class="built_in">dfs</span>(<span class="number">0</span>))&#123;</span><br><span class="line">            <span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;maxd;i++)</span><br><span class="line">                cout &lt;&lt; ans[i];</span><br><span class="line">            cout &lt;&lt; endl;</span><br><span class="line">            cout &lt;&lt; a[<span class="number">6</span>] &lt;&lt; endl;</span><br><span class="line">            <span class="keyword">return</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span>&#123;</span><br><span class="line">    ios::<span class="built_in">sync_with_stdio</span>(<span class="literal">false</span>);</span><br><span class="line">    cin.<span class="built_in">tie</span>(<span class="number">0</span>);</span><br><span class="line">    <span class="keyword">while</span>(cin&gt;&gt;a[<span class="number">0</span>]&amp;&amp;a[<span class="number">0</span>])&#123;</span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">1</span>;i&lt;<span class="number">24</span>;i++)</span><br><span class="line">            cin&gt;&gt;a[i];</span><br><span class="line">        <span class="built_in">sol</span>();</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E6%90%9C%E7%B4%A2/" rel="tag"># 搜索</a>
+              <a href="/tags/IDA/" rel="tag"># IDA*</a>
+              <a href="/tags/dfs/" rel="tag"># dfs</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2018/07/23/UVA12325%E9%A2%98%EF%BC%9A%E5%AE%9D%E7%AE%B1%EF%BC%88%E6%9A%B4%E5%8A%9B%E6%B1%82%E8%A7%A3%EF%BC%89/" rel="prev" title="UVA12325题：宝箱（暴力求解）">
+      <i class="fa fa-chevron-left"></i> UVA12325题：宝箱（暴力求解）
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2018/07/24/UVA1374%E9%A2%98%EF%BC%9A%E5%BF%AB%E9%80%9F%E5%B9%82%E8%AE%A1%E7%AE%97%EF%BC%88IDA-%E6%89%93%E8%A1%A8%E7%A7%92%E8%BF%87%EF%BC%89/" rel="next" title="UVA1374题：快速幂计算（IDA*+打表秒过）">
+      UVA1374题：快速幂计算（IDA*+打表秒过） <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E9%A2%98%E7%9B%AE"><span class="nav-number">1.</span> <span class="nav-text">题目</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%BB%A3%E7%A0%81"><span class="nav-number">2.</span> <span class="nav-text">代码</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Lavender"
+      src="/img/Lavender.jpg">
+  <p class="site-author-name" itemprop="name">Lavender</p>
+  <div class="site-description" itemprop="description">再次出发</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">110</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+        <span class="site-state-item-count">18</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+        <span class="site-state-item-count">49</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/Lavender-QAQ" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;Lavender-QAQ" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title">
+      <i class="fa fa-fw fa-link"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="http://ltitan.github.io/" title="http:&#x2F;&#x2F;ltitan.github.io&#x2F;" rel="noopener" target="_blank">飞哥的技术园区</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://heshang.ink/" title="https:&#x2F;&#x2F;heshang.ink&#x2F;" rel="noopener" target="_blank">奎哥的Java课堂</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://kawaii-jump.github.io/" title="https:&#x2F;&#x2F;kawaii-jump.github.io&#x2F;" rel="noopener" target="_blank">涛哥的就业实录</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://49.232.1.238/" title="http:&#x2F;&#x2F;49.232.1.238&#x2F;" rel="noopener" target="_blank">薛老板的攻防战场</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://dumengblog.club/" title="https:&#x2F;&#x2F;dumengblog.club&#x2F;" rel="noopener" target="_blank">Dumeng的知识讲解</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://stephencuhui.github.io/" title="https:&#x2F;&#x2F;stephencuhui.github.io&#x2F;" rel="noopener" target="_blank">徽哥的步步攀升</a>
+        </li>
+    </ul>
+  </div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2017 – 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Lavender</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+</body>
+</html>

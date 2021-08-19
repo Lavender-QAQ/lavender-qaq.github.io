@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/img/caffee32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/img/caffee16x16.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":false,"style":"default"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"valine","storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="真香警告！ 这是ACM江湖传说中不做后悔的题！ 你还有一秒钟的时间撤离战场！ 好，你已经来不及了！ 接下来让我们看看今天的主角——八数码问题。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="八数码问题(BFS+康托展开)">
+<meta property="og:url" content="http://example.com/2018/07/17/%E5%85%AB%E6%95%B0%E7%A0%81%E9%97%AE%E9%A2%98%EF%BC%88BFS+%E5%BA%B7%E6%89%98%E5%B1%95%E5%BC%80%EF%BC%89/index.html">
+<meta property="og:site_name" content="In The End">
+<meta property="og:description" content="真香警告！ 这是ACM江湖传说中不做后悔的题！ 你还有一秒钟的时间撤离战场！ 好，你已经来不及了！ 接下来让我们看看今天的主角——八数码问题。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://example.com/img/八数码1.jpg">
+<meta property="og:image" content="http://example.com/img/八数码2.jpg">
+<meta property="og:image" content="http://example.com/img/八数码3.jpeg">
+<meta property="og:image" content="http://example.com/img/八数码4.jpeg">
+<meta property="article:published_time" content="2018-07-17T15:29:07.000Z">
+<meta property="article:modified_time" content="2021-08-05T01:45:33.319Z">
+<meta property="article:author" content="Lavender">
+<meta property="article:tag" content="BFS">
+<meta property="article:tag" content="搜索">
+<meta property="article:tag" content="组合数学">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/img/八数码1.jpg">
+
+<link rel="canonical" href="http://example.com/2018/07/17/%E5%85%AB%E6%95%B0%E7%A0%81%E9%97%AE%E9%A2%98%EF%BC%88BFS+%E5%BA%B7%E6%89%98%E5%B1%95%E5%BC%80%EF%BC%89/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>八数码问题(BFS+康托展开) | In The End</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">In The End</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">个人博客</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2018/07/17/%E5%85%AB%E6%95%B0%E7%A0%81%E9%97%AE%E9%A2%98%EF%BC%88BFS+%E5%BA%B7%E6%89%98%E5%B1%95%E5%BC%80%EF%BC%89/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/img/Lavender.jpg">
+      <meta itemprop="name" content="Lavender">
+      <meta itemprop="description" content="再次出发">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="In The End">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          八数码问题(BFS+康托展开)
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2018-07-17 15:29:07" itemprop="dateCreated datePublished" datetime="2018-07-17T15:29:07Z">2018-07-17</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2021-08-05 01:45:33" itemprop="dateModified" datetime="2021-08-05T01:45:33Z">2021-08-05</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/ACM/" itemprop="url" rel="index"><span itemprop="name">ACM</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/ACM/%E5%8C%97%E5%A4%A7oj/" itemprop="url" rel="index"><span itemprop="name">北大oj</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>真香警告！ 这是ACM江湖传说中不做后悔的题！ 你还有一秒钟的时间撤离战场！ 好，你已经来不及了！ 接下来让我们看看今天的主角——八数码问题。</p>
+<span id="more"></span> 
+<p><img src="/img/八数码1.jpg" alt=""><br>不知道大家小时候有没有玩过这个类似于上图拼图的游戏，我们的目标是要把左边的拼图通过一个空格作为媒介变成右边的拼图的样子（肯定有很多人玩过，但是是通过图片而不是数字，我记得好像windows桌面小工具里就有这个游戏），所以，今天就用计算机来解决这个游戏，输出它的最佳解决方案。 先看看题目吧，POJ1077题，传送门：<a target="_blank" rel="noopener" href="http://poj.org/problem?id=1077">http://poj.org/problem?id=1077</a><br>题意就是输入一个九宫格（字符串），空格用’x’表示，然后我们需要找出把空格怼到最下方且数字还要按顺序排布的移动方案（如图为目标）<br><img src="/img/八数码2.jpg" alt=""><br>好的废话不多说我们开始分析问题。 首先我们选用BFS来解决这个问题，以空格为起始点，让空格上下左右移动并记录下来，有一个问题是我们需要先解决的，我们得先把x变成数字，那么究竟是变成0还是变成9呢，我这里推荐变成9（我一开始变成0麻烦了一些，不过也不是不行）。为什么要变成9呢？原因就在于康托展开（不熟悉康托展开的同学请易步至我的前一篇博客，这里不再做过多的赘述），在康托展开中，123456789的字典序为0，而123456780的字典序则需要手动调试一次康托展开进行计算（虽然我这里算出来了是46233），所以就比较麻烦，在争分夺秒的环境下推荐直接用123456789，这样心里有底肯定错不了。如图所示<br><img src="/img/八数码3.jpeg" alt=""><br>好，然后就是重点了，为什么我们要费尽心机讲了这么多的康托展开，原因就在于，当我们BFS这个八数码的时候，我们怎么去判断这个形态我们已经上一次移动过了（简而言之就是不能走回头路，别移着移着又移回来了)，我们开一个9维的vis数组去保存？别逗了！我们直接保存1-9的排列组合不就成了，9！=362880完全ok啊，这就得轮到康托展开大显身手的时候了，所以，在这个问题中我们只需写出康托展开的编码函数与解码函数，然后将BFS的每一步的父节点记下来，最后回溯即可。 </p>
+<p>给出一张BFS搜索图加深理解：<br><img src="/img/八数码4.jpeg" alt=""> </p>
+<p>接下来就是AC代码：<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;cstring&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;algorithm&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;vector&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stack&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;queue&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;string&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> std;</span><br><span class="line"><span class="keyword">const</span> <span class="keyword">int</span> N = <span class="number">362880</span>;</span><br><span class="line"><span class="keyword">int</span> vis[N];</span><br><span class="line"><span class="keyword">int</span> par[N];</span><br><span class="line"><span class="keyword">int</span> dir[N];</span><br><span class="line"><span class="comment">//这里手动记下了1-9的阶乘，提高效率</span></span><br><span class="line"><span class="keyword">const</span> <span class="keyword">int</span> fact[] = &#123;<span class="number">1</span>, <span class="number">1</span>, <span class="number">2</span>, <span class="number">6</span>, <span class="number">24</span>, <span class="number">120</span>, <span class="number">720</span>, <span class="number">5040</span>, <span class="number">40320</span>, <span class="number">362880</span>&#125;;</span><br><span class="line"><span class="keyword">const</span> <span class="keyword">int</span> dx[]=&#123;<span class="number">-1</span>,<span class="number">1</span>,<span class="number">0</span>,<span class="number">0</span>&#125;;</span><br><span class="line"><span class="keyword">const</span> <span class="keyword">int</span> dy[]=&#123;<span class="number">0</span>,<span class="number">0</span>,<span class="number">-1</span>,<span class="number">1</span>&#125;;</span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">Node</span> &#123;</span></span><br><span class="line">    <span class="keyword">char</span> s[<span class="number">9</span>];</span><br><span class="line">    <span class="keyword">int</span> loc;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="comment">//康托展开编码函数</span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">encode</span><span class="params">(<span class="keyword">const</span> <span class="keyword">char</span> *a)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">int</span> i,j,t,sum;</span><br><span class="line">    sum=<span class="number">0</span>;</span><br><span class="line">    <span class="keyword">for</span>( i=<span class="number">0</span>; i&lt;<span class="number">9</span> ;++i)</span><br><span class="line">    &#123;</span><br><span class="line">        t=<span class="number">0</span>;</span><br><span class="line">        <span class="keyword">for</span>(j=i+<span class="number">1</span>;j&lt;<span class="number">9</span>;++j)</span><br><span class="line">            <span class="keyword">if</span>( a[i]&gt;a[j] )</span><br><span class="line">                ++t;</span><br><span class="line">        sum+=t*fact[<span class="number">9</span>-i<span class="number">-1</span>];</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> sum+<span class="number">1</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//康托展开解码函数</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">decode</span><span class="params">(<span class="keyword">int</span> k,Node&amp; node)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> i, j, t, vst[<span class="number">10</span>] = &#123;<span class="number">0</span>&#125;;</span><br><span class="line">    --k;</span><br><span class="line">    <span class="keyword">for</span> (i = <span class="number">0</span>; i &lt; <span class="number">9</span>; i++) &#123;</span><br><span class="line">        t = k / fact[<span class="number">9</span> - i - <span class="number">1</span>];</span><br><span class="line">        <span class="keyword">for</span> (j = <span class="number">1</span>; j &lt;= <span class="number">9</span>; j++)</span><br><span class="line">            <span class="keyword">if</span> (!vst[j]) &#123;</span><br><span class="line">                <span class="keyword">if</span> (t == <span class="number">0</span>) <span class="keyword">break</span>;</span><br><span class="line">                --t;</span><br><span class="line">            &#125;</span><br><span class="line">        node.s[i] = j;</span><br><span class="line">        vst[j] = <span class="number">1</span>;</span><br><span class="line">        k %= fact[<span class="number">9</span> - i - <span class="number">1</span>];</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;<span class="number">9</span>;i++)&#123;</span><br><span class="line">        <span class="keyword">if</span>((<span class="keyword">int</span>)node.s[i]==<span class="number">9</span>)&#123;</span><br><span class="line">            node.loc=i;</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//搜索</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">bfs</span><span class="params">(<span class="keyword">const</span> Node&amp; begin)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="built_in">memset</span>(vis, <span class="number">0</span>, <span class="built_in"><span class="keyword">sizeof</span></span>(vis));</span><br><span class="line">    <span class="keyword">int</span> code = <span class="built_in">encode</span>(begin.s);</span><br><span class="line">    vis = <span class="number">1</span>;</span><br><span class="line">    par = <span class="number">-1</span>;<span class="comment">//保存了每一步的父节点,便于输出答案</span></span><br><span class="line"></span><br><span class="line">    queue&lt;<span class="keyword">int</span>&gt; que;<span class="comment">//BFS标准配置，队列一个，放入康托展开后的编码</span></span><br><span class="line">    que.<span class="built_in">push</span>(code);</span><br><span class="line">     </span><br><span class="line">    Node n1, n2;</span><br><span class="line">    <span class="keyword">while</span>(!que.<span class="built_in">empty</span>())</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">int</span> u = que.<span class="built_in">front</span>();</span><br><span class="line">        que.<span class="built_in">pop</span>();</span><br><span class="line">     </span><br><span class="line">        <span class="built_in">decode</span>(u, n1);</span><br><span class="line">     </span><br><span class="line">        <span class="keyword">int</span> k = n1.loc;<span class="comment">//loc记下空格所在的位置，方便日后换位</span></span><br><span class="line">        <span class="keyword">int</span> x = k/<span class="number">3</span>;</span><br><span class="line">        <span class="keyword">int</span> y = k%<span class="number">3</span>;</span><br><span class="line">     </span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>; i&lt;<span class="number">4</span>; ++i)</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="keyword">int</span> nx = x + dx[i];</span><br><span class="line">            <span class="keyword">int</span> ny = y + dy[i];</span><br><span class="line">            <span class="keyword">if</span>(nx&gt;=<span class="number">0</span> &amp;&amp; nx&lt;<span class="number">3</span> &amp;&amp; ny&gt;=<span class="number">0</span> &amp;&amp; ny&lt;<span class="number">3</span>)</span><br><span class="line">            &#123;</span><br><span class="line">                n2 = n1;</span><br><span class="line">                n2.loc = nx * <span class="number">3</span> + ny;</span><br><span class="line">                <span class="built_in">swap</span>(n2.s[k], n2.s[n2.loc]);<span class="comment">//进行换位你</span></span><br><span class="line">                <span class="keyword">int</span> v = <span class="built_in">encode</span>(n2.s);<span class="comment">//重新利用康托展开编码</span></span><br><span class="line">                <span class="keyword">if</span>(!vis[v])</span><br><span class="line">                &#123;</span><br><span class="line">                    dir[v] = i;<span class="comment">//保存方向</span></span><br><span class="line">                    vis[v] = <span class="number">1</span>;<span class="comment">//表示已经访问</span></span><br><span class="line">                    par[v] = u;<span class="comment">//记录父节点</span></span><br><span class="line">                    <span class="keyword">if</span>(v==<span class="number">1</span>)</span><br><span class="line">                        <span class="keyword">return</span>;</span><br><span class="line">                    que.<span class="built_in">push</span>(v);</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">output</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">int</span> n, u;</span><br><span class="line">    <span class="keyword">char</span> path[<span class="number">1000</span>];</span><br><span class="line">    n = <span class="number">1</span>;</span><br><span class="line">    path[<span class="number">0</span>] = dir[<span class="number">1</span>];</span><br><span class="line">    u = par[<span class="number">1</span>];</span><br><span class="line">    <span class="keyword">while</span>(par[u]!=<span class="number">-1</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        path[n] = dir[u];</span><br><span class="line">        ++n;</span><br><span class="line">        u = par[u];</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span>(<span class="keyword">int</span> i=n<span class="number">-1</span>; i&gt;=<span class="number">0</span>; --i)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">if</span>(path[i]==<span class="number">0</span>)</span><br><span class="line">            cout &lt;&lt; <span class="string">&quot;u&quot;</span>;</span><br><span class="line">        <span class="keyword">else</span> <span class="keyword">if</span>(path[i]==<span class="number">1</span>)</span><br><span class="line">            cout &lt;&lt; <span class="string">&quot;d&quot;</span>;</span><br><span class="line">        <span class="keyword">else</span> <span class="keyword">if</span>(path[i]==<span class="number">2</span>)</span><br><span class="line">            cout &lt;&lt; <span class="string">&quot;l&quot;</span>;</span><br><span class="line">        <span class="keyword">else</span></span><br><span class="line">            cout &lt;&lt; <span class="string">&quot;r&quot;</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    ios::<span class="built_in">sync_with_stdio</span>(<span class="literal">false</span>);</span><br><span class="line">    cin.<span class="built_in">tie</span>(<span class="number">0</span>);</span><br><span class="line">    Node start;</span><br><span class="line">    <span class="keyword">char</span> c;</span><br><span class="line">    <span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>; i&lt;<span class="number">9</span>; ++i)</span><br><span class="line">    &#123;</span><br><span class="line">        cin &gt;&gt; c;</span><br><span class="line">        <span class="keyword">if</span>(c==<span class="string">&#x27;x&#x27;</span>)</span><br><span class="line">        &#123;</span><br><span class="line">            start.s[i] = <span class="number">9</span>;<span class="comment">//当发现了x，将其变成9</span></span><br><span class="line">            start.loc = i;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">else</span></span><br><span class="line">            start.s[i] = c - <span class="string">&#x27;0&#x27;</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="built_in">bfs</span>(start);</span><br><span class="line">     </span><br><span class="line">    <span class="keyword">if</span>(vis[<span class="number">1</span>]==<span class="number">1</span>)</span><br><span class="line">        <span class="built_in">output</span>();</span><br><span class="line">    <span class="keyword">else</span></span><br><span class="line">        cout &lt;&lt; <span class="string">&quot;unsolvable&quot;</span>;</span><br><span class="line">     </span><br><span class="line">    cout &lt;&lt; endl;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure><br>接下来放上一个预告，别以为八数码问题这就解决了，在以后，我还会更新关于八数码的问题，那时候就得用上A*算法（启发式搜索）解决这个问题了。</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/BFS/" rel="tag"># BFS</a>
+              <a href="/tags/%E6%90%9C%E7%B4%A2/" rel="tag"># 搜索</a>
+              <a href="/tags/%E7%BB%84%E5%90%88%E6%95%B0%E5%AD%A6/" rel="tag"># 组合数学</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2018/07/16/%E5%BA%B7%E6%89%98%E5%B1%95%E5%BC%80%EF%BC%88%E5%85%A8%E6%8E%92%E5%88%97%E4%B8%8E%E8%87%AA%E7%84%B6%E6%95%B0%E7%9A%84%E5%8F%8C%E5%B0%84%EF%BC%89/" rel="prev" title="康托展开（全排列与自然数的双射）">
+      <i class="fa fa-chevron-left"></i> 康托展开（全排列与自然数的双射）
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2018/07/18/%E9%93%BE%E5%BC%8F%E5%93%88%E5%B8%8C%E8%A1%A8%EF%BC%88%E5%85%AB%E6%95%B0%E7%A0%81%E9%97%AE%E9%A2%98%E6%89%A9%E5%B1%95%EF%BC%89/" rel="next" title="链式哈希表（八数码问题扩展）">
+      链式哈希表（八数码问题扩展） <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Lavender"
+      src="/img/Lavender.jpg">
+  <p class="site-author-name" itemprop="name">Lavender</p>
+  <div class="site-description" itemprop="description">再次出发</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">110</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+        <span class="site-state-item-count">18</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+        <span class="site-state-item-count">49</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/Lavender-QAQ" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;Lavender-QAQ" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title">
+      <i class="fa fa-fw fa-link"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="http://ltitan.github.io/" title="http:&#x2F;&#x2F;ltitan.github.io&#x2F;" rel="noopener" target="_blank">飞哥的技术园区</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://heshang.ink/" title="https:&#x2F;&#x2F;heshang.ink&#x2F;" rel="noopener" target="_blank">奎哥的Java课堂</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://kawaii-jump.github.io/" title="https:&#x2F;&#x2F;kawaii-jump.github.io&#x2F;" rel="noopener" target="_blank">涛哥的就业实录</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://49.232.1.238/" title="http:&#x2F;&#x2F;49.232.1.238&#x2F;" rel="noopener" target="_blank">薛老板的攻防战场</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://dumengblog.club/" title="https:&#x2F;&#x2F;dumengblog.club&#x2F;" rel="noopener" target="_blank">Dumeng的知识讲解</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://stephencuhui.github.io/" title="https:&#x2F;&#x2F;stephencuhui.github.io&#x2F;" rel="noopener" target="_blank">徽哥的步步攀升</a>
+        </li>
+    </ul>
+  </div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2017 – 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Lavender</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+</body>
+</html>

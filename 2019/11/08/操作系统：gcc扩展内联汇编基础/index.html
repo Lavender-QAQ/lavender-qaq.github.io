@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/img/caffee32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/img/caffee16x16.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":false,"style":"default"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"valine","storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="gccgcc就不细说了 1$ gcc -Wall hello.c -o hello 选项 -Wall 开启编译器几乎所有常用的警告。 编译器有很多其他的警告选项，但 -Wall 是最常用的。默认情况下GCC ghg产生任何警告信息。 当编写 C 或 C++ 程序时编译器警告非常有助于检测程序存在的问题。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="操作系统：gcc扩展内联汇编基础">
+<meta property="og:url" content="http://example.com/2019/11/08/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%EF%BC%9Agcc%E6%89%A9%E5%B1%95%E5%86%85%E8%81%94%E6%B1%87%E7%BC%96%E5%9F%BA%E7%A1%80/index.html">
+<meta property="og:site_name" content="In The End">
+<meta property="og:description" content="gccgcc就不细说了 1$ gcc -Wall hello.c -o hello 选项 -Wall 开启编译器几乎所有常用的警告。 编译器有很多其他的警告选项，但 -Wall 是最常用的。默认情况下GCC ghg产生任何警告信息。 当编写 C 或 C++ 程序时编译器警告非常有助于检测程序存在的问题。">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2019-11-07T16:41:19.000Z">
+<meta property="article:modified_time" content="2021-08-05T01:58:18.102Z">
+<meta property="article:author" content="Lavender">
+<meta property="article:tag" content="算法">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://example.com/2019/11/08/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%EF%BC%9Agcc%E6%89%A9%E5%B1%95%E5%86%85%E8%81%94%E6%B1%87%E7%BC%96%E5%9F%BA%E7%A1%80/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>操作系统：gcc扩展内联汇编基础 | In The End</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">In The End</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">个人博客</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2019/11/08/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%EF%BC%9Agcc%E6%89%A9%E5%B1%95%E5%86%85%E8%81%94%E6%B1%87%E7%BC%96%E5%9F%BA%E7%A1%80/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/img/Lavender.jpg">
+      <meta itemprop="name" content="Lavender">
+      <meta itemprop="description" content="再次出发">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="In The End">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          操作系统：gcc扩展内联汇编基础
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2019-11-07 16:41:19" itemprop="dateCreated datePublished" datetime="2019-11-07T16:41:19Z">2019-11-07</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2021-08-05 01:58:18" itemprop="dateModified" datetime="2021-08-05T01:58:18Z">2021-08-05</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/" itemprop="url" rel="index"><span itemprop="name">操作系统</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="gcc"><a href="#gcc" class="headerlink" title="gcc"></a>gcc</h1><p>gcc就不细说了</p>
+<figure class="highlight elixir"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable">$ </span>gcc -Wall hello.c -o hello</span><br></pre></td></tr></table></figure>
+<p>选项 -Wall 开启编译器几乎所有常用的警告。</p>
+<p>编译器有很多其他的警告选项，但 -Wall 是最常用的。默认情况下GCC ghg产生任何警告信息。</p>
+<p>当编写 C 或 C++ 程序时编译器警告非常有助于检测程序存在的问题。</p>
+<span id="more"></span>
+<h1 id="AT-amp-T汇编基本语法"><a href="#AT-amp-T汇编基本语法" class="headerlink" title="AT&amp;T汇编基本语法"></a>AT&amp;T汇编基本语法</h1><p>文档里的这个比较写得很好了，注意的点在于AT&amp;T与汇编的赋值语句顺序是反的，这个得相当注意</p>
+<figure class="highlight x86asm"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">* 寄存器命名原则</span><br><span class="line">    <span class="meta">AT</span>&amp;T: %eax                      Intel: <span class="built_in">eax</span></span><br><span class="line">* 源/目的操作数顺序 </span><br><span class="line">    <span class="meta">AT</span>&amp;T: movl %eax, %ebx           Intel: <span class="keyword">mov</span> <span class="built_in">ebx</span>, <span class="built_in">eax</span></span><br><span class="line">* 常数/立即数的格式　</span><br><span class="line">    <span class="meta">AT</span>&amp;T: movl $_value, %ebx        Intel: <span class="keyword">mov</span> <span class="built_in">eax</span>, _value</span><br><span class="line">  把value的地址放入<span class="built_in">eax</span>寄存器</span><br><span class="line">    <span class="meta">AT</span>&amp;T: movl <span class="number">$0</span>xd00d, %ebx        Intel: <span class="keyword">mov</span> <span class="built_in">ebx</span>, <span class="number">0xd00d</span></span><br><span class="line">* 操作数长度标识 </span><br><span class="line">    <span class="meta">AT</span>&amp;T: movw %ax, %bx             Intel: <span class="keyword">mov</span> <span class="built_in">bx</span>, <span class="built_in">ax</span></span><br><span class="line">* 寻址方式 </span><br><span class="line">    <span class="meta">AT</span>&amp;T:   immed32(basepointer, indexpointer, indexscale)</span><br><span class="line"><span class="symbol">    Intel:</span>  [basepointer + indexpointer × indexscale + imm32)</span><br></pre></td></tr></table></figure>
+<p>对于AT&amp;T的寻址操作我表示有点迷，不过照着文档写应该是没有问题的了</p>
+<figure class="highlight xquery"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">* 直接寻址 </span><br><span class="line">         AT&amp;T:  foo                         Intel: [foo]</span><br><span class="line">         boo是一个全局变量。注意加上$是表示地址引用，不加是表示值引用。对于局部变量，可以通过堆栈指针引用。</span><br><span class="line"></span><br><span class="line"> * 寄存器间接寻址 </span><br><span class="line">         AT&amp;T: (<span class="meta">%eax</span>)                        Intel: [eax]</span><br><span class="line"></span><br><span class="line"> * 变址寻址 </span><br><span class="line">         AT&amp;T: _<span class="keyword">variable</span>(<span class="meta">%eax</span>)               Intel: [eax + _<span class="keyword">variable</span>]</span><br><span class="line">         AT&amp;T: _<span class="keyword">array</span>( ,<span class="meta">%eax</span>, <span class="number">4</span>)             Intel: [eax × <span class="number">4</span> + _<span class="keyword">array</span>]</span><br><span class="line">         AT&amp;T: _<span class="keyword">array</span>(<span class="meta">%ebx</span>, <span class="meta">%eax</span>,<span class="number">8</span>)          Intel: [ebx + eax × <span class="number">8</span> + _<span class="keyword">array</span>]</span><br></pre></td></tr></table></figure>
+<h1 id="gcc基本内联汇编"><a href="#gcc基本内联汇编" class="headerlink" title="gcc基本内联汇编"></a>gcc基本内联汇编</h1><p>什么是内联汇编（Inline assembly）?</p>
+<p>　　1、这是GCC对C语言的扩张，就是在C代码里面去写汇编代码</p>
+<p>　　2、可以直接在C的语句中插入汇编指令</p>
+<p>有何用处？</p>
+<p>　　1、C语言不足以完成所有CPU的指令， 特别是有一些特权指令，比如加载gdt表(Global Descriptor Table 全局描述符表)，从而使用汇编代码来完成</p>
+<p>　　2、用汇编在C语言中手动优化，特别是在操作系统当中，使用汇编对操作系统的掌控更为精准，更加准确。</p>
+<p>如何工作？</p>
+<p>　　1、用给定的模板和约束来生成汇编指令</p>
+<p>　　2、才C函数内形成汇编代码</p>
+<figure class="highlight lsl"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">asm( <span class="string">&quot;pushl %eax<span class="subst">\n</span><span class="subst">\t</span>&quot;</span></span><br><span class="line">     <span class="string">&quot;movl $0,%eax<span class="subst">\n</span><span class="subst">\t</span>&quot;</span></span><br><span class="line">     <span class="string">&quot;popl %eax&quot;</span></span><br><span class="line">);</span><br></pre></td></tr></table></figure>
+<p>由于gcc会把汇编的代码统一交给GAS汇编，但是如果在这个汇编的代码的上下文中有用到被汇编代码动过的寄存器，会出现问题。</p>
+<p>简单来讲，就是gcc把汇编交给GAS后往下执行的时候并不知道这些寄存器是被改变过的，所以我们需要扩展内联汇编</p>
+<h1 id="扩展内联汇编"><a href="#扩展内联汇编" class="headerlink" title="扩展内联汇编"></a>扩展内联汇编</h1><p>在基本内联汇编中，我们只有指令。然而在扩展汇编中，我们可以同时指定操作数。它允许我们指定输入寄存器、输出寄存器以及修饰寄存器列表。GCC 不强制用户必须指定使用的寄存器。我们可以把头疼的事留给 GCC ，这可能可以更好地适应 GCC 的优化。不管怎么说，基本格式为：</p>
+<figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">asm ( 汇编程序模板</span><br><span class="line">: 输出操作数 <span class="regexp">/* 可选的 */</span></span><br><span class="line">: 输入操作数 <span class="regexp">/* 可选的 */</span></span><br><span class="line">: 修饰寄存器列表 <span class="regexp">/* 可选的 */</span></span><br><span class="line">);</span><br></pre></td></tr></table></figure>
+<p>汇编程序模板由汇编指令组成。每一个操作数由一个操作数约束字符串所描述，其后紧接一个括弧括起的 C 表达式。冒号用于将汇编程序模板和第一个输出操作数分开，另一个（冒号）用于将最后一个输出操作数和第一个输入操作数分开（如果存在的话）。逗号用于分离每一个组内的操作数。总操作数的数目限制在 10 个，或者机器描述中的任何指令格式中的最大操作数数目，以较大者为准。</p>
+<p>它代表什么含义呢？这需要从其基本格式讲起。GCC扩展内联汇编的基本格式是：</p>
+<figure class="highlight ada"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">asm [volatile] ( Assembler Template</span><br><span class="line">   : <span class="type">Output</span> Operands</span><br><span class="line">   [ : <span class="type">Input</span> Operands</span><br><span class="line">   [ : <span class="type">Clobbers</span> ] ])</span><br></pre></td></tr></table></figure>
+<p>其中，<strong>asm</strong> 表示汇编代码的开始，其后可以跟 <strong>volatile</strong>（这是可选项），其含义是避免 “asm” 指令被删除、移动或组合，在执行代码时，如果不希望汇编语句被 gcc 优化而改变位置，就需要在 asm 符号后添加 volatile 关键词：asm volatile(…)；或者更详细地说明为：<strong>asm</strong> <strong>volatile</strong>(…)；然后就是小括弧，括弧中的内容是具体的内联汇编指令代码。 “” 为汇编指令部分，例如，”movl %%cr0,%0\n\t”。数字前加前缀 “％“，如％1，％2等表示使用寄存器的样板操作数。可以使用的操作数总数取决于具体CPU中通用寄存器的数 量，如Intel可以有8个。指令中有几个操作数，就说明有几个变量需要与寄存器结合，由gcc在编译时根据后面输出部分和输入部分的约束条件进行相应的处理。由于这些样板操作数的前缀使用了”％“，因此，在用到具体的寄存器时就在前面加两个“％”，如%%cr0。输出部分（output operand list），用以规定对输出变量（目标操作数）如何与寄存器结合的约束（constraint）,输出部分可以有多个约束，互相以逗号分开。每个约束以“＝”开头，接着用一个字母来表示操作数的类型，然后是关于变量结合的约束。例如，上例中：</p>
+<figure class="highlight gcode"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">:<span class="string">&quot;=r&quot;</span> <span class="comment">(__dummy)</span></span><br></pre></td></tr></table></figure>
+<p>“＝r”表示相应的目标操作数（指令部分的%0）可以使用任何一个通用寄存器，并且变量__dummy 存放在这个寄存器中，但如果是：</p>
+<p>:“＝m”(__dummy)</p>
+<p>“＝m”就表示相应的目标操作数是存放在内存单元__dummy中。表示约束条件的字母很多，下表给出几个主要的约束字母及其含义：</p>
+<figure class="highlight x86asm"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">字母	含义</span><br><span class="line">m, v, o	内存单元</span><br><span class="line">R	任何通用寄存器</span><br><span class="line">Q	寄存器<span class="built_in">eax</span>, <span class="built_in">ebx</span>, <span class="built_in">ecx</span>,<span class="built_in">edx</span>之一</span><br><span class="line">I, h	直接操作数</span><br><span class="line">E, F	浮点数</span><br><span class="line">G	任意</span><br><span class="line">a, b, c, d	寄存器<span class="built_in">eax</span>/<span class="built_in">ax</span>/<span class="built_in">al</span>, <span class="built_in">ebx</span>/<span class="built_in">bx</span>/<span class="built_in">bl</span>, <span class="built_in">ecx</span>/<span class="built_in">cx</span>/<span class="built_in">cl</span>或<span class="built_in">edx</span>/<span class="built_in">dx</span>/<span class="built_in">dl</span></span><br><span class="line">S, D	寄存器<span class="built_in">esi</span>或<span class="built_in">edi</span></span><br><span class="line">I	常数（<span class="number">0</span>～<span class="number">31</span>）</span><br></pre></td></tr></table></figure>
+<p>概括一下，扩展的意思就是在原本的汇编代码后面要加上被这段汇编代码用到的寄存器和变量，便于GCC优化<br>下面是最通俗易懂的例子</p>
+<figure class="highlight d"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">int</span> a=<span class="number">10</span>, b;</span><br><span class="line"><span class="keyword">asm</span> (<span class="string">&quot;movl %1, %%eax;</span></span><br><span class="line"><span class="string">      movl %%eax, %0;&quot;</span></span><br><span class="line">     :<span class="string">&quot;=r&quot;</span>(b)        <span class="comment">/* output */</span></span><br><span class="line">     :<span class="string">&quot;r&quot;</span>(a)         <span class="comment">/* input */</span></span><br><span class="line">     :<span class="string">&quot;%eax&quot;</span>         <span class="comment">/* clobbered register */</span></span><br><span class="line">     );   </span><br></pre></td></tr></table></figure>
+<p>这里我们使用汇编指令让“b”的值等于“a”的值。下面是<br>一些要点：<br>“b”是一个输出操作数，通过%0联系起来；而“a”是一个输入操作数，通过%1联系起来。“r”是对操作数的一个约束。“r”告诉GCC使用任何一个寄存器来存储操作数的值。输出操作数的约束必须包含一个约束修饰符“=”。这个修饰符说明输出操作数是只写的。</p>
+<p>这里有两个“%”在寄存器之前。这样可以帮助GCC辨别操作数和寄存器，操作数只有一个“%”作为前缀。<strong>第三个冒号后的clobbered register %eax告诉GCC%eax的值将会在“asm”里被修改，所以GCC不会使用这个寄存器去存储其它的数值</strong>。</p>
+<p>当“asm”程序执行完后，“b”会映射出更新后的值，因为它被指定为一个输出操作数。换句话说，在“asm”里对“b”的改变将会影响到“asm”的外面的程序。</p>
+<h1 id="make和Makefile"><a href="#make和Makefile" class="headerlink" title="make和Makefile"></a>make和Makefile</h1><p>GNU make(简称make)是一种代码维护工具，在大中型项目中，它将根据程序各个模块的更新情况，自动的维护和生成目标代码。</p>
+<p>make命令执行时，需要一个 makefile （或Makefile）文件，以告诉make命令需要怎么样的去编译和链接程序。首先，我们用一个示例来说明makefile的书写规则。以便给大家一个感兴认识。这个示例来源于gnu的make使用手册，在这个示例中，我们的工程有8个c文件，和3个头文件，我们要写一个makefile来告诉make命令如何编译和链接这几个文件。我们的规则是：</p>
+<ul>
+<li>如果这个工程没有编译过，那么我们的所有c文件都要编译并被链接。</li>
+<li>如果这个工程的某几个c文件被修改，那么我们只编译被修改的c文件，并链接目标程序。</li>
+<li>如果这个工程的头文件被改变了，那么我们需要编译引用了这几个头文件的c文件，并链接目标程序。</li>
+</ul>
+<p>只要我们的makefile写得够好，所有的这一切，我们只用一个make命令就可以完成，make命令会自动智能地根据当前的文件修改的情况来确定哪些文件需要重编译，从而自己编译所需要的文件和链接目标程序。</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2019/11/04/Leetcode%E5%91%A8%E8%B5%9B%E7%AC%AC161%E5%9C%BA%E9%A2%98%E8%A7%A3/" rel="prev" title="Leetcode周赛第161场题解">
+      <i class="fa fa-chevron-left"></i> Leetcode周赛第161场题解
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2019/11/08/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%EF%BC%9AIntel-80386%E8%BF%90%E8%A1%8C%E6%A8%A1%E5%BC%8F%E3%80%81%E5%86%85%E5%AD%98%E6%9E%B6%E6%9E%84%E4%B8%8E%E5%AF%84%E5%AD%98%E5%99%A8/" rel="next" title="操作系统：Intel 80386运行模式、内存架构与寄存器">
+      操作系统：Intel 80386运行模式、内存架构与寄存器 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#gcc"><span class="nav-number">1.</span> <span class="nav-text">gcc</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#AT-amp-T%E6%B1%87%E7%BC%96%E5%9F%BA%E6%9C%AC%E8%AF%AD%E6%B3%95"><span class="nav-number">2.</span> <span class="nav-text">AT&amp;T汇编基本语法</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#gcc%E5%9F%BA%E6%9C%AC%E5%86%85%E8%81%94%E6%B1%87%E7%BC%96"><span class="nav-number">3.</span> <span class="nav-text">gcc基本内联汇编</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%89%A9%E5%B1%95%E5%86%85%E8%81%94%E6%B1%87%E7%BC%96"><span class="nav-number">4.</span> <span class="nav-text">扩展内联汇编</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#make%E5%92%8CMakefile"><span class="nav-number">5.</span> <span class="nav-text">make和Makefile</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Lavender"
+      src="/img/Lavender.jpg">
+  <p class="site-author-name" itemprop="name">Lavender</p>
+  <div class="site-description" itemprop="description">再次出发</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">110</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+        <span class="site-state-item-count">18</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+        <span class="site-state-item-count">49</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/Lavender-QAQ" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;Lavender-QAQ" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title">
+      <i class="fa fa-fw fa-link"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="http://ltitan.github.io/" title="http:&#x2F;&#x2F;ltitan.github.io&#x2F;" rel="noopener" target="_blank">飞哥的技术园区</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://heshang.ink/" title="https:&#x2F;&#x2F;heshang.ink&#x2F;" rel="noopener" target="_blank">奎哥的Java课堂</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://kawaii-jump.github.io/" title="https:&#x2F;&#x2F;kawaii-jump.github.io&#x2F;" rel="noopener" target="_blank">涛哥的就业实录</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://49.232.1.238/" title="http:&#x2F;&#x2F;49.232.1.238&#x2F;" rel="noopener" target="_blank">薛老板的攻防战场</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://dumengblog.club/" title="https:&#x2F;&#x2F;dumengblog.club&#x2F;" rel="noopener" target="_blank">Dumeng的知识讲解</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://stephencuhui.github.io/" title="https:&#x2F;&#x2F;stephencuhui.github.io&#x2F;" rel="noopener" target="_blank">徽哥的步步攀升</a>
+        </li>
+    </ul>
+  </div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2017 – 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Lavender</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+</body>
+</html>
