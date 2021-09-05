@@ -1,0 +1,553 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/img/caffee32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/img/caffee16x16.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":false,"style":"default"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"valine","storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="周赛传送门https:&#x2F;&#x2F;leetcode-cn.com&#x2F;contest&#x2F;weekly-contest-257&#x2F; 今天的周赛由马化腾AI公司（Pony.ai）赞助！哈哈哈哈！ 惊，腾讯老板竟是AI！ 开玩笑hhh，老板是楼教主">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Leetcode周赛第257场题解">
+<meta property="og:url" content="http://example.com/2021/09/06/Leetcode%E5%91%A8%E8%B5%9B%E7%AC%AC257%E5%9C%BA%E9%A2%98%E8%A7%A3/index.html">
+<meta property="og:site_name" content="In The End">
+<meta property="og:description" content="周赛传送门https:&#x2F;&#x2F;leetcode-cn.com&#x2F;contest&#x2F;weekly-contest-257&#x2F; 今天的周赛由马化腾AI公司（Pony.ai）赞助！哈哈哈哈！ 惊，腾讯老板竟是AI！ 开玩笑hhh，老板是楼教主">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://example.com/img/Leetcode周赛第257场题解1.png">
+<meta property="article:published_time" content="2021-09-05T16:01:16.000Z">
+<meta property="article:modified_time" content="2021-09-05T08:46:50.482Z">
+<meta property="article:author" content="Lavender">
+<meta property="article:tag" content="算法">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/img/Leetcode周赛第257场题解1.png">
+
+<link rel="canonical" href="http://example.com/2021/09/06/Leetcode%E5%91%A8%E8%B5%9B%E7%AC%AC257%E5%9C%BA%E9%A2%98%E8%A7%A3/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>Leetcode周赛第257场题解 | In The End</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">In The End</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">个人博客</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2021/09/06/Leetcode%E5%91%A8%E8%B5%9B%E7%AC%AC257%E5%9C%BA%E9%A2%98%E8%A7%A3/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/img/Lavender.jpg">
+      <meta itemprop="name" content="Lavender">
+      <meta itemprop="description" content="再次出发">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="In The End">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Leetcode周赛第257场题解
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2021-09-05 16:01:16 / 修改时间：08:46:50" itemprop="dateCreated datePublished" datetime="2021-09-05T16:01:16Z">2021-09-05</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/ACM/" itemprop="url" rel="index"><span itemprop="name">ACM</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/ACM/Leetcode/" itemprop="url" rel="index"><span itemprop="name">Leetcode</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="周赛传送门"><a href="#周赛传送门" class="headerlink" title="周赛传送门"></a>周赛传送门</h1><p><a target="_blank" rel="noopener" href="https://leetcode-cn.com/contest/weekly-contest-257/">https://leetcode-cn.com/contest/weekly-contest-257/</a></p>
+<p>今天的周赛由马化腾AI公司（Pony.ai）赞助！哈哈哈哈！</p>
+<p>惊，腾讯老板竟是AI！</p>
+<p>开玩笑hhh，老板是楼教主</p>
+<span id="more"></span>
+<h1 id="5863-统计特殊四元组"><a href="#5863-统计特殊四元组" class="headerlink" title="5863. 统计特殊四元组"></a>5863. 统计特殊四元组</h1><h2 id="题目"><a href="#题目" class="headerlink" title="题目"></a>题目</h2><p>给你一个 下标从 0 开始 的整数数组 nums ，返回满足下述条件的 不同 四元组 (a, b, c, d) 的 数目 ：</p>
+<figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">nums<span class="selector-attr">[a]</span> + nums<span class="selector-attr">[b]</span> + nums<span class="selector-attr">[c]</span> == nums<span class="selector-attr">[d]</span> ，且<span class="selector-tag">a</span> &lt; <span class="selector-tag">b</span> &lt; c &lt; d</span><br></pre></td></tr></table></figure>
+<p>示例 1：</p>
+<figure class="highlight tap"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">输入：nums = [1,2,3,6]</span><br><span class="line">输出：1</span><br><span class="line">解释：满足要求的唯一一个四元组是 (0, 1, 2, 3) 因为<span class="number"> 1 </span>+<span class="number"> 2 </span>+<span class="number"> 3 </span>==<span class="number"> 6 </span>。</span><br></pre></td></tr></table></figure>
+<p>示例 2：</p>
+<figure class="highlight accesslog"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">输入：nums = <span class="string">[3,3,6,4,5]</span></span><br><span class="line">输出：<span class="number">0</span></span><br><span class="line">解释：<span class="string">[3,3,6,4,5]</span> 中不存在满足要求的四元组。</span><br></pre></td></tr></table></figure>
+<p>示例 3：</p>
+<figure class="highlight tap"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">输入：nums = [1,1,1,3,5]</span><br><span class="line">输出：4</span><br><span class="line">解释：满足要求的<span class="number"> 4 </span>个四元组如下：</span><br><span class="line"></span><br><span class="line">- (0, 1, 2, 3):<span class="number"> 1 </span>+<span class="number"> 1 </span>+<span class="number"> 1 </span>== 3</span><br><span class="line">- (0, 1, 3, 4):<span class="number"> 1 </span>+<span class="number"> 1 </span>+<span class="number"> 3 </span>== 5</span><br><span class="line">- (0, 2, 3, 4):<span class="number"> 1 </span>+<span class="number"> 1 </span>+<span class="number"> 3 </span>== 5</span><br><span class="line">- (1, 2, 3, 4):<span class="number"> 1 </span>+<span class="number"> 1 </span>+<span class="number"> 3 </span>== 5</span><br></pre></td></tr></table></figure>
+<p>提示：</p>
+<figure class="highlight basic"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="symbol">4 </span>&lt;= nums.length &lt;= <span class="number">50</span></span><br><span class="line"><span class="symbol">1 </span>&lt;= nums[i] &lt;= <span class="number">100</span></span><br></pre></td></tr></table></figure>
+<h2 id="题解"><a href="#题解" class="headerlink" title="题解"></a>题解</h2><p>四个for暴力</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span> &#123;</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="keyword">int</span> <span class="title">countQuadruplets</span><span class="params">(vector&lt;<span class="keyword">int</span>&gt;&amp; nums)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">int</span> n=nums.<span class="built_in">size</span>(),ans=<span class="number">0</span>;</span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;n;i++)</span><br><span class="line">            <span class="keyword">for</span>(<span class="keyword">int</span> j=i+<span class="number">1</span>;j&lt;n;j++)</span><br><span class="line">                <span class="keyword">for</span>(<span class="keyword">int</span> k=j+<span class="number">1</span>;k&lt;n;k++)</span><br><span class="line">                    <span class="keyword">for</span>(<span class="keyword">int</span> l=k+<span class="number">1</span>;l&lt;n;l++)</span><br><span class="line">                        <span class="keyword">if</span>(nums[i]+nums[j]+nums[k]==nums[l])</span><br><span class="line">                            ans++;</span><br><span class="line">        <span class="keyword">return</span> ans;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<h1 id="5864-游戏中弱角色的数量"><a href="#5864-游戏中弱角色的数量" class="headerlink" title="5864. 游戏中弱角色的数量"></a>5864. 游戏中弱角色的数量</h1><h2 id="题目-1"><a href="#题目-1" class="headerlink" title="题目"></a>题目</h2><p>你正在参加一个多角色游戏，每个角色都有两个主要属性：攻击 和 防御 。给你一个二维整数数组 properties ，其中 properties[i] = [attacki, defensei] 表示游戏中第 i 个角色的属性。</p>
+<p>如果存在一个其他角色的攻击和防御等级 都严格高于 该角色的攻击和防御等级，则认为该角色为 弱角色 。更正式地，如果认为角色 i 弱于 存在的另一个角色 j ，那么 attackj &gt; attacki 且 defensej &gt; defensei 。</p>
+<p>返回 弱角色 的数量。</p>
+<p>示例 1：</p>
+<figure class="highlight lua"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">输入：properties = <span class="string">[[5,5],[6,3],[3,6]]</span></span><br><span class="line">输出：<span class="number">0</span></span><br><span class="line">解释：不存在攻击和防御都严格高于其他角色的角色。</span><br></pre></td></tr></table></figure>
+<p>示例 2：</p>
+<figure class="highlight lua"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">输入：properties = <span class="string">[[2,2],[3,3]]</span></span><br><span class="line">输出：<span class="number">1</span></span><br><span class="line">解释：第一个角色是弱角色，因为第二个角色的攻击和防御严格大于该角色。</span><br></pre></td></tr></table></figure>
+<p>示例 3：</p>
+<figure class="highlight lua"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">输入：properties = <span class="string">[[1,5],[10,4],[4,3]]</span></span><br><span class="line">输出：<span class="number">1</span></span><br><span class="line">解释：第三个角色是弱角色，因为第二个角色的攻击和防御严格大于该角色。</span><br></pre></td></tr></table></figure>
+<p>提示：</p>
+<figure class="highlight apache"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="attribute">2</span> &lt;= properties.length &lt;= <span class="number">10</span>^<span class="number">5</span></span><br><span class="line"><span class="attribute">properties</span>[i].length == <span class="number">2</span></span><br><span class="line"><span class="attribute">1</span> &lt;= attacki, defensei &lt;= <span class="number">10</span>^<span class="number">5</span></span><br></pre></td></tr></table></figure>
+<h2 id="题解-1"><a href="#题解-1" class="headerlink" title="题解"></a>题解</h2><p>数组长度是$10^5$，显然$O(n^2)$的算法是过不了的，也就是说无法利用两重循环去判断（如果可以的话这题就是签到题了），所以需要去至少优化一重循环。可以使用pair对组来存储，然后按照first从大到小排序，这样我们可以保证first天然符合条件，只需要考虑second的情况就好了。</p>
+<p>但是由于题目中说是需要严格大于，所以first相等的情况我们还是需要考虑的，那么可以使用批处理的方法解决这个问题，一次处理一批first相等的pair，等处理完之后再去更新second的信息，这样就可以保证first相等的情况是不会干扰到我们的答案的。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span> &#123;</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="keyword">typedef</span> pair&lt;<span class="keyword">int</span>,<span class="keyword">int</span>&gt; P;</span><br><span class="line">    <span class="function"><span class="keyword">int</span> <span class="title">numberOfWeakCharacters</span><span class="params">(vector&lt;vector&lt;<span class="keyword">int</span>&gt;&gt;&amp; nums)</span> </span>&#123;</span><br><span class="line">        vector&lt;P&gt; v;</span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">auto</span>&amp; it:nums) v.<span class="built_in">push_back</span>(&#123;it[<span class="number">0</span>],it[<span class="number">1</span>]&#125;);</span><br><span class="line">        <span class="built_in">sort</span>(v.<span class="built_in">begin</span>(),v.<span class="built_in">end</span>(),[](P a,P b)&#123;</span><br><span class="line">            <span class="keyword">if</span>(a.first==b.first) <span class="keyword">return</span> a.second&gt;b.second;</span><br><span class="line">            <span class="keyword">else</span> <span class="keyword">return</span> a.first&gt;b.first;</span><br><span class="line">        &#125;);</span><br><span class="line">        <span class="keyword">int</span> i=<span class="number">0</span>,mx=<span class="number">-1</span>,ans=<span class="number">0</span>;</span><br><span class="line">        <span class="keyword">while</span>(i&lt;v.<span class="built_in">size</span>())&#123;</span><br><span class="line">            <span class="keyword">int</span> j=i+<span class="number">1</span>;</span><br><span class="line">            <span class="keyword">while</span>(j&lt;v.<span class="built_in">size</span>()&amp;&amp;v[j].first==v[i].first) j++;</span><br><span class="line">            <span class="keyword">for</span>(<span class="keyword">int</span> k=i;k&lt;j&amp;&amp;k&lt;v.<span class="built_in">size</span>();k++)</span><br><span class="line">                <span class="keyword">if</span>(mx&gt;v[k].second) ans++;</span><br><span class="line">            <span class="keyword">for</span>(<span class="keyword">int</span> k=i;k&lt;j&amp;&amp;k&lt;v.<span class="built_in">size</span>();k++)</span><br><span class="line">                mx=<span class="built_in">max</span>(mx,v[k].second);</span><br><span class="line">            i=j;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> ans;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<h1 id="5865-访问完所有房间的第一天"><a href="#5865-访问完所有房间的第一天" class="headerlink" title="5865. 访问完所有房间的第一天"></a>5865. 访问完所有房间的第一天</h1><h2 id="题目-2"><a href="#题目-2" class="headerlink" title="题目"></a>题目</h2><p>你需要访问 n 个房间，房间从 0 到 n - 1 编号。同时，每一天都有一个日期编号，从 0 开始，依天数递增。你每天都会访问一个房间。</p>
+<p>最开始的第 0 天，你访问 0 号房间。给你一个长度为 n 且 下标从 0 开始 的数组 nextVisit 。在接下来的几天中，你访问房间的 次序 将根据下面的 规则 决定：</p>
+<ul>
+<li>假设某一天，你访问 i 号房间。</li>
+<li>如果算上本次访问，访问 i 号房间的次数为 奇数 ，那么 第二天 需要访问 nextVisit[i] 所指定的房间，其中 0 &lt;= nextVisit[i] &lt;= i 。</li>
+<li>如果算上本次访问，访问 i 号房间的次数为 偶数 ，那么 第二天 需要访问 (i + 1) mod n 号房间。</li>
+</ul>
+<p>请返回你访问完所有房间的第一天的日期编号。题目数据保证总是存在这样的一天。由于答案可能很大，返回对 109 + 7 取余后的结果。</p>
+<p>示例 1：</p>
+<figure class="highlight tap"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">输入：nextVisit = [0,0]</span><br><span class="line">输出：2</span><br><span class="line">解释：</span><br><span class="line"></span><br><span class="line">- 第<span class="number"> 0 </span>天，你访问房间<span class="number"> 0 </span>。访问<span class="number"> 0 </span>号房间的总次数为<span class="number"> 1 </span>，次数为奇数。</span><br><span class="line">  下一天你需要访问房间的编号是 nextVisit[0] = 0</span><br><span class="line">- 第<span class="number"> 1 </span>天，你访问房间<span class="number"> 0 </span>。访问<span class="number"> 0 </span>号房间的总次数为<span class="number"> 2 </span>，次数为偶数。</span><br><span class="line">  下一天你需要访问房间的编号是 (0 + 1) mod<span class="number"> 2 </span>= 1</span><br><span class="line">- 第<span class="number"> 2 </span>天，你访问房间<span class="number"> 1 </span>。这是你第一次完成访问所有房间的那天。</span><br></pre></td></tr></table></figure>
+<p>示例 2：</p>
+<figure class="highlight inform7"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">输入：nextVisit = <span class="comment">[0,0,2]</span></span><br><span class="line">输出：6</span><br><span class="line">解释：</span><br><span class="line">你每天访问房间的次序是 <span class="comment">[0,0,1,0,0,1,2,...]</span> 。</span><br><span class="line">第 6 天是你访问完所有房间的第一天。</span><br></pre></td></tr></table></figure>
+<p>示例 3：</p>
+<figure class="highlight dns"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">输入：nextVisit = [<span class="number">0,1,2,0</span>]</span><br><span class="line">输出：<span class="number">6</span></span><br><span class="line">解释：</span><br><span class="line">你每天访问房间的次序是 [<span class="number">0,0,1,1</span>,<span class="number">2</span>,<span class="number">2</span>,<span class="number">3</span>,...] 。</span><br><span class="line">第 <span class="number">6</span> 天是你访问完所有房间的第一天。</span><br></pre></td></tr></table></figure>
+<p>提示：</p>
+<figure class="highlight apache"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="attribute">n</span> == nextVisit.length</span><br><span class="line"><span class="attribute">2</span> &lt;= n &lt;= <span class="number">10</span>^<span class="number">5</span></span><br><span class="line"><span class="attribute">0</span> &lt;= nextVisit[i] &lt;= i</span><br></pre></td></tr></table></figure>
+<h2 id="题解-2"><a href="#题解-2" class="headerlink" title="题解"></a>题解</h2><p>这题首先需要找一下规律，在纸上模拟一遍流程，当然需要非常注意审题，注意这个条件<strong>0 &lt;= nextVisit[i] &lt;= i</strong>，这意味着我们的行动路线只会往回跳。</p>
+<p><img src="/img/Leetcode周赛第257场题解1.png" alt=""></p>
+<p>就相当于KMP的模式串根据next数组回溯一样，每次只要nextVisit[i]!=i的话，就会将中间的过程重新来一遍，得出了这一结论后我们开辟一个数组记录从头走到每一个位置的步数的<strong>前缀和</strong>，然后nextVisit[i]==i就直接+2，nextVisit[i]!=i的话需要去加上s[i-1]-s[nextVisit[i]-1]+2。</p>
+<p>注意会爆long long，所以取模的时候先要加上1e9+7，保证一定是正数</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span> &#123;</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="keyword">typedef</span> <span class="keyword">long</span> <span class="keyword">long</span> ll;</span><br><span class="line">    <span class="keyword">const</span> <span class="keyword">int</span> mod=<span class="number">1e9</span>+<span class="number">7</span>;</span><br><span class="line">    <span class="function"><span class="keyword">int</span> <span class="title">firstDayBeenInAllRooms</span><span class="params">(vector&lt;<span class="keyword">int</span>&gt;&amp; next)</span> </span>&#123;</span><br><span class="line">        <span class="function">vector&lt;<span class="keyword">int</span>&gt; <span class="title">s</span><span class="params">(next.size()+<span class="number">10</span>,<span class="number">0</span>)</span></span>;</span><br><span class="line">        vector&lt;<span class="keyword">int</span>&gt; t;</span><br><span class="line">        t.<span class="built_in">push_back</span>(<span class="number">0</span>);</span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">auto</span>&amp; it:next) t.<span class="built_in">push_back</span>(it+<span class="number">1</span>);</span><br><span class="line">        next=t;</span><br><span class="line">        </span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">auto</span>&amp;it:next) cout &lt;&lt; it &lt;&lt; <span class="string">&#x27; &#x27;</span>;</span><br><span class="line">        </span><br><span class="line">        ll ans=<span class="number">0</span>;</span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">1</span>;i&lt;next.<span class="built_in">size</span>()<span class="number">-1</span>;i++)&#123;</span><br><span class="line">            <span class="keyword">if</span>(next[i]==i) ans+=<span class="number">2</span>,s[i]=s[i<span class="number">-1</span>]+<span class="number">2</span>;</span><br><span class="line">            <span class="keyword">else</span> s[i]+=((s[i<span class="number">-1</span>]-s[next[i]<span class="number">-1</span>])%mod+s[i<span class="number">-1</span>])%mod+<span class="number">2</span>,ans+=s[i<span class="number">-1</span>]-s[next[i]<span class="number">-1</span>]+<span class="number">2</span>;</span><br><span class="line">            s[i]=(s[i]+mod)%mod,ans=(ans+mod)%mod;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> (<span class="keyword">int</span>)(ans%mod);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<h1 id="5866-数组的最大公因数排序"><a href="#5866-数组的最大公因数排序" class="headerlink" title="5866. 数组的最大公因数排序"></a>5866. 数组的最大公因数排序</h1><h2 id="题目-3"><a href="#题目-3" class="headerlink" title="题目"></a>题目</h2><p>给你一个整数数组 nums ，你可以在 nums 上执行下述操作 任意次 ：</p>
+<p>如果 gcd(nums[i], nums[j]) &gt; 1 ，交换 nums[i] 和 nums[j] 的位置。其中 gcd(nums[i], nums[j]) 是 nums[i] 和 nums[j] 的最大公因数。<br>如果能使用上述交换方式将 nums 按 非递减顺序 排列，返回 true ；否则，返回 false 。</p>
+<p>示例 1：</p>
+<figure class="highlight tap"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">输入：nums = [7,21,3]</span><br><span class="line">输出：true</span><br><span class="line">解释：可以执行下述操作完成对 [7,21,3] 的排序：</span><br><span class="line"></span><br><span class="line">- 交换<span class="number"> 7 </span>和<span class="number"> 21 </span>因为 gcd(7,21) =<span class="number"> 7 </span>。nums = [21,7,3]</span><br><span class="line">- 交换<span class="number"> 21 </span>和<span class="number"> 3 </span>因为 gcd(21,3) =<span class="number"> 3 </span>。nums = [3,7,21]</span><br></pre></td></tr></table></figure>
+<p>示例 2：</p>
+<figure class="highlight nix"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">输入：<span class="attr">nums</span> = [<span class="number">5</span>,<span class="number">2</span>,<span class="number">6</span>,<span class="number">2</span>]</span><br><span class="line">输出：<span class="literal">false</span></span><br><span class="line">解释：无法完成排序，因为 <span class="number">5</span> 不能与其他元素交换。</span><br></pre></td></tr></table></figure>
+<p>示例 3：</p>
+<figure class="highlight tap"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">输入：nums = [10,5,9,3,15]</span><br><span class="line">输出：true</span><br><span class="line">解释：</span><br><span class="line">可以执行下述操作完成对 [10,5,9,3,15] 的排序：</span><br><span class="line"></span><br><span class="line">- 交换<span class="number"> 10 </span>和<span class="number"> 15 </span>因为 gcd(10,15) =<span class="number"> 5 </span>。nums = [15,5,9,3,10]</span><br><span class="line">- 交换<span class="number"> 15 </span>和<span class="number"> 3 </span>因为 gcd(15,3) =<span class="number"> 3 </span>。nums = [3,5,9,15,10]</span><br><span class="line">- 交换<span class="number"> 10 </span>和<span class="number"> 15 </span>因为 gcd(10,15) =<span class="number"> 5 </span>。nums = [3,5,9,10,15]</span><br></pre></td></tr></table></figure>
+<p>提示：</p>
+<figure class="highlight basic"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="symbol">1 </span>&lt;= nums.length &lt;= <span class="number">3</span> * <span class="number">10</span>^<span class="number">4</span></span><br><span class="line"><span class="symbol">2 </span>&lt;= nums[i] &lt;= <span class="number">10</span>^<span class="number">5</span></span><br></pre></td></tr></table></figure>
+<h2 id="题解-3"><a href="#题解-3" class="headerlink" title="题解"></a>题解</h2><p>第四题不是很难其实。本题的核心就是判断两个元素之间能不能互换的问题，但是由于交换还可以传递，所以这个事情就变得很麻烦。解决这种关系之间传递性的很优秀的数据结构就是并查集，我们可以将拥有相同素数的数合并到一个集合中，这样交换的传递性也可以被保留，最后只要将数组排序一遍判断原来的数字和排序后的数字在不在一个集合内就可以。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span> &#123;</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="keyword">const</span> <span class="keyword">static</span> <span class="keyword">int</span> maxn=<span class="number">1e5</span>+<span class="number">10</span>;</span><br><span class="line">    <span class="keyword">int</span> f[maxn];</span><br><span class="line">    <span class="function"><span class="keyword">int</span> <span class="title">find</span><span class="params">(<span class="keyword">int</span> x)</span></span>&#123;</span><br><span class="line">        <span class="keyword">return</span> f[x]=x==f[x]?x:<span class="built_in">find</span>(f[x]);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">merge</span><span class="params">(<span class="keyword">int</span> x,<span class="keyword">int</span> y)</span></span>&#123;</span><br><span class="line">        <span class="keyword">int</span> fx=<span class="built_in">find</span>(x),fy=<span class="built_in">find</span>(y);</span><br><span class="line">        <span class="keyword">if</span>(fx!=fy) f[fx]=fy;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">bool</span> <span class="title">is_same</span><span class="params">(<span class="keyword">int</span> x,<span class="keyword">int</span> y)</span></span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="built_in">find</span>(x)==<span class="built_in">find</span>(y);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">bool</span> <span class="title">gcdSort</span><span class="params">(vector&lt;<span class="keyword">int</span>&gt;&amp; nums)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;maxn;i++) f[i]=i;</span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">auto</span> n:nums)&#123;</span><br><span class="line">            <span class="keyword">int</span> t=n;</span><br><span class="line">            <span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">2</span>;i&lt;=n/i;i++)</span><br><span class="line">                <span class="keyword">if</span>(n%i==<span class="number">0</span>)&#123;</span><br><span class="line">                    <span class="built_in">merge</span>(i,t);</span><br><span class="line">                    <span class="keyword">while</span>(n%i==<span class="number">0</span>) n/=i;</span><br><span class="line">                &#125;</span><br><span class="line">            <span class="keyword">if</span>(n&gt;<span class="number">1</span>) <span class="built_in">merge</span>(n,t);</span><br><span class="line">        &#125;</span><br><span class="line">        vector&lt;<span class="keyword">int</span>&gt; sort_nums=nums;</span><br><span class="line">        <span class="built_in">sort</span>(sort_nums.<span class="built_in">begin</span>(),sort_nums.<span class="built_in">end</span>());</span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;nums.<span class="built_in">size</span>();i++)&#123;</span><br><span class="line">            <span class="keyword">if</span>(sort_nums[i]!=nums[i]&amp;&amp;!<span class="built_in">is_same</span>(sort_nums[i],nums[i]))</span><br><span class="line">                <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2021/08/19/Leetcode%E5%91%A8%E8%B5%9B%E7%AC%AC254%E5%9C%BA%E9%A2%98%E8%A7%A3/" rel="prev" title="Leetcode周赛第254场题解">
+      <i class="fa fa-chevron-left"></i> Leetcode周赛第254场题解
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%91%A8%E8%B5%9B%E4%BC%A0%E9%80%81%E9%97%A8"><span class="nav-number">1.</span> <span class="nav-text">周赛传送门</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#5863-%E7%BB%9F%E8%AE%A1%E7%89%B9%E6%AE%8A%E5%9B%9B%E5%85%83%E7%BB%84"><span class="nav-number">2.</span> <span class="nav-text">5863. 统计特殊四元组</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%A2%98%E7%9B%AE"><span class="nav-number">2.1.</span> <span class="nav-text">题目</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%A2%98%E8%A7%A3"><span class="nav-number">2.2.</span> <span class="nav-text">题解</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#5864-%E6%B8%B8%E6%88%8F%E4%B8%AD%E5%BC%B1%E8%A7%92%E8%89%B2%E7%9A%84%E6%95%B0%E9%87%8F"><span class="nav-number">3.</span> <span class="nav-text">5864. 游戏中弱角色的数量</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%A2%98%E7%9B%AE-1"><span class="nav-number">3.1.</span> <span class="nav-text">题目</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%A2%98%E8%A7%A3-1"><span class="nav-number">3.2.</span> <span class="nav-text">题解</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#5865-%E8%AE%BF%E9%97%AE%E5%AE%8C%E6%89%80%E6%9C%89%E6%88%BF%E9%97%B4%E7%9A%84%E7%AC%AC%E4%B8%80%E5%A4%A9"><span class="nav-number">4.</span> <span class="nav-text">5865. 访问完所有房间的第一天</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%A2%98%E7%9B%AE-2"><span class="nav-number">4.1.</span> <span class="nav-text">题目</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%A2%98%E8%A7%A3-2"><span class="nav-number">4.2.</span> <span class="nav-text">题解</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#5866-%E6%95%B0%E7%BB%84%E7%9A%84%E6%9C%80%E5%A4%A7%E5%85%AC%E5%9B%A0%E6%95%B0%E6%8E%92%E5%BA%8F"><span class="nav-number">5.</span> <span class="nav-text">5866. 数组的最大公因数排序</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%A2%98%E7%9B%AE-3"><span class="nav-number">5.1.</span> <span class="nav-text">题目</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%A2%98%E8%A7%A3-3"><span class="nav-number">5.2.</span> <span class="nav-text">题解</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Lavender"
+      src="/img/Lavender.jpg">
+  <p class="site-author-name" itemprop="name">Lavender</p>
+  <div class="site-description" itemprop="description">再次出发</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">111</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+        <span class="site-state-item-count">18</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+        <span class="site-state-item-count">49</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/Lavender-QAQ" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;Lavender-QAQ" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title">
+      <i class="fa fa-fw fa-link"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="http://ltitan.github.io/" title="http:&#x2F;&#x2F;ltitan.github.io&#x2F;" rel="noopener" target="_blank">飞哥的技术园区</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://heshang.ink/" title="https:&#x2F;&#x2F;heshang.ink&#x2F;" rel="noopener" target="_blank">奎哥的Java课堂</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://kawaii-jump.github.io/" title="https:&#x2F;&#x2F;kawaii-jump.github.io&#x2F;" rel="noopener" target="_blank">涛哥的就业实录</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://49.232.1.238/" title="http:&#x2F;&#x2F;49.232.1.238&#x2F;" rel="noopener" target="_blank">薛老板的攻防战场</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://dumengblog.club/" title="https:&#x2F;&#x2F;dumengblog.club&#x2F;" rel="noopener" target="_blank">Dumeng的知识讲解</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://stephencuhui.github.io/" title="https:&#x2F;&#x2F;stephencuhui.github.io&#x2F;" rel="noopener" target="_blank">徽哥的步步攀升</a>
+        </li>
+    </ul>
+  </div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2017 – 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Lavender</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+      
+
+<script>
+  if (typeof MathJax === 'undefined') {
+    window.MathJax = {
+      loader: {
+        source: {
+          '[tex]/amsCd': '[tex]/amscd',
+          '[tex]/AMScd': '[tex]/amscd'
+        }
+      },
+      tex: {
+        inlineMath: {'[+]': [['$', '$']]},
+        tags: 'ams'
+      },
+      options: {
+        renderActions: {
+          findScript: [10, doc => {
+            document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+              const display = !!node.type.match(/; *mode=display/);
+              const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+              const text = document.createTextNode('');
+              node.parentNode.replaceChild(text, node);
+              math.start = {node: text, delim: '', n: 0};
+              math.end = {node: text, delim: '', n: 0};
+              doc.math.push(math);
+            });
+          }, '', false],
+          insertedScript: [200, () => {
+            document.querySelectorAll('mjx-container').forEach(node => {
+              let target = node.parentNode;
+              if (target.nodeName.toLowerCase() === 'li') {
+                target.parentNode.classList.add('has-jax');
+              }
+            });
+          }, '', false]
+        }
+      }
+    };
+    (function () {
+      var script = document.createElement('script');
+      script.src = '//cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js';
+      script.defer = true;
+      document.head.appendChild(script);
+    })();
+  } else {
+    MathJax.startup.document.state(0);
+    MathJax.texReset();
+    MathJax.typeset();
+  }
+</script>
+
+    
+
+  
+
+</body>
+</html>
