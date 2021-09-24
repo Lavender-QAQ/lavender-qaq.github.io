@@ -1,0 +1,564 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/img/caffee32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/img/caffee16x16.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":false,"style":"default"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"valine","storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="这场实在是眼瞎……第三题的题目是检测正方形，我一直在写检测矩形的代码，还认真地排查wa掉的原因，找不到bug甚至怀疑人生……最后还是涛哥火眼金睛发现了我在写判断矩形的代码（我当时已经魔怔了哈哈哈，根本看不到题目2333）。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Leetcode周赛第259场题解">
+<meta property="og:url" content="http://example.com/2021/09/24/Leetcode%E5%91%A8%E8%B5%9B%E7%AC%AC259%E5%9C%BA%E9%A2%98%E8%A7%A3/index.html">
+<meta property="og:site_name" content="In The End">
+<meta property="og:description" content="这场实在是眼瞎……第三题的题目是检测正方形，我一直在写检测矩形的代码，还认真地排查wa掉的原因，找不到bug甚至怀疑人生……最后还是涛哥火眼金睛发现了我在写判断矩形的代码（我当时已经魔怔了哈哈哈，根本看不到题目2333）。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://example.com/img/Leetcode周赛第259场题解1.png">
+<meta property="og:image" content="http://example.com/img/Leetcode周赛第259场题解2.png">
+<meta property="article:published_time" content="2021-09-24T14:53:58.000Z">
+<meta property="article:modified_time" content="2021-09-24T12:16:03.026Z">
+<meta property="article:author" content="Lavender">
+<meta property="article:tag" content="算法">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/img/Leetcode周赛第259场题解1.png">
+
+<link rel="canonical" href="http://example.com/2021/09/24/Leetcode%E5%91%A8%E8%B5%9B%E7%AC%AC259%E5%9C%BA%E9%A2%98%E8%A7%A3/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>Leetcode周赛第259场题解 | In The End</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">In The End</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">个人博客</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2021/09/24/Leetcode%E5%91%A8%E8%B5%9B%E7%AC%AC259%E5%9C%BA%E9%A2%98%E8%A7%A3/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/img/Lavender.jpg">
+      <meta itemprop="name" content="Lavender">
+      <meta itemprop="description" content="再次出发">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="In The End">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Leetcode周赛第259场题解
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2021-09-24 14:53:58 / 修改时间：12:16:03" itemprop="dateCreated datePublished" datetime="2021-09-24T14:53:58Z">2021-09-24</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/ACM/" itemprop="url" rel="index"><span itemprop="name">ACM</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/ACM/Leetcode/" itemprop="url" rel="index"><span itemprop="name">Leetcode</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>这场实在是眼瞎……第三题的题目是<strong>检测正方形</strong>，我一直在写检测矩形的代码，还认真地排查wa掉的原因，找不到bug甚至怀疑人生……最后还是涛哥火眼金睛发现了我在写判断矩形的代码（我当时已经魔怔了哈哈哈，根本看不到题目2333）。</p>
+<span id="more"></span>
+<h1 id="执行操作后的变量值"><a href="#执行操作后的变量值" class="headerlink" title="执行操作后的变量值"></a>执行操作后的变量值</h1><h2 id="题目"><a href="#题目" class="headerlink" title="题目"></a>题目</h2><p>存在一种仅支持 4 种操作和 1 个变量 X 的编程语言：</p>
+<ul>
+<li>++X 和 X++ 使变量 X 的值 加 1</li>
+<li>—X 和 X— 使变量 X 的值 减 1</li>
+</ul>
+<p>最初，X 的值是 0</p>
+<p>给你一个字符串数组 operations ，这是由操作组成的一个列表，返回执行所有操作后， X 的 最终值 。</p>
+<p>示例 1：</p>
+<figure class="highlight sas"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">输入：operations = [<span class="string">&quot;--X&quot;</span>,<span class="string">&quot;X++&quot;</span>,<span class="string">&quot;X++&quot;</span>]</span><br><span class="line">输出：1</span><br><span class="line">解释：操作按下述步骤执行：</span><br><span class="line">最初，<span class="meta">X</span> = 0</span><br><span class="line">--<span class="meta">X</span>：<span class="meta">X</span> 减 1 ，<span class="meta">X</span> =  0 - 1 = -1</span><br><span class="line"><span class="meta">X</span>++：<span class="meta">X</span> 加 1 ，<span class="meta">X</span> = -1 + 1 =  0</span><br><span class="line"><span class="meta">X</span>++：<span class="meta">X</span> 加 1 ，<span class="meta">X</span> =  0 + 1 =  1</span><br></pre></td></tr></table></figure>
+<p>示例 2：</p>
+<figure class="highlight sas"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">输入：operations = [<span class="string">&quot;++X&quot;</span>,<span class="string">&quot;++X&quot;</span>,<span class="string">&quot;X++&quot;</span>]</span><br><span class="line">输出：3</span><br><span class="line">解释：操作按下述步骤执行： </span><br><span class="line">最初，<span class="meta">X</span> = 0</span><br><span class="line">++<span class="meta">X</span>：<span class="meta">X</span> 加 1 ，<span class="meta">X</span> = 0 + 1 = 1</span><br><span class="line">++<span class="meta">X</span>：<span class="meta">X</span> 加 1 ，<span class="meta">X</span> = 1 + 1 = 2</span><br><span class="line"><span class="meta">X</span>++：<span class="meta">X</span> 加 1 ，<span class="meta">X</span> = 2 + 1 = 3</span><br></pre></td></tr></table></figure>
+<p>示例 3：</p>
+<figure class="highlight sas"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">输入：operations = [<span class="string">&quot;X++&quot;</span>,<span class="string">&quot;++X&quot;</span>,<span class="string">&quot;--X&quot;</span>,<span class="string">&quot;X--&quot;</span>]</span><br><span class="line">输出：0</span><br><span class="line">解释：操作按下述步骤执行：</span><br><span class="line">最初，<span class="meta">X</span> = 0</span><br><span class="line"><span class="meta">X</span>++：<span class="meta">X</span> 加 1 ，<span class="meta">X</span> = 0 + 1 = 1</span><br><span class="line">++<span class="meta">X</span>：<span class="meta">X</span> 加 1 ，<span class="meta">X</span> = 1 + 1 = 2</span><br><span class="line">--<span class="meta">X</span>：<span class="meta">X</span> 减 1 ，<span class="meta">X</span> = 2 - 1 = 1</span><br><span class="line"><span class="meta">X</span>--：<span class="meta">X</span> 减 1 ，<span class="meta">X</span> = 1 - 1 = 0</span><br></pre></td></tr></table></figure>
+<p>提示：</p>
+<figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">1</span> &lt;= operations<span class="selector-class">.length</span> &lt;= <span class="number">100</span></span><br><span class="line">operations<span class="selector-attr">[i]</span> 将会是 <span class="string">&quot;++X&quot;</span>、<span class="string">&quot;X++&quot;</span>、<span class="string">&quot;--X&quot;</span> 或 <span class="string">&quot;X--&quot;</span></span><br></pre></td></tr></table></figure>
+<h2 id="题解"><a href="#题解" class="headerlink" title="题解"></a>题解</h2><p>模拟一下即可</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span> &#123;</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="keyword">int</span> <span class="title">finalValueAfterOperations</span><span class="params">(vector&lt;string&gt;&amp; str)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">int</span> ans=<span class="number">0</span>;</span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">auto</span> &amp;s:str)&#123;</span><br><span class="line">            <span class="keyword">if</span>(s==<span class="string">&quot;++X&quot;</span>||s==<span class="string">&quot;X++&quot;</span>) ans++;</span><br><span class="line">            <span class="keyword">else</span> <span class="keyword">if</span>(s==<span class="string">&quot;--X&quot;</span>||s==<span class="string">&quot;X--&quot;</span>) ans--;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> ans;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<h1 id="数组美丽值求和"><a href="#数组美丽值求和" class="headerlink" title="数组美丽值求和"></a>数组美丽值求和</h1><h2 id="题目-1"><a href="#题目-1" class="headerlink" title="题目"></a>题目</h2><p>给你一个下标从 0 开始的整数数组 nums 。对于每个下标 i（1 &lt;= i &lt;= nums.length - 2），nums[i] 的 美丽值 等于：</p>
+<p>2，对于所有 0 &lt;= j &lt; i 且 i &lt; k &lt;= nums.length - 1 ，满足 nums[j] &lt; nums[i] &lt; nums[k]<br>1，如果满足 nums[i - 1] &lt; nums[i] &lt; nums[i + 1] ，且不满足前面的条件<br>0，如果上述条件全部不满足<br>返回符合 1 &lt;= i &lt;= nums.length - 2 的所有 nums[i] 的 美丽值的总和 。</p>
+<p>示例 1：</p>
+<figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">输入：nums = <span class="selector-attr">[1,2,3]</span></span><br><span class="line">输出：<span class="number">2</span></span><br><span class="line">解释：对于每个符合范围 <span class="number">1</span> &lt;= <span class="selector-tag">i</span> &lt;= <span class="number">1</span> 的下标 <span class="selector-tag">i</span> :</span><br><span class="line"></span><br><span class="line">- nums<span class="selector-attr">[1]</span> 的美丽值等于 <span class="number">2</span></span><br></pre></td></tr></table></figure>
+<p>示例 2：</p>
+<figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">输入：nums = <span class="selector-attr">[2,4,6,4]</span></span><br><span class="line">输出：<span class="number">1</span></span><br><span class="line">解释：对于每个符合范围 <span class="number">1</span> &lt;= <span class="selector-tag">i</span> &lt;= <span class="number">2</span> 的下标 <span class="selector-tag">i</span> :</span><br><span class="line"></span><br><span class="line">- nums<span class="selector-attr">[1]</span> 的美丽值等于 <span class="number">1</span></span><br><span class="line">- nums<span class="selector-attr">[2]</span> 的美丽值等于 <span class="number">0</span></span><br></pre></td></tr></table></figure>
+<p>示例 3：</p>
+<figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">输入：nums = <span class="selector-attr">[3,2,1]</span></span><br><span class="line">输出：<span class="number">0</span></span><br><span class="line">解释：对于每个符合范围 <span class="number">1</span> &lt;= <span class="selector-tag">i</span> &lt;= <span class="number">1</span> 的下标 <span class="selector-tag">i</span> :</span><br><span class="line"></span><br><span class="line">- nums<span class="selector-attr">[1]</span> 的美丽值等于 <span class="number">0</span></span><br></pre></td></tr></table></figure>
+<p>提示：</p>
+<figure class="highlight basic"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="symbol">3 </span>&lt;= nums.length &lt;= <span class="number">10</span>^<span class="number">5</span></span><br><span class="line"><span class="symbol">1 </span>&lt;= nums[i] &lt;= <span class="number">10</span>^<span class="number">5</span></span><br></pre></td></tr></table></figure>
+<h2 id="题解-1"><a href="#题解-1" class="headerlink" title="题解"></a>题解</h2><p>开辟两个数组l和r，l[i]表示数组从0到i位置所有元素的最大值，r[i]表示数组从n-1到i位置所有元素的最小值，那么对第一个条件的判断就可以直接通过l和r数组完成，复杂度简化到$O(n)$。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span> &#123;</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="keyword">int</span> <span class="title">sumOfBeauties</span><span class="params">(vector&lt;<span class="keyword">int</span>&gt;&amp; a)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">int</span> n=a.<span class="built_in">size</span>();</span><br><span class="line">        <span class="function">vector&lt;<span class="keyword">int</span>&gt; <span class="title">l</span><span class="params">(n,INT_MIN)</span>,<span class="title">r</span><span class="params">(n,INT_MAX)</span></span>;</span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;n;i++)&#123;</span><br><span class="line">            <span class="keyword">if</span>(i!=<span class="number">0</span>) l[i]=<span class="built_in">max</span>(l[i],l[i<span class="number">-1</span>]);</span><br><span class="line">            l[i]=<span class="built_in">max</span>(l[i],a[i]);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> i=n<span class="number">-1</span>;i&gt;=<span class="number">0</span>;i--)&#123;</span><br><span class="line">            <span class="keyword">if</span>(i!=n<span class="number">-1</span>) r[i]=<span class="built_in">min</span>(r[i],r[i+<span class="number">1</span>]);</span><br><span class="line">            r[i]=<span class="built_in">min</span>(r[i],a[i]);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">int</span> ans=<span class="number">0</span>;</span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">1</span>;i&lt;=n<span class="number">-2</span>;i++)&#123;</span><br><span class="line">            <span class="keyword">if</span>(a[i]&gt;l[i<span class="number">-1</span>]&amp;&amp;a[i]&lt;r[i+<span class="number">1</span>]) ans+=<span class="number">2</span>;</span><br><span class="line">            <span class="keyword">else</span> <span class="keyword">if</span>(a[i]&gt;a[i<span class="number">-1</span>]&amp;&amp;a[i]&lt;a[i+<span class="number">1</span>]) ans++;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> ans;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<h1 id="检测正方形"><a href="#检测正方形" class="headerlink" title="检测正方形"></a>检测正方形</h1><h2 id="题目-2"><a href="#题目-2" class="headerlink" title="题目"></a>题目</h2><p>给你一个在 X-Y 平面上的点构成的数据流。设计一个满足下述要求的算法：</p>
+<ul>
+<li>添加 一个在数据流中的新点到某个数据结构中。可以添加 重复 的点，并会视作不同的点进行处理。</li>
+<li>给你一个查询点，请你从数据结构中选出三个点，使这三个点和查询点一同构成一个 面积为正 的 轴对齐正方形 ，统计 满足该要求的方案数目。<br>轴对齐正方形 是一个正方形，除四条边长度相同外，还满足每条边都与 x-轴 或 y-轴 平行或垂直。</li>
+</ul>
+<p>实现 DetectSquares 类：</p>
+<ul>
+<li>DetectSquares() 使用空数据结构初始化对象</li>
+<li>void add(int[] point) 向数据结构添加一个新的点 point = [x, y]</li>
+<li>int count(int[] point) 统计按上述方式与点 point = [x, y] 共同构造 轴对齐正方形 的方案数。</li>
+</ul>
+<p>示例：</p>
+<p><img src="/img/Leetcode周赛第259场题解1.png" alt=""></p>
+<figure class="highlight prolog"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">输入：</span><br><span class="line">[<span class="string">&quot;DetectSquares&quot;</span>, <span class="string">&quot;add&quot;</span>, <span class="string">&quot;add&quot;</span>, <span class="string">&quot;add&quot;</span>, <span class="string">&quot;count&quot;</span>, <span class="string">&quot;count&quot;</span>, <span class="string">&quot;add&quot;</span>, <span class="string">&quot;count&quot;</span>]</span><br><span class="line">[[], [[<span class="number">3</span>, <span class="number">10</span>]], [[<span class="number">11</span>, <span class="number">2</span>]], [[<span class="number">3</span>, <span class="number">2</span>]], [[<span class="number">11</span>, <span class="number">10</span>]], [[<span class="number">14</span>, <span class="number">8</span>]], [[<span class="number">11</span>, <span class="number">2</span>]], [[<span class="number">11</span>, <span class="number">10</span>]]]</span><br><span class="line">输出：</span><br><span class="line">[null, null, null, null, <span class="number">1</span>, <span class="number">0</span>, null, <span class="number">2</span>]</span><br><span class="line"></span><br><span class="line">解释：</span><br><span class="line"><span class="symbol">DetectSquares</span> detectSquares = new <span class="symbol">DetectSquares</span>();</span><br><span class="line">detectSquares.add([<span class="number">3</span>, <span class="number">10</span>]);</span><br><span class="line">detectSquares.add([<span class="number">11</span>, <span class="number">2</span>]);</span><br><span class="line">detectSquares.add([<span class="number">3</span>, <span class="number">2</span>]);</span><br><span class="line">detectSquares.count([<span class="number">11</span>, <span class="number">10</span>]); // 返回 <span class="number">1</span> 。你可以选择：</span><br><span class="line">                               //   - 第一个，第二个，和第三个点</span><br><span class="line">detectSquares.count([<span class="number">14</span>, <span class="number">8</span>]);  // 返回 <span class="number">0</span> 。查询点无法与数据结构中的这些点构成正方形。</span><br><span class="line">detectSquares.add([<span class="number">11</span>, <span class="number">2</span>]);    // 允许添加重复的点。</span><br><span class="line">detectSquares.count([<span class="number">11</span>, <span class="number">10</span>]); // 返回 <span class="number">2</span> 。你可以选择：</span><br><span class="line">                               //   - 第一个，第二个，和第三个点</span><br><span class="line">                               //   - 第一个，第三个，和第四个点</span><br></pre></td></tr></table></figure>
+<p>提示：</p>
+<figure class="highlight sas"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">point.<span class="meta">length</span> == 2</span><br><span class="line">0 &lt;= <span class="meta">x</span>, y &lt;= 1000</span><br><span class="line">调用 <span class="meta">add</span> 和 count 的 总次数 最多为 5000</span><br></pre></td></tr></table></figure>
+<h2 id="题解-2"><a href="#题解-2" class="headerlink" title="题解"></a>题解</h2><p>我人傻了，整了一个小时的判断矩形，疯狂找bug就是找不到，醉了醉了。</p>
+<p>正方形的话只需要用map套map存储，key是x坐标，value是一个map，map中存的都是相同x坐标的点的y坐标（因为会有重复的点所以开了一个pair计数，计算x和y都相同的点的数量）。</p>
+<p>add的时候只需要将点加入map中即可。</p>
+<p>count计数的时候，因为已经确定了一个点，所以先去枚举和这个点x坐标相同的点（遍历mp[p[0]]），这样找到第二个点之后算出距离，再去map中搜索剩下的两个点即可。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">DetectSquares</span> &#123;</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    unordered_map&lt;<span class="keyword">int</span>,unordered_map&lt;<span class="keyword">int</span>,<span class="keyword">int</span>&gt;&gt; mp;</span><br><span class="line">    <span class="built_in">DetectSquares</span>() &#123;</span><br><span class="line">        mp.<span class="built_in">clear</span>();</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">add</span><span class="params">(vector&lt;<span class="keyword">int</span>&gt; p)</span> </span>&#123;</span><br><span class="line">        mp[p[<span class="number">0</span>]][p[<span class="number">1</span>]]++;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">int</span> <span class="title">count</span><span class="params">(vector&lt;<span class="keyword">int</span>&gt; p)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">int</span> ans=<span class="number">0</span>;</span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">auto</span>&amp; it:mp[p[<span class="number">0</span>]])&#123;</span><br><span class="line">            <span class="keyword">int</span> y=it.first,num=it.second;</span><br><span class="line">            <span class="keyword">if</span>(p[<span class="number">1</span>]==y) <span class="keyword">continue</span>;</span><br><span class="line">            ans+=num*mp[p[<span class="number">0</span>]+<span class="built_in">abs</span>(y-p[<span class="number">1</span>])][p[<span class="number">1</span>]]*mp[p[<span class="number">0</span>]+<span class="built_in">abs</span>(y-p[<span class="number">1</span>])][y]+num*mp[p[<span class="number">0</span>]-<span class="built_in">abs</span>(y-p[<span class="number">1</span>])][p[<span class="number">1</span>]]*mp[p[<span class="number">0</span>]-<span class="built_in">abs</span>(y-p[<span class="number">1</span>])][y];</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> ans;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * Your DetectSquares object will be instantiated and called as such:</span></span><br><span class="line"><span class="comment"> * DetectSquares* obj = new DetectSquares();</span></span><br><span class="line"><span class="comment"> * obj-&gt;add(point);</span></span><br><span class="line"><span class="comment"> * int param_2 = obj-&gt;count(point);</span></span><br><span class="line"><span class="comment"> */</span></span><br></pre></td></tr></table></figure>
+<h1 id="重复-K-次的最长子序列"><a href="#重复-K-次的最长子序列" class="headerlink" title="重复 K 次的最长子序列"></a>重复 K 次的最长子序列</h1><h2 id="题目-3"><a href="#题目-3" class="headerlink" title="题目"></a>题目</h2><p>给你一个长度为 n 的字符串 s ，和一个整数 k 。请你找出字符串 s 中 重复 k 次的 最长子序列 。</p>
+<p>子序列 是由其他字符串删除某些（或不删除）字符派生而来的一个字符串。</p>
+<p>如果 seq <em> k 是 s 的一个子序列，其中 seq </em> k 表示一个由 seq 串联 k 次构造的字符串，那么就称 seq 是字符串 s 中一个 重复 k 次 的子序列。</p>
+<p>举个例子，”bba” 是字符串 “bababcba” 中的一个重复 2 次的子序列，因为字符串 “bbabba” 是由 “bba” 串联 2 次构造的，而 “bbabba” 是字符串 “bababcba” 的一个子序列。<br>返回字符串 s 中 重复 k 次的最长子序列  。如果存在多个满足的子序列，则返回 字典序最大 的那个。如果不存在这样的子序列，返回一个 空 字符串。</p>
+<p>示例 1：</p>
+<p><img src="/img/Leetcode周赛第259场题解2.png" alt=""></p>
+<figure class="highlight nix"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">输入：<span class="attr">s</span> = <span class="string">&quot;letsleetcode&quot;</span>, <span class="attr">k</span> = <span class="number">2</span></span><br><span class="line">输出：<span class="string">&quot;let&quot;</span></span><br><span class="line">解释：存在两个最长子序列重复 <span class="number">2</span> 次：<span class="keyword">let</span><span class="string">&quot; 和 &quot;</span>ete<span class="string">&quot; 。</span></span><br><span class="line"><span class="string">&quot;</span><span class="keyword">let</span><span class="string">&quot; 是其中字典序最大的一个。</span></span><br></pre></td></tr></table></figure>
+<p>示例 2：</p>
+<figure class="highlight nix"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">输入：<span class="attr">s</span> = <span class="string">&quot;bb&quot;</span>, <span class="attr">k</span> = <span class="number">2</span></span><br><span class="line">输出：<span class="string">&quot;b&quot;</span></span><br><span class="line">解释：重复 <span class="number">2</span> 次的最长子序列是 <span class="string">&quot;b&quot;</span> 。</span><br></pre></td></tr></table></figure>
+<p>示例 3：</p>
+<figure class="highlight nix"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">输入：<span class="attr">s</span> = <span class="string">&quot;ab&quot;</span>, <span class="attr">k</span> = <span class="number">2</span></span><br><span class="line">输出：<span class="string">&quot;&quot;</span></span><br><span class="line">解释：不存在重复 <span class="number">2</span> 次的最长子序列。返回空字符串。</span><br></pre></td></tr></table></figure>
+<p>示例 4：</p>
+<figure class="highlight nix"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">输入：<span class="attr">s</span> = <span class="string">&quot;bbabbabbbbabaababab&quot;</span>, <span class="attr">k</span> = <span class="number">3</span></span><br><span class="line">输出：<span class="string">&quot;bbbb&quot;</span></span><br><span class="line">解释：在 <span class="string">&quot;bbabbabbbbabaababab&quot;</span> 中重复 <span class="number">3</span> 次的最长子序列是 <span class="string">&quot;bbbb&quot;</span> 。</span><br></pre></td></tr></table></figure>
+<p>提示：</p>
+<figure class="highlight apache"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="attribute">n</span> == s.length</span><br><span class="line"><span class="attribute">2</span> &lt;= k &lt;= <span class="number">2000</span></span><br><span class="line"><span class="attribute">2</span> &lt;= n &lt; k * <span class="number">8</span></span><br><span class="line"><span class="attribute">s</span> 由小写英文字母组成</span><br></pre></td></tr></table></figure>
+<h2 id="题解-3"><a href="#题解-3" class="headerlink" title="题解"></a>题解</h2><p>这题坑蛮多的，首先就是这题谜一般的复杂度，很容易让人一看就放弃，然后就是枚举的细节比较多。</p>
+<p>首先这道题要重复k次的子序列，最简单的想法就是暴力枚举s串的所有子序列，然后将每个子序列用一个类似于双指针的算法进行暴力匹配，符合条件更新答案，不过这样肯定是会wa的。那么该如何剪枝呢，主要是两方面：</p>
+<ul>
+<li>将枚举的范围缩小。由于枚举的子序列必须要出现在s串中k次，那么也就是说如果出现不了k次的字母必然不符合条件，但是这样剪枝还不够完美。继续推，加入最后的答案中出现了”a…a”这样的子序列k次，那么也就是说a这个字母在s串中必须出现2*k次才对。再比如”b…b…b”这样的子序列能匹配k次，那么b这个字母在s串中必须出现3*k次。那么归纳一下，当对整个s串的字母进行哈希统计后，可以将每个元素的哈希值整除k，这样可以大大地减少枚举范围</li>
+<li>将判断的次数减少。这一点比较容易想到，这道题的最终目标是要找到最长的且字典序最大的字符串。那么如果dfs去枚举子序列的时候一开始就从最长的且字典序最大的开始，然后一旦找到符合条件的就直接返回最终结果，将很大程度上减少不必要的判断时间</li>
+</ul>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span> &#123;</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="keyword">int</span> c[<span class="number">30</span>];</span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">node</span>&#123;</span></span><br><span class="line">        string s;</span><br><span class="line">        <span class="keyword">bool</span> <span class="keyword">operator</span> &lt; (<span class="keyword">const</span> node&amp; a) <span class="keyword">const</span> &#123;</span><br><span class="line">            <span class="keyword">if</span>(a.s.<span class="built_in">length</span>()==<span class="keyword">this</span>-&gt;s.<span class="built_in">length</span>())</span><br><span class="line">                <span class="keyword">return</span> s&lt;a.s;</span><br><span class="line">            <span class="keyword">else</span> <span class="keyword">return</span> s.<span class="built_in">length</span>()&lt;a.s.<span class="built_in">length</span>();</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="built_in">node</span>(string str):<span class="built_in">s</span>(str)&#123;&#125;</span><br><span class="line">    &#125;;</span><br><span class="line">    priority_queue&lt;node&gt; vs;</span><br><span class="line">    string str;</span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">dfs</span><span class="params">(<span class="keyword">int</span> d,<span class="keyword">int</span> n)</span></span>&#123;</span><br><span class="line">        <span class="keyword">if</span>(d==n) &#123;</span><br><span class="line">            vs.<span class="built_in">push</span>(<span class="built_in">node</span>(str));</span><br><span class="line">            <span class="keyword">return</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;<span class="number">26</span>;i++)</span><br><span class="line">            <span class="keyword">if</span>(c[i])&#123;</span><br><span class="line">                str+=i+<span class="string">&#x27;a&#x27;</span>;</span><br><span class="line">                c[i]--;</span><br><span class="line">                <span class="built_in">dfs</span>(d+<span class="number">1</span>,n);</span><br><span class="line">                c[i]++;</span><br><span class="line">                str.<span class="built_in">pop_back</span>();</span><br><span class="line">            &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">int</span> <span class="title">match</span><span class="params">(string&amp; s,string&amp; p)</span></span>&#123;</span><br><span class="line">        <span class="keyword">int</span> res=<span class="number">0</span>;</span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>,j=<span class="number">0</span>;i&lt;s.<span class="built_in">length</span>();i++)&#123;</span><br><span class="line">            <span class="keyword">if</span>(s[i]==p[j]) j++;</span><br><span class="line">            <span class="keyword">if</span>(j==p.<span class="built_in">length</span>()) j=<span class="number">0</span>,res++;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> res;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function">string <span class="title">longestSubsequenceRepeatedK</span><span class="params">(string s, <span class="keyword">int</span> k)</span> </span>&#123;</span><br><span class="line">        string ans;</span><br><span class="line">        <span class="built_in">memset</span>(c,<span class="number">0</span>,<span class="keyword">sizeof</span> c);</span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">auto</span>&amp; ch:s)&#123;</span><br><span class="line">            c[ch-<span class="string">&#x27;a&#x27;</span>]++;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;<span class="number">26</span>;i++) c[i]/=k;</span><br><span class="line">        <span class="keyword">int</span> mx=<span class="number">0</span>;</span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">7</span>;i&gt;=<span class="number">1</span>;i--)&#123;</span><br><span class="line">            str=<span class="string">&quot;&quot;</span>;</span><br><span class="line">            <span class="built_in">dfs</span>(<span class="number">0</span>,i);</span><br><span class="line">            <span class="keyword">while</span>(!vs.<span class="built_in">empty</span>())&#123;</span><br><span class="line">                string p=vs.<span class="built_in">top</span>().s;vs.<span class="built_in">pop</span>();</span><br><span class="line">                <span class="keyword">int</span> n=p.<span class="built_in">length</span>(),cnt=<span class="built_in">match</span>(s,p);</span><br><span class="line">                <span class="keyword">if</span>(cnt&gt;=k)&#123;</span><br><span class="line">                    ans=p;</span><br><span class="line">                    <span class="keyword">return</span> ans;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> ans;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2021/09/18/Leetcode%E5%91%A8%E8%B5%9B%E7%AC%AC258%E5%9C%BA%E9%A2%98%E8%A7%A3/" rel="prev" title="Leetcode周赛第258场题解">
+      <i class="fa fa-chevron-left"></i> Leetcode周赛第258场题解
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%89%A7%E8%A1%8C%E6%93%8D%E4%BD%9C%E5%90%8E%E7%9A%84%E5%8F%98%E9%87%8F%E5%80%BC"><span class="nav-number">1.</span> <span class="nav-text">执行操作后的变量值</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%A2%98%E7%9B%AE"><span class="nav-number">1.1.</span> <span class="nav-text">题目</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%A2%98%E8%A7%A3"><span class="nav-number">1.2.</span> <span class="nav-text">题解</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%95%B0%E7%BB%84%E7%BE%8E%E4%B8%BD%E5%80%BC%E6%B1%82%E5%92%8C"><span class="nav-number">2.</span> <span class="nav-text">数组美丽值求和</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%A2%98%E7%9B%AE-1"><span class="nav-number">2.1.</span> <span class="nav-text">题目</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%A2%98%E8%A7%A3-1"><span class="nav-number">2.2.</span> <span class="nav-text">题解</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%A3%80%E6%B5%8B%E6%AD%A3%E6%96%B9%E5%BD%A2"><span class="nav-number">3.</span> <span class="nav-text">检测正方形</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%A2%98%E7%9B%AE-2"><span class="nav-number">3.1.</span> <span class="nav-text">题目</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%A2%98%E8%A7%A3-2"><span class="nav-number">3.2.</span> <span class="nav-text">题解</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E9%87%8D%E5%A4%8D-K-%E6%AC%A1%E7%9A%84%E6%9C%80%E9%95%BF%E5%AD%90%E5%BA%8F%E5%88%97"><span class="nav-number">4.</span> <span class="nav-text">重复 K 次的最长子序列</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%A2%98%E7%9B%AE-3"><span class="nav-number">4.1.</span> <span class="nav-text">题目</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%A2%98%E8%A7%A3-3"><span class="nav-number">4.2.</span> <span class="nav-text">题解</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Lavender"
+      src="/img/Lavender.jpg">
+  <p class="site-author-name" itemprop="name">Lavender</p>
+  <div class="site-description" itemprop="description">再次出发</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">114</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+        <span class="site-state-item-count">18</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+        <span class="site-state-item-count">49</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/Lavender-QAQ" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;Lavender-QAQ" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title">
+      <i class="fa fa-fw fa-link"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="http://ltitan.github.io/" title="http:&#x2F;&#x2F;ltitan.github.io&#x2F;" rel="noopener" target="_blank">飞哥的技术园区</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://heshang.ink/" title="https:&#x2F;&#x2F;heshang.ink&#x2F;" rel="noopener" target="_blank">奎哥的Java课堂</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://kawaii-jump.github.io/" title="https:&#x2F;&#x2F;kawaii-jump.github.io&#x2F;" rel="noopener" target="_blank">涛哥的就业实录</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://49.232.1.238/" title="http:&#x2F;&#x2F;49.232.1.238&#x2F;" rel="noopener" target="_blank">薛老板的攻防战场</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://dumengblog.club/" title="https:&#x2F;&#x2F;dumengblog.club&#x2F;" rel="noopener" target="_blank">Dumeng的知识讲解</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://stephencuhui.github.io/" title="https:&#x2F;&#x2F;stephencuhui.github.io&#x2F;" rel="noopener" target="_blank">徽哥的步步攀升</a>
+        </li>
+    </ul>
+  </div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2017 – 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Lavender</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+      
+
+<script>
+  if (typeof MathJax === 'undefined') {
+    window.MathJax = {
+      loader: {
+        source: {
+          '[tex]/amsCd': '[tex]/amscd',
+          '[tex]/AMScd': '[tex]/amscd'
+        }
+      },
+      tex: {
+        inlineMath: {'[+]': [['$', '$']]},
+        tags: 'ams'
+      },
+      options: {
+        renderActions: {
+          findScript: [10, doc => {
+            document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+              const display = !!node.type.match(/; *mode=display/);
+              const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+              const text = document.createTextNode('');
+              node.parentNode.replaceChild(text, node);
+              math.start = {node: text, delim: '', n: 0};
+              math.end = {node: text, delim: '', n: 0};
+              doc.math.push(math);
+            });
+          }, '', false],
+          insertedScript: [200, () => {
+            document.querySelectorAll('mjx-container').forEach(node => {
+              let target = node.parentNode;
+              if (target.nodeName.toLowerCase() === 'li') {
+                target.parentNode.classList.add('has-jax');
+              }
+            });
+          }, '', false]
+        }
+      }
+    };
+    (function () {
+      var script = document.createElement('script');
+      script.src = '//cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js';
+      script.defer = true;
+      document.head.appendChild(script);
+    })();
+  } else {
+    MathJax.startup.document.state(0);
+    MathJax.texReset();
+    MathJax.typeset();
+  }
+</script>
+
+    
+
+  
+
+</body>
+</html>
