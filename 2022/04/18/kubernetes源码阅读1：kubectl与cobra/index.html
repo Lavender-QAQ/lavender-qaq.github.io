@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/img/caffee32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/img/caffee16x16.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":false,"style":"default"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"valine","storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="kubectl的代码在源码包的cmd包下的kubectl文件夹，只有一个kubectl.go">
+<meta property="og:type" content="article">
+<meta property="og:title" content="kubernetes源码阅读1：kubectl与cobra">
+<meta property="og:url" content="http://example.com/2022/04/18/kubernetes%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB1%EF%BC%9Akubectl%E4%B8%8Ecobra/index.html">
+<meta property="og:site_name" content="In The End">
+<meta property="og:description" content="kubectl的代码在源码包的cmd包下的kubectl文件夹，只有一个kubectl.go">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2022-04-17T20:07:40.000Z">
+<meta property="article:modified_time" content="2022-04-17T13:43:21.931Z">
+<meta property="article:author" content="Lavender">
+<meta property="article:tag" content="kubernetes">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://example.com/2022/04/18/kubernetes%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB1%EF%BC%9Akubectl%E4%B8%8Ecobra/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>kubernetes源码阅读1：kubectl与cobra | In The End</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">In The End</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">个人博客</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2022/04/18/kubernetes%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB1%EF%BC%9Akubectl%E4%B8%8Ecobra/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/img/Lavender.jpg">
+      <meta itemprop="name" content="Lavender">
+      <meta itemprop="description" content="再次出发">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="In The End">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          kubernetes源码阅读1：kubectl与cobra
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2022-04-17 20:07:40 / 修改时间：13:43:21" itemprop="dateCreated datePublished" datetime="2022-04-17T20:07:40Z">2022-04-17</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E5%B7%A5%E7%A8%8B/" itemprop="url" rel="index"><span itemprop="name">工程</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>kubectl的代码在源码包的cmd包下的kubectl文件夹，只有一个kubectl.go</p>
+<span id="more"></span>
+<h1 id="kubectl的入口"><a href="#kubectl的入口" class="headerlink" title="kubectl的入口"></a>kubectl的入口</h1><p>kubectl的入口代码非常简单，只有一个kubectl.go（在源码的cmd下的kubectl文件夹）</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">	rand.Seed(time.Now().UnixNano())</span><br><span class="line"></span><br><span class="line">	command := cmd.NewDefaultKubectlCommand()</span><br><span class="line"></span><br><span class="line">	<span class="comment">// <span class="doctag">TODO:</span> once we switch everything over to Cobra commands, we can go back to calling</span></span><br><span class="line">	<span class="comment">// cliflag.InitFlags() (by removing its pflag.Parse() call). For now, we have to set the</span></span><br><span class="line">	<span class="comment">// normalize func and add the go flag set by hand.</span></span><br><span class="line">	pflag.CommandLine.SetNormalizeFunc(cliflag.WordSepNormalizeFunc)</span><br><span class="line">	pflag.CommandLine.AddGoFlagSet(goflag.CommandLine)</span><br><span class="line">	<span class="comment">// cliflag.InitFlags()</span></span><br><span class="line">	logs.InitLogs()</span><br><span class="line">	<span class="keyword">defer</span> logs.FlushLogs()</span><br><span class="line"></span><br><span class="line">	<span class="keyword">if</span> err := command.Execute(); err != <span class="literal">nil</span> &#123;</span><br><span class="line">		os.Exit(<span class="number">1</span>)</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>当调用<code>cmd.NewDefaultKubectlCommand()</code>生成command对象时，会调用k8s.io/kubectl/cmd.go，可以发现在这个cmd.go的同级别下有好多kubectl子命令的文件夹，其实这些很多都是cobra生成的代码，cmd.go当然也是cobra自动生成的文件</p>
+<h1 id="cobra"><a href="#cobra" class="headerlink" title="cobra"></a>cobra</h1><h2 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h2><p>cobra使用的就是子命令模式，然后附带一个二进制的cobra命令帮助生成框架，只需要开发者填入具体功能就行</p>
+<h2 id="概念"><a href="#概念" class="headerlink" title="概念"></a>概念</h2><ul>
+<li>Command代表执行动作，比如git clone的clone动作</li>
+<li>Args就是执行参数，比如git clone后面跟着的仓库地址就是参数，参数是属于子命令的</li>
+<li>Flags是动作的标识符，通常<code>-f</code>啊或者<code>--name</code>这种都是标识符</li>
+</ul>
+<h2 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h2><p>用下面这条命令安装cobra依赖库</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">go get -u &quot;github.com/spf13/cobra/cobra&quot;</span><br></pre></td></tr></table></figure>
+<p>但是不会有二进制的cobra命令，查看github发现二进制的cobra命令已经搬到cobra-cli去了</p>
+<p>所以再安装下cobra-cli</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">go get -u &quot;github.com/spf13/cobra-cli&quot;</span><br></pre></td></tr></table></figure>
+<p>在gopath下的bin中就能找到cobra-cli这个二进制命令了，但是为了要能随时随地使用这个命令，还需要将它放在/usr/local/bin下（我是macOS系统），在gopath执行下面的命令</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo cp cobra-cli /usr/local/bin/cobra</span><br></pre></td></tr></table></figure>
+<p>我将其改名成cobra了，所以在终端直接用cobra就可以了</p>
+<h2 id="初始化"><a href="#初始化" class="headerlink" title="初始化"></a>初始化</h2><p>新版的cobra初始化有了一些变化，首先我创建一个mycobra文件夹，在文件夹下</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">go mod init mycobra</span><br></pre></td></tr></table></figure>
+<p>然后用cobra</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cobra init .</span><br></pre></td></tr></table></figure>
+<p>看到文件夹下会有这些文件</p>
+<figure class="highlight maxima"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">LICENSE cmd <span class="built_in">go</span>.<span class="built_in">mod</span> <span class="built_in">go</span>.<span class="built_in">sum</span> main.<span class="built_in">go</span></span><br></pre></td></tr></table></figure>
+<p>这样cobra的整个框架就搭好了，cmd文件夹就是我们存放子命令的实现的地方</p>
+<p>main.go里非常简单</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment">Copyright © 2022 NAME HERE &lt;EMAIL ADDRESS&gt;</span></span><br><span class="line"><span class="comment"></span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> <span class="string">&quot;mycobra/cmd&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">	cmd.Execute()</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>只是调用了cmd包下的Execute方法，打开cmd包发现只有一个root.go，毫无疑问这就是根命令了（因为我们还没有添加过任何子命令），等先说完添加子命令后，将会分析cmd包下的逻辑</p>
+<h2 id="添加子命令"><a href="#添加子命令" class="headerlink" title="添加子命令"></a>添加子命令</h2><p>只需要执行一下cobra-cli的add命令，这里假设我增加一个get子命令</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cobra add get</span><br></pre></td></tr></table></figure>
+<p>就可以发现cmd底下多了一个get.go</p>
+<h2 id="如何编写代码"><a href="#如何编写代码" class="headerlink" title="如何编写代码"></a>如何编写代码</h2><p>发现其实每个子命令都对应一个cobra.Command结构体</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// getCmd represents the get command</span></span><br><span class="line"><span class="keyword">var</span> getCmd = &amp;cobra.Command&#123;</span><br><span class="line">	Use:   <span class="string">&quot;get&quot;</span>,</span><br><span class="line">	Short: <span class="string">&quot;A brief description of your command&quot;</span>,</span><br><span class="line">	Long: <span class="string">`A longer description that spans multiple lines and likely contains examples</span></span><br><span class="line"><span class="string">and usage of using your command. For example:</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">Cobra is a CLI library for Go that empowers applications.</span></span><br><span class="line"><span class="string">This application is a tool to generate the needed files</span></span><br><span class="line"><span class="string">to quickly create a Cobra application.`</span>,</span><br><span class="line">	Run: <span class="function"><span class="keyword">func</span><span class="params">(cmd *cobra.Command, args []<span class="keyword">string</span>)</span></span> &#123;</span><br><span class="line">		fmt.Println(<span class="string">&quot;get called&quot;</span>)</span><br><span class="line">	&#125;,</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>Use字段代表子命令名称，Short是短简介，Long是长简介，Run是一个函数对象，当然就对应着这个子命令执行的具体逻辑。整个结构体的运行阶段还不止Run这一个，查看结构体定义会发现还有好多阶段</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// The *Run functions are executed in the following order:</span></span><br><span class="line">	<span class="comment">//   * PersistentPreRun()</span></span><br><span class="line">	<span class="comment">//   * PreRun()</span></span><br><span class="line">	<span class="comment">//   * Run()</span></span><br><span class="line">	<span class="comment">//   * PostRun()</span></span><br><span class="line">	<span class="comment">//   * PersistentPostRun()</span></span><br><span class="line">	<span class="comment">// All functions get the same args, the arguments after the command name.</span></span><br><span class="line">	<span class="comment">//</span></span><br><span class="line">	<span class="comment">// PersistentPreRun: children of this command will inherit and execute.</span></span><br><span class="line">	PersistentPreRun <span class="function"><span class="keyword">func</span><span class="params">(cmd *Command, args []<span class="keyword">string</span>)</span></span></span><br><span class="line">	<span class="comment">// PersistentPreRunE: PersistentPreRun but returns an error.</span></span><br><span class="line">	PersistentPreRunE <span class="function"><span class="keyword">func</span><span class="params">(cmd *Command, args []<span class="keyword">string</span>)</span> <span class="title">error</span></span></span><br><span class="line">	<span class="comment">// PreRun: children of this command will not inherit.</span></span><br><span class="line">	PreRun <span class="function"><span class="keyword">func</span><span class="params">(cmd *Command, args []<span class="keyword">string</span>)</span></span></span><br><span class="line">	<span class="comment">// PreRunE: PreRun but returns an error.</span></span><br><span class="line">	PreRunE <span class="function"><span class="keyword">func</span><span class="params">(cmd *Command, args []<span class="keyword">string</span>)</span> <span class="title">error</span></span></span><br><span class="line">	<span class="comment">// Run: Typically the actual work function. Most commands will only implement this.</span></span><br><span class="line">	Run <span class="function"><span class="keyword">func</span><span class="params">(cmd *Command, args []<span class="keyword">string</span>)</span></span></span><br><span class="line">	<span class="comment">// RunE: Run but returns an error.</span></span><br><span class="line">	RunE <span class="function"><span class="keyword">func</span><span class="params">(cmd *Command, args []<span class="keyword">string</span>)</span> <span class="title">error</span></span></span><br><span class="line">	<span class="comment">// PostRun: run after the Run command.</span></span><br><span class="line">	PostRun <span class="function"><span class="keyword">func</span><span class="params">(cmd *Command, args []<span class="keyword">string</span>)</span></span></span><br><span class="line">	<span class="comment">// PostRunE: PostRun but returns an error.</span></span><br><span class="line">	PostRunE <span class="function"><span class="keyword">func</span><span class="params">(cmd *Command, args []<span class="keyword">string</span>)</span> <span class="title">error</span></span></span><br><span class="line">	<span class="comment">// PersistentPostRun: children of this command will inherit and execute after PostRun.</span></span><br><span class="line">	PersistentPostRun <span class="function"><span class="keyword">func</span><span class="params">(cmd *Command, args []<span class="keyword">string</span>)</span></span></span><br><span class="line">	<span class="comment">// PersistentPostRunE: PersistentPostRun but returns an error.</span></span><br><span class="line">	PersistentPostRunE <span class="function"><span class="keyword">func</span><span class="params">(cmd *Command, args []<span class="keyword">string</span>)</span> <span class="title">error</span></span></span><br></pre></td></tr></table></figure>
+<p>其中可供调用的就是PersistentPreRun、PreRun、Run、PostRun、PersistentPostRun这五个阶段</p>
+<p>还可以使用 Command结构体 的 Args 字段指定位置参数的验证</p>
+<p>下面的验证符是内置的：</p>
+<ul>
+<li><code>NoArgs</code> - 如果有任何位置参数，该命令将报告错误。</li>
+<li><code>ArbitraryArgs</code> - 命令将接受任意参数</li>
+<li><code>OnlyValidArgs</code> - 如果 Command 的 <code>ValidArgs</code> 字段中不存在该位置参数，则该命令将报告错误。</li>
+<li><code>MinimumNArgs(int)</code> - 如果不存在至少 N 个位置参数，则该命令将报告错误。</li>
+<li><code>MaximumNArgs(int)</code> - 如果存在超过 N 个位置参数，则该命令将报告错误。</li>
+<li><code>ExactArgs(int)</code> - 如果不存在 N 个位置参数，则该命令将报告错误。</li>
+<li><code>ExactValidArgs(int)</code> - 如果没有确切的 N 个位置参数，或者如果 Command 的 ValidArgs 字段中不存在该位置参数，则该命令将报告并出错。</li>
+<li><code>RangeArgs(min, max)</code> - 如果 args 的数目不在期望的 args 的最小和最大数目之间，则该命令将报告并出错。</li>
+</ul>
+<p>在Command结构体填入<code>Args: cobra.MinimumNArgs(1)</code>就可以指定子命令必须接受一个及一个以上的参数</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/kubernetes/" rel="tag"># kubernetes</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2022/02/23/k8s%E9%85%8D%E7%BD%AEargo-minio/" rel="prev" title="k8s配置argo+minio">
+      <i class="fa fa-chevron-left"></i> k8s配置argo+minio
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#kubectl%E7%9A%84%E5%85%A5%E5%8F%A3"><span class="nav-number">1.</span> <span class="nav-text">kubectl的入口</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#cobra"><span class="nav-number">2.</span> <span class="nav-text">cobra</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%AE%80%E4%BB%8B"><span class="nav-number">2.1.</span> <span class="nav-text">简介</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%A6%82%E5%BF%B5"><span class="nav-number">2.2.</span> <span class="nav-text">概念</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%89%E8%A3%85"><span class="nav-number">2.3.</span> <span class="nav-text">安装</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%88%9D%E5%A7%8B%E5%8C%96"><span class="nav-number">2.4.</span> <span class="nav-text">初始化</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%B7%BB%E5%8A%A0%E5%AD%90%E5%91%BD%E4%BB%A4"><span class="nav-number">2.5.</span> <span class="nav-text">添加子命令</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%A6%82%E4%BD%95%E7%BC%96%E5%86%99%E4%BB%A3%E7%A0%81"><span class="nav-number">2.6.</span> <span class="nav-text">如何编写代码</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Lavender"
+      src="/img/Lavender.jpg">
+  <p class="site-author-name" itemprop="name">Lavender</p>
+  <div class="site-description" itemprop="description">再次出发</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">119</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+        <span class="site-state-item-count">19</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+        <span class="site-state-item-count">50</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/Lavender-QAQ" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;Lavender-QAQ" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title">
+      <i class="fa fa-fw fa-link"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="http://ltitan.github.io/" title="http:&#x2F;&#x2F;ltitan.github.io&#x2F;" rel="noopener" target="_blank">飞哥的技术园区</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://heshang.ink/" title="https:&#x2F;&#x2F;heshang.ink&#x2F;" rel="noopener" target="_blank">奎哥的Java课堂</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://kawaii-jump.github.io/" title="https:&#x2F;&#x2F;kawaii-jump.github.io&#x2F;" rel="noopener" target="_blank">涛哥的就业实录</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://49.232.1.238/" title="http:&#x2F;&#x2F;49.232.1.238&#x2F;" rel="noopener" target="_blank">薛老板的攻防战场</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://dumengblog.club/" title="https:&#x2F;&#x2F;dumengblog.club&#x2F;" rel="noopener" target="_blank">Dumeng的知识讲解</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://stephencuhui.github.io/" title="https:&#x2F;&#x2F;stephencuhui.github.io&#x2F;" rel="noopener" target="_blank">徽哥的步步攀升</a>
+        </li>
+    </ul>
+  </div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2017 – 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Lavender</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+</body>
+</html>
